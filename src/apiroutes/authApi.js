@@ -12,5 +12,3 @@ export const GetSlides = () =>
   axiosInstance.get("/slides/get");
 export const ContactEmail = () =>
   axiosInstance.get("/contact/email");
-export const About = () =>
-  axiosInstance.get("/contact/about");
