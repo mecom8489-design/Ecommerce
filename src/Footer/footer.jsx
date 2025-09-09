@@ -9,8 +9,8 @@ const Footer = () => {
     {
       title: "Customer Services",
       links: [
-        { name: "Contact us", url: "/contact" },
-        { name: "FAQs", url: "/faqs" },
+        { name: "Contact us", url: "/contactUs" },
+        { name: "FAQs", url: "/faq" },
         { name: "Returns and refunds", url: "/returns" },
         { name: "Personal Shopping", url: "/personal-shopping" },
         { name: "Gift cards", url: "/gift-cards" },
@@ -105,6 +105,9 @@ const Footer = () => {
                       <Link
                         to={link.url}
                         className="text-gray-700 text-sm hover:text-gray-900 transition-colors duration-200"
+                        onClick={() =>
+                          window.scrollTo({ top: 0, behavior: "smooth" })
+                        }
                       >
                         {link.name}
                       </Link>
@@ -120,9 +123,14 @@ const Footer = () => {
         <div className="border-t border-gray-200 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <div className="text-gray-600 text-sm">© ShopEasy</div>
 
-              <div className="flex flex-wrap items-center space-x-6">
+              {/* Left Side - Copyright */}
+              <div className="text-gray-600 text-sm text-center md:text-left">
+                © ShopEasy
+              </div>
+
+              {/* Right Side - Links */}
+              <div className="flex flex-wrap justify-center md:justify-end items-center gap-4">
                 {bottomLinks.map((link, index) => (
                   <Link
                     key={index}
