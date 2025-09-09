@@ -8,6 +8,8 @@ import Termsconditions from "./common/TermsAndConditions.jsx";
 import ContactUs from "./common/ContactUs.jsx";
 import FAQSection from "./common/FAQSection.jsx";
 import ReturnPolicy from "./common/ReturnPolicy.jsx";
+import AboutUs from "./common/AboutUs.jsx";
+
 
 
 
@@ -17,14 +19,15 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/dd" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/ProductPage" element={<ProductPage />} />
           <Route path="/ProductPage/products" element={<Product />} />
           <Route path="/Wishlist" element={<Wishlist />} />
           <Route path="/terms&conditions" element={<Termsconditions />} />
           <Route path="/contactUs" element={< ContactUs/>} />
           <Route path="/faq" element={< FAQSection/>} />
-          <Route path="/" element={< ReturnPolicy/>} />
+          <Route path="/returnpolicy" element={< ReturnPolicy/>} />
+          <Route path="/aboutUs" element={< AboutUs/>} />
 
 
         </Routes>

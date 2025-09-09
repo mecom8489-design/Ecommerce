@@ -94,7 +94,7 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
               <div className="flex justify-between items-center border-b px-5 py-3">
                 <h2 className="text-lg font-bold">Shopping cart</h2>
                 <button onClick={() => setIsOpen(false)}>
-                  <X className="w-6 h-6" />
+                  <X className="w-6 h-6 cursor-pointer" />
                 </button>
               </div>
 

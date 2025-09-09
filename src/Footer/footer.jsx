@@ -11,7 +11,7 @@ const Footer = () => {
       links: [
         { name: "Contact us", url: "/contactUs" },
         { name: "FAQs", url: "/faq" },
-        { name: "Returns and refunds", url: "/returns" },
+        { name: "Returns and refunds", url: "/returnpolicy" },
         { name: "Personal Shopping", url: "/personal-shopping" },
         { name: "Gift cards", url: "/gift-cards" },
         { name: "Gift packaging", url: "/gift-packaging" },
@@ -49,7 +49,7 @@ const Footer = () => {
       title: "About Us",
       links: [
         { name: "Inspiration", url: "/inspiration" },
-        { name: "About ShopEasy", url: "/about" },
+        { name: "About ShopEasy", url: "/aboutUs" },
         { name: "Careers", url: "/careers" },
         { name: "Suppliers", url: "/suppliers" },
         { name: "Press area", url: "/press" },
