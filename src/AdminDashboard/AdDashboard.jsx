@@ -88,7 +88,7 @@ export default function AdDashboard() {
   ];
 
   return (
-    <AdminMain>
+    <div>
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
       {/* Stats Cards */}
@@ -168,6 +168,6 @@ export default function AdDashboard() {
           </tbody>
         </table>
       </div>
-    </AdminMain>
+    </div>
   );
 }

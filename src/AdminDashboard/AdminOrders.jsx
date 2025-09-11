@@ -8,10 +8,34 @@ export default function AdminOrders() {
   // Dummy orders data
   useEffect(() => {
     const dummyOrders = [
-      { id: 1, customer: "John Doe", product: "Laptop", amount: "$1200", status: "Completed" },
-      { id: 2, customer: "Jane Smith", product: "Phone", amount: "$800", status: "Pending" },
-      { id: 3, customer: "Sam Wilson", product: "Headphones", amount: "$150", status: "Completed" },
-      { id: 4, customer: "Alice Johnson", product: "Monitor", amount: "$300", status: "Cancelled" },
+      {
+        id: 1,
+        customer: "John Doe",
+        product: "Laptop",
+        amount: "$1200",
+        status: "Completed",
+      },
+      {
+        id: 2,
+        customer: "Jane Smith",
+        product: "Phone",
+        amount: "$800",
+        status: "Pending",
+      },
+      {
+        id: 3,
+        customer: "Sam Wilson",
+        product: "Headphones",
+        amount: "$150",
+        status: "Completed",
+      },
+      {
+        id: 4,
+        customer: "Alice Johnson",
+        product: "Monitor",
+        amount: "$300",
+        status: "Cancelled",
+      },
     ];
     setOrders(dummyOrders);
   }, []);
@@ -61,7 +85,7 @@ export default function AdminOrders() {
                   </span>
                 </td>
                 <td className="p-3">
-                  <button className="text-blue-500 hover:text-blue-700 font-medium mr-2">
+                  <button className="text-blue-500 hover:text-blue-700 font-medium mr-5">
                     View
                   </button>
                   <button className="text-red-500 hover:text-red-700 font-medium">

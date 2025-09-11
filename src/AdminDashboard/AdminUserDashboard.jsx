@@ -12,7 +12,7 @@ export default function AdminUsers() {
         name: "John Doe",
         email: "john@example.com",
         role: "Customer",
-        password: "••••••••",
+        password: "84545353",
         mobile: "123-456-7890",
       },
       {
@@ -20,7 +20,7 @@ export default function AdminUsers() {
         name: "Jane Smith",
         email: "jane@example.com",
         role: "Customer",
-        password: "••••••••",
+        password: "7354533",
         mobile: "234-567-8901",
       },
       {
@@ -28,7 +28,7 @@ export default function AdminUsers() {
         name: "Sam Wilson",
         email: "sam@example.com",
         role: "Admin",
-        password: "••••••••",
+        password: "3435443",
         mobile: "345-678-9012",
       },
     ];

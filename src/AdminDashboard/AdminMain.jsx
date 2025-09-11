@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./AdminSidebar";
 import Toolbar from "./AdminToolbar";
 
-export default function AdminMain({ children }) {
+export default function AdminMain() {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -17,7 +17,7 @@ export default function AdminMain({ children }) {
 
         {/* Page content */}
         <main className="mt-16 p-6 overflow-y-auto flex-1">
-          {children} {/* <-- this renders your dashboard content */}
+          {/* <-- this renders your dashboard content */}
           <Outlet /> {/* <-- keep this if you plan nested routes */}
         </main>
       </div>

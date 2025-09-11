@@ -19,6 +19,7 @@ import AdDashboard from "./AdminDashboard/AdDashboard.jsx";
 import AdminOrders from "./AdminDashboard/AdminOrders.jsx"; // create this component or dummy
 import AdminProducts from "./AdminDashboard/AdminProducts.jsx"; // create this component or dummy
 import AdminUsers from "./AdminDashboard/AdminUserDashboard.jsx"; // create this component or dummy
+import AdminCategories from "./AdminDashboard/AdminCategories.jsx"; // create this component or dummy
 
 function App() {
   return (
@@ -41,10 +42,11 @@ function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="categories" element={<AdminCategories />} />
         </Route>
 
         {/* Redirect any unknown paths to home or admin */}
-        <Route path="*" element={<Navigate to="/admin" />} />
+        <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
     </Router>
   );
