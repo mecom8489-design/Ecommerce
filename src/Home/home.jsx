@@ -44,6 +44,11 @@ import SuperDeals from "./SuperDeals";
 import PetStoreUI from "./PetStore";
 import FlashDealsUI from "./FlashDeals";
 import HotCategories from "./HotCategories";
+import {
+  GetSlides,
+} from "../apiroutes/authApi";
+
+
 const Home = () => {
   const [current, setCurrent] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -186,6 +191,7 @@ const Home = () => {
     }
   };
   const [currentSlide, setCurrentSlide] = useState(0);
+
   const slides = [
     {
       title: "Summer, bottled",
@@ -212,6 +218,9 @@ const Home = () => {
       },
     },
   ];
+  
+  
+
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);

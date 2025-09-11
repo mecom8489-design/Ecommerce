@@ -1,5 +1,6 @@
 import { Package } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Adminproductses } from "../apiroutes/adminApi";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -15,56 +16,6 @@ export default function AdminProducts() {
     imagePreview: null,
   });
 
-  useEffect(() => {
-    const dummyProducts = [
-      {
-        id: 1,
-        name: "Laptop",
-        price: "$1200",
-        rating: 4.5,
-        discount: "10%",
-        description: "High-performance laptop",
-        category: "Electronics",
-        stock: 10,
-        imagePreview: "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      },
-      {
-        id: 2,
-        name: "Phone",
-        price: "$800",
-        rating: 4.2,
-        discount: "5%",
-        description: "Latest smartphone",
-        category: "Electronics",
-        stock: 0,
-        imagePreview: "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      },
-      {
-        id: 2,
-        name: "Phone",
-        price: "$800",
-        rating: 4.2,
-        discount: "5%",
-        description: "Latest smartphone",
-        category: "Electronics",
-        stock: 0,
-        imagePreview: "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      },
-      {
-        id: 2,
-        name: "Phone",
-        price: "$800",
-        rating: 4.2,
-        discount: "5%",
-        description: "Latest smartphone",
-        category: "Electronics",
-        stock: 0,
-        imagePreview: "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      },
-    ];
-    setProducts(dummyProducts);
-  }, []);
-
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "image" && files.length > 0) {
@@ -78,23 +29,51 @@ export default function AdminProducts() {
     }
   };
 
-  const handleAddProduct = (e) => {
+  const handleAddProduct = async (e) => {
     e.preventDefault();
-    if (!newProduct.name || !newProduct.price) return;
-    const nextId = products.length ? products[products.length - 1].id + 1 : 1;
-    const productToAdd = { ...newProduct, id: nextId };
-    setProducts([...products, productToAdd]);
-    setNewProduct({
-      name: "",
-      price: "",
-      rating: "",
-      discount: "",
-      description: "",
-      category: "",
-      stock: "",
-      image: null,
-      imagePreview: null,
-    });
+
+    if (!newProduct.name || !newProduct.price || !newProduct.image) {
+      alert("Please provide name, price, and image.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", newProduct.name);
+    formData.append("price", newProduct.price);
+    formData.append("rating", newProduct.rating);
+    formData.append("discount", newProduct.discount);
+    formData.append("description", newProduct.description);
+    formData.append("category", newProduct.category);
+    formData.append("stock", newProduct.stock);
+    formData.append("image", newProduct.image);
+
+    try {
+      const response = await Adminproductses(formData);
+      console.log("Product Added:", response.data);
+
+      const addedProduct = {
+        ...newProduct,
+        id: products.length ? products[products.length - 1].id + 1 : 1,
+        imagePreview: URL.createObjectURL(newProduct.image),
+      };
+
+      setProducts([...products, addedProduct]);
+
+      setNewProduct({
+        name: "",
+        price: "",
+        rating: "",
+        discount: "",
+        description: "",
+        category: "",
+        stock: "",
+        image: null,
+        imagePreview: null,
+      });
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Failed to add product ❌");
+    }
   };
 
   const handleDelete = (id) => {
@@ -137,7 +116,7 @@ export default function AdminProducts() {
             required
           />
           <input
-            type="number"
+            type="text"
             name="rating"
             placeholder="Rating (0-5)"
             value={newProduct.rating}
@@ -161,7 +140,7 @@ export default function AdminProducts() {
             className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
           />
           <input
-            type="number"
+            type="text"
             name="stock"
             placeholder="Stock"
             value={newProduct.stock}
