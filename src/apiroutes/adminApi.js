@@ -8,8 +8,8 @@ export const getAdminUsers = () => {
         },
     });
 };
-export const Adminproductses = () => {
-    return axiosInstance.post("/auth/users", {
+export const Adminproductses = (data) => {
+    return axiosInstance.post("/product/add",data, {
         headers: {
             "Content-Type": "multipart/form-data",
         },

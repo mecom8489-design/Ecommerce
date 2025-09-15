@@ -16,8 +16,11 @@ export default function Header() {
       <div className="my-element text-white py-2 sm:py-3 md:py-4 px-2 text-xs sm:text-sm md:text-base font-bold overflow-hidden">
         <div className="relative w-full overflow-hidden whitespace-nowrap">
           <div className="flex animate-marquee space-x-8 sm:space-x-12">
-            {Array(2).fill(
-              <div className="flex space-x-4 sm:space-x-8 items-center">
+            {Array(2).fill(null).map((_, index) => (
+              <div
+                key={index}
+                className="flex space-x-4 sm:space-x-8 items-center"
+              >
                 <div className="flex items-center space-x-2">
                   <span className="text-orange-400 text-base sm:text-xl">🚚</span>
                   <span className="font-extrabold tracking-wide text-black text-[10px] sm:text-sm md:text-base">
@@ -36,7 +39,8 @@ export default function Header() {
                   </span>
                 </div>
               </div>
-            )}
+            ))}
+
           </div>
         </div>
       </div>

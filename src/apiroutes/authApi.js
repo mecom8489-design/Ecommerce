@@ -21,15 +21,15 @@ export const VerifyEmail = (data) => {
         },
     });
 };
-export const verifyOtp = () => {
-    return axiosInstance.post("/password/verify-otp", {
+export const verifyOtp = (data) => {
+    return axiosInstance.post("/password/verify-otp",data, {
         headers: {
             "Content-Type": "application/json",
         },
     });
 };
-export const resetPassword = () => {
-    return axiosInstance.post("/password/reset-password", {
+export const resetPassword = (data) => {
+    return axiosInstance.post("/password/reset-password",data, {
         headers: {
             "Content-Type": "application/json",
         },
