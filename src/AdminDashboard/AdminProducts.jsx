@@ -15,6 +15,9 @@ export default function AdminProducts() {
     image: null,
     imagePreview: null,
   });
+  
+  const categories = ["Electronics", "Fashion", "Books", "Home", "Sports"];
+
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -131,14 +134,19 @@ export default function AdminProducts() {
             onChange={handleChange}
             className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
           />
-          <input
-            type="text"
+          <select
             name="category"
-            placeholder="Category"
             value={newProduct.category}
             onChange={handleChange}
             className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
-          />
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat.toLowerCase()}>
+                {cat}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             name="stock"
@@ -152,7 +160,7 @@ export default function AdminProducts() {
             placeholder="Description"
             value={newProduct.description}
             onChange={handleChange}
-            className="border p-3 rounded-lg w-full sm:col-span-2 lg:col-span-3 focus:ring-2 focus:ring-indigo-400"
+            className="border p-3 rounded-lg w-full sm:col-span-2 lg:col-span-3 focus:ring-2 focus:ring-indigo-400 resize-none"
           />
           <div className="flex flex-col">
             <label className="mb-1 font-medium">Product Image</label>
@@ -204,11 +212,10 @@ export default function AdminProducts() {
               <p className="text-gray-600 mb-1">
                 Stock:{" "}
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    product.stock > 0
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-800"
-                  }`}
+                  className={`px-2 py-1 rounded-full text-xs font-semibold ${product.stock > 0
+                    ? "bg-green-100 text-green-700"
+                    : "bg-yellow-100 text-yellow-800"
+                    }`}
                 >
                   {product.stock || 0}
                 </span>

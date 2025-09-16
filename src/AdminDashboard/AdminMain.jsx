@@ -12,7 +12,7 @@ export default function AdminMain() {
       <div className="flex flex-col flex-1 ml-64">
         {/* Toolbar */}
         <div className="fixed top-0 left-64 right-0 z-40">
-          <Toolbar userName="User" role="Admin" />
+          <Toolbar userName="Admin" role="Admin" />
         </div>
 
         {/* Page content */}
