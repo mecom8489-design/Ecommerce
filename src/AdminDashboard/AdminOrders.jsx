@@ -1,77 +1,65 @@
-import AdminMain from "./AdminMain"; // your layout wrapper
 import { ShoppingCart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { getAdminOrders } from "../apiroutes/adminApi";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
+  const hasFetched = useRef(false);
 
-  // Dummy orders data
   useEffect(() => {
-    const dummyOrders = [
-      {
-        id: 1,
-        customer: "John Doe",
-        product: "Laptop",
-        amount: "$1200",
-        status: "Completed",
-      },
-      {
-        id: 2,
-        customer: "Jane Smith",
-        product: "Phone",
-        amount: "$800",
-        status: "Pending",
-      },
-      {
-        id: 3,
-        customer: "Sam Wilson",
-        product: "Headphones",
-        amount: "$150",
-        status: "Completed",
-      },
-      {
-        id: 4,
-        customer: "Alice Johnson",
-        product: "Monitor",
-        amount: "$300",
-        status: "Cancelled",
-      },
-    ];
-    setOrders(dummyOrders);
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetchOrders();
+    }
   }, []);
 
+  const fetchOrders = async () => {
+    try {
+      const response = await getAdminOrders();
+      const usersArray = Array.isArray(response.data)
+        ? response.data
+        : response.data.users || [];
+      setOrders(usersArray);
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to fetch orders ❌");
+    }
+  };
+
   return (
-    <div>
+    <div className="p-4">
       <div className="flex items-center mb-6">
         <ShoppingCart className="w-6 h-6 text-indigo-500 mr-2" />
         <h1 className="text-2xl font-bold">Orders</h1>
       </div>
 
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-        <table className="w-full text-left table-auto">
-          <thead className="bg-indigo-500 text-white uppercase text-sm tracking-wider">
+      <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
+        <table className="min-w-full text-sm text-left">
+          <thead className="bg-indigo-500 text-white uppercase tracking-wider">
             <tr>
-              <th className="p-3">ID</th>
-              <th className="p-3">Customer</th>
-              <th className="p-3">Product</th>
-              <th className="p-3">Amount</th>
-              <th className="p-3">Status</th>
-              <th className="p-3">Actions</th>
+              <th className="px-4 py-3 text-center">Sl.no</th>
+              <th className="px-4 py-3 text-center">ID</th>
+              <th className="px-4 py-3 text-center">Customer</th>
+              <th className="px-4 py-3 text-center">Product</th>
+              <th className="px-4 py-3 text-center">Amount</th>
+              <th className="px-4 py-3 text-center">Status</th>
             </tr>
           </thead>
-          <tbody className="text-gray-700 text-sm">
+          <tbody className="text-gray-700">
             {orders.map((order, index) => (
               <tr
                 key={order.id}
                 className={`${
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                } hover:bg-gray-100 transition-colors`}
+                } hover:bg-gray-100`}
               >
-                <td className="p-3">{order.id}</td>
-                <td className="p-3 font-medium">{order.customer}</td>
-                <td className="p-3">{order.product}</td>
-                <td className="p-3">{order.amount}</td>
-                <td className="p-3">
+                <td className="px-4 py-3 text-center">{index + 1}</td>
+                <td className="px-4 py-3 text-center">{order.id}</td>
+                <td className="px-4 py-3 text-center">{order.customer}</td>
+                <td className="px-4 py-3 text-center">{order.product}</td>
+                <td className="px-4 py-3 text-center">
+                  {parseInt(order.price, 10)}$
+                </td>
+                <td className="px-4 py-3 text-center">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-semibold ${
                       order.status === "Completed"
@@ -84,19 +72,14 @@ export default function AdminOrders() {
                     {order.status}
                   </span>
                 </td>
-                <td className="p-3">
-                  <button className="text-blue-500 hover:text-blue-700 font-medium mr-5">
-                    View
-                  </button>
-                  <button className="text-red-500 hover:text-red-700 font-medium">
-                    Delete
-                  </button>
-                </td>
               </tr>
             ))}
             {orders.length === 0 && (
               <tr>
-                <td colSpan="6" className="text-center p-4 text-gray-500">
+                <td
+                  colSpan="6"
+                  className="text-center px-4 py-4 text-gray-500"
+                >
                   No orders found.
                 </td>
               </tr>

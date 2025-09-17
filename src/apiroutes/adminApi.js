@@ -59,4 +59,12 @@ export const Adminproductses = (data) => {
     });
 };  // working Fine
 
+export const getAdminOrders = () => {
+    return axiosInstance.get("/orders/getOrders", {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+}; 
+
 
