@@ -38,6 +38,14 @@ export const getAllCategories = () => {
     });
 };
 
+export const getAddedProducts = () => {
+    return axiosInstance.get("/product", {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+};
+
 export const deleteCategories = (userId) => {
     return axiosInstance.delete(`/adminCategories/deleteCategory/${userId}`);
 };//working fine

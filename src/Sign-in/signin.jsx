@@ -6,8 +6,13 @@ import {
   VerifyEmail,
   resetPassword,
 } from "../apiroutes/authApi";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+
 
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -57,8 +62,13 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     try {
       setLoading(true);
       const response = await login({ email, password });
-      alert("Login successful ✅");
-      console.log("User Data:", response.data);
+      await alert("Login successful ✅");
+      const role = response.data.role;
+      const token = response.data.token;
+      sessionStorage.setItem("token", token);
+      if(role == "admin"){
+        navigate("/admin"); 
+      }
       setShowSignIn(false);
     } catch (error) {
       alert(error.response?.data?.message || "Login failed ❌");
@@ -150,6 +160,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       setResetPasswordLoading(false);
     }
   };
+
+
 
   return (
     <div className="fixed inset-0 flex justify-center items-center z-[999] px-4">

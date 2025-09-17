@@ -13,24 +13,31 @@ import {
   CreditCard,
   Home,
   X,
+  LogOut,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    sessionStorage.setItem("token", null);
+    navigate("/home"); 
+  };
+  
+
   return (
     <>
       {/* Overlay (for mobile only) */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden transition-opacity ${
-          sidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden transition-opacity ${sidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
         onClick={() => setSidebarOpen(false)}
       ></div>
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white p-6 space-y-6 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 transition-transform duration-300 z-50`}
+        className={`fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white p-6 space-y-6 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 transition-transform duration-300 z-50`}
       >
         {/* Header with Close button (mobile only) */}
         <div className="flex items-center justify-between mb-6">
@@ -102,6 +109,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
             icon={<Settings size={18} />}
             label="Settings"
           />
+          <button
+            onClick={handleLogout}
+            className="flex items-center w-full text-left space-x-2 text-sm text-white hover:text-red-400 transition cursor-pointer"
+          >
+            <LogOut size={18} />
+            <span>Logout</span>
+          </button>
         </nav>
       </aside>
     </>
@@ -114,10 +128,9 @@ function NavItem({ to, icon, label, end }) {
       to={to}
       end={end}
       className={({ isActive }) =>
-        `flex items-center space-x-2 px-2 py-2 rounded-md transition-colors ${
-          isActive
-            ? "text-yellow-400 font-semibold bg-gray-800"
-            : "text-gray-300 hover:text-yellow-400 hover:bg-gray-800"
+        `flex items-center space-x-2 px-2 py-2 rounded-md transition-colors ${isActive
+          ? "text-yellow-400 font-semibold bg-gray-800"
+          : "text-gray-300 hover:text-yellow-400 hover:bg-gray-800"
         }`
       }
     >
