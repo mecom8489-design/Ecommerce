@@ -93,6 +93,7 @@ function App() {
         <Route path="/faq" element={<FAQSection />} />
         <Route path="/returnpolicy" element={<ReturnPolicy />} />
         <Route path="/aboutUs" element={<AboutUs />} />
+        
 
         {/* Protected Admin routes */}
         <Route element={<ProtectedRoute />}>

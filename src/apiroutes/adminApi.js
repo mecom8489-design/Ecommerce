@@ -21,6 +21,10 @@ export const deleteAdminUser = (userId) => {
     return axiosInstance.delete(`/admin/deleteUsers/${userId}`);
 };//working fine
 
+export const deleteAdminProducts = (userId) => {
+    return axiosInstance.delete(`/product/adprodelete/${userId}`);
+};//working fine
+
 
 export const addCategories = (data) => {
     return axiosInstance.post("/adminCategories/addCategory",data, {

@@ -1,6 +1,6 @@
 import { Package } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { Adminproductses, getAllCategories, getAddedProducts } from "../apiroutes/adminApi";
+import { Adminproductses, getAllCategories, getAddedProducts,deleteAdminProducts } from "../apiroutes/adminApi";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -18,6 +18,8 @@ export default function AdminProducts() {
   const [categories, setCategories] = useState([]);
   const hasFetched = useRef(false);
   const hasFetches = useRef(false);
+  const [deleteProId, setDeleteProId] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
 
 
@@ -123,9 +125,28 @@ export default function AdminProducts() {
     }
   };
 
-  const handleDelete = (id) => {
-    setProducts(products.filter((p) => p.id !== id));
+
+  const handleDelete = (userId) => {
+    setDeleteProId(userId);
+    setIsDeleteModalOpen(true);
   };
+
+  const confirmDeleteUser = async () => {
+    if (!deleteProId) return;
+
+    try {
+      await deleteAdminProducts(deleteProId);
+      alert("User deleted successfully ✅");
+      fetchProducts(); // Refresh the list
+    } catch (error) {
+      console.error("Delete Error:", error);
+      alert(error?.response?.data?.message || "Failed to delete user ❌");
+    } finally {
+      setIsDeleteModalOpen(false);
+      setDeleteProId(null);
+    }
+  };
+
 
   return (
     <div>
@@ -271,16 +292,19 @@ export default function AdminProducts() {
 
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 
+                gap-6 p-6 justify-items-center">
         {products.map((product) => (
           <div
             key={product.id}
-            className="bg-white rounded-xl shadow-md p-4 flex flex-col justify-between 
-                 hover:shadow-xl transition-shadow 
-                 sm:bg-gray-50 sm:p-5 sm:rounded-2xl 
-                 md:bg-white md:p-6 
-                 lg:bg-blue-50 lg:p-8"
+            className="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden flex flex-col w-72"
           >
+            {product.discount && (
+              <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-br-xl z-10">
+                Sale
+              </div>
+            )}
+
             <img
               src={
                 product.image
@@ -288,58 +312,108 @@ export default function AdminProducts() {
                   : "https://via.placeholder.com/300x300.png?text=Product"
               }
               alt={product.name}
-              className="w-full h-48 object-cover rounded-lg mb-4 
-                   sm:h-56 
-                   md:h-64 
-                   lg:h-72"
+              className="w-full h-60 object-cover"
             />
 
-            <div>
-              <h3 className="text-base font-semibold mb-2 sm:text-lg md:text-xl">{product.name}</h3>
-              <p className="text-gray-600 mb-1 text-sm md:text-base">Price: {product.price}</p>
-              <p className="text-gray-600 mb-1 text-sm md:text-base">
-                Rating: {product.rating || "-"}
-              </p>
-              <p className="text-gray-600 mb-1 text-sm md:text-base">
-                Discount: {product.discount || "-"}
+            <div className="p-4 flex flex-col justify-between flex-grow ">
+              <h3 className="text-lg font-semibold mb-1 truncate flex justify-center items-center">{product.name}</h3>
+
+              <div className="text-base font-medium text-gray-800 flex justify-center items-center">
+                Rs.{product.price}
+                {product.originalPrice && (
+                  <span className="text-sm text-gray-400 line-through ml-2">
+                    Rs.{product.originalPrice}
+                  </span>
+                )}
+                {product.discount && (
+                  <span className="ml-2 text-red-500 text-sm">-{parseInt(product.discount)}%</span>
+                )}
+              </div>
+              <p className="text-sm flex items-center mt-1 justify-center">
+                Rating:
+                <span className="ml-2 flex relative">
+                  {/* Gray background stars */}
+                  <div className="flex text-gray-300">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span key={i}>★</span>
+                    ))}
+                  </div>
+
+                  {/* Yellow overlay stars */}
+                  <div
+                    className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+                    style={{ width: `${(Number(product.rating) / 5) * 100}%` }}
+                  >
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span key={i}>★</span>
+                    ))}
+                  </div>
+                </span>
+
+                {/* Numeric rating with 2 decimals */}
+                <span className="ml-2 text-gray-700">
+                  ({product.rating ? Number(product.rating).toFixed(2) : "-"})
+                </span>
               </p>
 
-              <p className="text-gray-600 mb-1 text-sm md:text-base">
-                Stock:{" "}
+              <p className="text-sm text-gray-600 mt-1 flex justify-center items-center">
+                Stock:
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${product.stock > 0
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-800"
+                  className={`ml-2 px-2 py-1 rounded-full text-xs font-semibold ${product.stock > 0
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
                     }`}
                 >
                   {product.stock || 0}
                 </span>
               </p>
-              <p className="text-gray-600 text-sm md:text-base">
+
+              <p className="text-sm text-gray-500 mt-1 truncate flex justify-center items-center">
                 {product.description || "-"}
               </p>
-            </div>
 
-            <div className="mt-4 flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-              <button className="flex-1 bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors text-sm md:text-base">
-                Edit
+              <div className="mt-4 flex space-x-2">
+                <button className="flex-1 bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors text-sm">
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(product.id)}
+                  className="flex-1 bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition-colors text-sm"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
+          <div className="bg-gray-300 rounded-lg p-6 w-full max-w-sm shadow-xl">
+            <h2 className="text-lg font-semibold mb-4 text-center text-red-600">
+              Confirm Deletion
+            </h2>
+            <p className="text-center text-gray-700 mb-6">
+              Are you sure you want to delete this user? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="px-4 py-2 border border-black bg-gray-300 rounded hover:bg-gray-400 cursor-pointer"
+              >
+                Cancel
               </button>
               <button
-                onClick={() => handleDelete(product.id)}
-                className="flex-1 bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition-colors text-sm md:text-base"
+                onClick={confirmDeleteUser}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 cursor-pointer"
               >
                 Delete
               </button>
             </div>
           </div>
-        ))}
-        {products.length === 0 && (
-          <p className="text-center col-span-full text-gray-500 text-sm sm:text-base md:text-lg">
-            No products found.
-          </p>
-        )}
-      </div>
-
+        </div>
+      )}
     </div>
   );
 }
