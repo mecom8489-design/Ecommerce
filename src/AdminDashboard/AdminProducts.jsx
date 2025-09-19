@@ -1,6 +1,6 @@
 import { Package } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { Adminproductses, getAllCategories, getAddedProducts,deleteAdminProducts } from "../apiroutes/adminApi";
+import { Adminproductses, getAllCategories, getAddedProducts, deleteAdminProducts } from "../apiroutes/adminApi";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -20,6 +20,8 @@ export default function AdminProducts() {
   const hasFetches = useRef(false);
   const [deleteProId, setDeleteProId] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isProductModalOpen , setisProductModalOpen ] = useState(false);
+  const [currentProduct, setcurrentProduct] = useState(null);
 
 
 
@@ -146,6 +148,96 @@ export default function AdminProducts() {
       setDeleteProId(null);
     }
   };
+
+
+  const handleEditClick = (product) => {
+    setcurrentProduct({
+      ...product,
+      name: product.name || "",
+      price: product.price || "",
+      originalPrice: product.originalPrice || "",
+      discount: product.discount || "",
+      stock: product.stock || "",
+      description: product.description || "",
+      image: product.image || "",
+    });
+    setisProductModalOpen(true);
+  };
+  
+  
+
+  // const handleProductInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setCurrentProduct((prevProduct) => ({
+  //     ...prevProduct,
+  //     [name]: value,
+  //   }));
+  // };
+  const handleProductInputChange = (e) => {
+    const { name, value } = e.target;
+    setcurrentProduct((prevProduct) => ({
+      ...prevProduct,
+      [name]: value,
+    }));
+  };
+  
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setcurrentProduct((prevProduct) => ({
+        ...prevProduct,
+        image: file, 
+      }));
+    }
+  };
+
+  const handleProductSave = async () => {
+    try {
+      // Prepare updated product object
+      const updatedProduct = {
+        ...currentProduct,
+        price: Number(currentProduct.price) || 0,
+        originalPrice: Number(currentProduct.originalPrice) || 0,
+        discount: Number(currentProduct.discount) || 0,
+        stock: Number(currentProduct.stock) || 0,
+        description: currentProduct.description?.trim() || "",
+        name: currentProduct.name?.trim() || "",
+      };
+  
+      // Remove unwanted fields if your backend doesn’t accept them
+      delete updatedProduct.created_at;
+      delete updatedProduct.updated_at;
+  
+      // If image is a File, send as FormData
+      let payload;
+      if (updatedProduct.image instanceof File) {
+        payload = new FormData();
+        Object.keys(updatedProduct).forEach((key) => {
+          payload.append(key, updatedProduct[key]);
+        });
+      } else {
+        payload = updatedProduct;
+      }
+  
+      // API call (replace with your function)
+      const response = await updateProduct(payload);
+  
+      // Normalize response
+      const productsArray = Array.isArray(response.data)
+        ? response.data
+        : response.data.products || [];
+  
+      setProducts(productsArray);
+      alert("Product updated successfully ✅");
+      setisProductModalOpen(false);
+      fetchProducts(); // refresh product list
+    } catch (error) {
+      console.error("Update Error:", error);
+      alert(error?.response?.data?.message || "Failed to update product ❌");
+    }
+  };
+  
 
 
   return (
@@ -319,7 +411,7 @@ export default function AdminProducts() {
               <h3 className="text-lg font-semibold mb-1 truncate flex justify-center items-center">{product.name}</h3>
 
               <div className="text-base font-medium text-gray-800 flex justify-center items-center">
-                Rs.{product.price}
+               Price: $ {parseInt(product.price)}
                 {product.originalPrice && (
                   <span className="text-sm text-gray-400 line-through ml-2">
                     Rs.{product.originalPrice}
@@ -328,6 +420,14 @@ export default function AdminProducts() {
                 {product.discount && (
                   <span className="ml-2 text-red-500 text-sm">-{parseInt(product.discount)}%</span>
                 )}
+              </div>
+              <div className="text-base font-medium text-red-800 flex justify-center items-center">
+              Final Price: <span className="text-black"> ${parseInt(product.finalPrice)}</span>
+                {/* {product.finalPrice && (
+                  <span className="text-sm text-gray-400 line-through ml-2">
+                    Rs.{product.finalPrice}
+                  </span>
+                )} */}
               </div>
               <p className="text-sm flex items-center mt-1 justify-center">
                 Rating:
@@ -373,7 +473,8 @@ export default function AdminProducts() {
               </p>
 
               <div className="mt-4 flex space-x-2">
-                <button className="flex-1 bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors text-sm">
+                <button className="flex-1 bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors text-sm"
+                  onClick={() => handleEditClick(product)}>
                   Edit
                 </button>
                 <button
@@ -414,6 +515,157 @@ export default function AdminProducts() {
           </div>
         </div>
       )}
+
+      {isProductModalOpen && currentProduct && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl">
+            <h2 className="text-xl font-semibold mb-4 text-center">Edit Product</h2>
+
+            <div className="space-y-4">
+              {/* Product Name */}
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Product Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={currentProduct.name}
+                  onChange={handleProductInputChange}
+                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter product name"
+                />
+              </div>
+
+              {/* Price */}
+              <div>
+                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                  Price
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  value={currentProduct.price}
+                  onChange={handleProductInputChange}
+                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter price"
+                />
+              </div>
+
+              {/* Original Price */}
+              <div>
+                <label htmlFor="originalPrice" className="block text-sm font-medium text-gray-700 mb-1">
+                  Original Price
+                </label>
+                <input
+                  type="number"
+                  id="originalPrice"
+                  name="originalPrice"
+                  value={currentProduct.originalPrice || ""}
+                  onChange={handleProductInputChange}
+                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter original price"
+                />
+              </div>
+
+              {/* Discount */}
+              <div>
+                <label htmlFor="discount" className="block text-sm font-medium text-gray-700 mb-1">
+                  Discount (%)
+                </label>
+                <input
+                  type="number"
+                  id="discount"
+                  name="discount"
+                  value={currentProduct.discount || ""}
+                  onChange={handleProductInputChange}
+                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter discount %"
+                />
+              </div>
+
+              {/* Stock */}
+              <div>
+                <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-1">
+                  Stock
+                </label>
+                <input
+                  type="number"
+                  id="stock"
+                  name="stock"
+                  value={currentProduct.stock || 0}
+                  onChange={handleProductInputChange}
+                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter stock quantity"
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={currentProduct.description || ""}
+                  onChange={handleProductInputChange}
+                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter product description"
+                />
+              </div>
+
+              {/* Image Upload */}
+              <div>
+                <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
+                  Product Image
+                </label>
+                <input
+                  type="file"
+                  id="image"
+                  name="image"
+                  onChange={handleImageUpload}
+                  className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4
+                     file:rounded file:border-0 file:text-sm file:font-semibold
+                     file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                />
+                {currentProduct.image && (
+                  <img
+                    src={`http://192.168.0.211:3000/uploads/${currentProduct.image}`}
+                    alt="Product Preview"
+                    className="mt-2 w-32 h-32 object-cover rounded"
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={() => setisProductModalOpen(false)}
+                className="mr-3 px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleProductSave}
+                className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+
+
+
+
     </div>
   );
 }

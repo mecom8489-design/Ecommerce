@@ -6,7 +6,7 @@ import {
   DollarSign,
   TrendingUp,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   LineChart,
   Line,
@@ -16,13 +16,81 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { getAdminDashboard, getAdminRecentOrders } from "../apiroutes/adminApi";
+import { Link } from 'react-router-dom';
+
+
+
+
 
 export default function AdDashboard() {
+
+  const hasFetched = useRef(false);
+  const [data, setData] = useState({
+    orders: 0,
+    products: 0,
+    users: 0,
+  });
+  const [recentOrders, setRecentOrders] = useState([]);
+
   useEffect(() => {
-    console.log("Admin Dashboard Mounted");
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetchDashBoard();
+      getAdminRecentOrder();
+    }
   }, []);
 
-  // Dummy sales data
+
+  const fetchDashBoard = async () => {
+    try {
+      const response = await getAdminDashboard();
+      console.log("API Response:", response.data);
+      const usersArray = response.data;
+      setData(usersArray);
+
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to fetch users ❌");
+    }
+  };
+
+  const getAdminRecentOrder = async () => {
+    try {
+      const response = await getAdminRecentOrders();
+      const usersArray = Array.isArray(response.data)
+        ? response.data
+        : response.data.users || [];
+      setRecentOrders(usersArray);
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to fetch orders ❌");
+    }
+  };
+
+  // const recentOrders = [
+  //   {
+  //     id: 1,
+  //     customer: "John Doe",
+  //     product: "Laptop",
+  //     amount: "$1200",
+  //     status: "Completed",
+  //   },
+  //   {
+  //     id: 2,
+  //     customer: "Jane Smith",
+  //     product: "Phone",
+  //     amount: "$800",
+  //     status: "Pending",
+  //   },
+  //   {
+  //     id: 3,
+  //     customer: "Sam Wilson",
+  //     product: "Headphones",
+  //     amount: "$150",
+  //     status: "Completed",
+  //   },
+  // ];
+
+
   const salesData = [
     { month: "Jan", sales: 4000 },
     { month: "Feb", sales: 3000 },
@@ -36,23 +104,26 @@ export default function AdDashboard() {
     {
       id: 1,
       title: "Orders",
-      value: 120,
+      value: data.orders,
       icon: ShoppingCart,
       color: "text-blue-500",
+      route: "orders",
     },
     {
       id: 2,
       title: "Products",
-      value: 58,
+      value: data.products,
       icon: Package,
       color: "text-green-500",
+      route: "products",
     },
     {
       id: 3,
       title: "Users",
-      value: 340,
+      value: data.users,
       icon: Users,
       color: "text-purple-500",
+      route: "users",
     },
     {
       id: 4,
@@ -60,32 +131,10 @@ export default function AdDashboard() {
       value: "$12,500",
       icon: DollarSign,
       color: "text-yellow-500",
+      route: "/revenue",
     },
   ];
 
-  const recentOrders = [
-    {
-      id: 1,
-      customer: "John Doe",
-      product: "Laptop",
-      amount: "$1200",
-      status: "Completed",
-    },
-    {
-      id: 2,
-      customer: "Jane Smith",
-      product: "Phone",
-      amount: "$800",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      customer: "Sam Wilson",
-      product: "Headphones",
-      amount: "$150",
-      status: "Completed",
-    },
-  ];
 
   return (
     <div>
@@ -94,21 +143,24 @@ export default function AdDashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => {
-          const Icon = stat.icon; // FIX: Use uppercase variable
+          const Icon = stat.icon;
+
           return (
-            <div
+            <Link
+              to={stat.route}
               key={stat.id}
-              className="flex items-center p-6 bg-white shadow rounded-lg"
+              className="flex items-center p-6 bg-white shadow rounded-lg hover:shadow-md transition-shadow cursor-pointer"
             >
               <Icon className={`${stat.color} w-10 h-10 mr-4`} />
               <div>
                 <p className="text-gray-500">{stat.title}</p>
                 <p className="text-xl font-semibold">{stat.value}</p>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
+
 
       {/* Sales Chart */}
       <div className="bg-white p-6 rounded-lg shadow mt-8">
@@ -148,18 +200,17 @@ export default function AdDashboard() {
             </tr>
           </thead>
           <tbody>
-            {recentOrders.map((order) => (
+            {Array.isArray(recentOrders) && recentOrders.map(order => (
               <tr key={order.id} className="border-t">
                 <td className="p-3">{order.id}</td>
                 <td className="p-3">{order.customer}</td>
                 <td className="p-3">{order.product}</td>
-                <td className="p-3">{order.amount}</td>
+                <td className="p-3">{parseInt(order.totalPrice) + "$"}</td>
                 <td
-                  className={`p-3 font-medium ${
-                    order.status === "Completed"
-                      ? "text-green-600"
-                      : "text-yellow-600"
-                  }`}
+                  className={`p-3 font-medium ${order.status === "Completed"
+                    ? "text-green-600"
+                    : "text-yellow-600"
+                    }`}
                 >
                   {order.status}
                 </td>

@@ -43,7 +43,7 @@ export const getAllCategories = () => {
 };
 
 export const getAddedProducts = () => {
-    return axiosInstance.get("/product", {
+    return axiosInstance.get("/product/adgetproduct", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -70,5 +70,21 @@ export const getAdminOrders = () => {
         },
     });
 }; 
+
+export const getAdminDashboard = () => {
+    return axiosInstance.get("/dashboard/adstats", {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+};
+
+export const getAdminRecentOrders = () => {
+    return axiosInstance.get("/orders/adrecentOrders", {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+};
 
 
