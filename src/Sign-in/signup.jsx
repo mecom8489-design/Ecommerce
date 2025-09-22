@@ -125,7 +125,12 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Enter your First Name"
                 className="w-full outline-none text-sm py-2"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={(e) => {
+                  setFirstName(e.target.value);
+                  if (errors.firstName) {
+                    setErrors((prevErrors) => ({ ...prevErrors, firstName: "" }));
+                  }
+                }}
               />
             </div>
             {errors.firstName && (
@@ -142,7 +147,12 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Enter your Last Name"
                 className="w-full outline-none text-sm py-2"
                 value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                onChange={(e) => {
+                  setLastName(e.target.value);
+                  if (errors.lastName) {
+                    setErrors((prevErrors) => ({ ...prevErrors, lastName: "" }));
+                  }
+                }}
               />
             </div>
             {errors.lastName && (
@@ -159,7 +169,11 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Enter your Email"
                 className="w-full outline-none text-sm py-2"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {setEmail(e.target.value);
+                  if (errors.email) {
+                    setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+                  }
+                }}
               />
             </div>
             {errors.email && (
@@ -176,7 +190,11 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Enter your Mobile Number"
                 className="w-full outline-none text-sm py-2"
                 value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
+                onChange={(e) => {setMobile(e.target.value);
+                  if (errors.mobile) {
+                    setErrors((prevErrors) => ({ ...prevErrors, mobile: "" }));
+                  }
+                }}
               />
             </div>
             {errors.mobile && (
@@ -193,7 +211,11 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Enter Password"
                 className="w-full outline-none text-sm py-2"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {setPassword(e.target.value);
+                  if (errors.password) {
+                    setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+                  }
+                }}
               />
               <span
                 className="text-gray-400 text-sm ml-2 cursor-pointer"
@@ -216,7 +238,11 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Confirm Password"
                 className="w-full outline-none text-sm py-2"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) => {setConfirmPassword(e.target.value);
+                  if (errors.confirmPassword) {
+                    setErrors((prevErrors) => ({ ...prevErrors, confirmPassword: "" }));
+                  }
+                }}
               />
               <span
                 className="text-gray-400 text-sm ml-2 cursor-pointer"
@@ -236,9 +262,8 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
           <button
             onClick={handleSignUp}
             disabled={loading}
-            className={`bg-[#fb641b] hover:bg-[#e65c16] text-white text-sm font-medium py-3 rounded-sm shadow cursor-pointer ${
-              loading ? "opacity-70 cursor-not-allowed" : ""
-            }`}
+            className={`bg-[#fb641b] hover:bg-[#e65c16] text-white text-sm font-medium py-3 rounded-sm shadow cursor-pointer ${loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
           >
             {loading ? "Signing up..." : "Sign Up"}
           </button>

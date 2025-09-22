@@ -200,7 +200,10 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
                 placeholder="Enter your Email"
                 className="w-full outline-none text-sm py-2"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {setEmail(e.target.value);  
+                  if (errors.email) {
+                  setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+                }}}
               />
             </div>
             {errors.email && (
@@ -217,7 +220,11 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
                 placeholder="Enter Password"
                 className="w-full outline-none text-sm py-2"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {setPassword(e.target.value);
+                  if (errors.password) {
+                    setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+                  }
+                }}
               />
               <span
                 className="text-gray-400 text-sm ml-2 cursor-pointer"
