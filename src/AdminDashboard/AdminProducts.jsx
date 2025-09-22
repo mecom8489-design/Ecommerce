@@ -1,6 +1,6 @@
 import { Package } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { Adminproductses, getAllCategories, getAddedProducts, deleteAdminProducts } from "../apiroutes/adminApi";
+import { Adminproductses, getAllCategories, getAddedProducts, deleteAdminProducts, AdminUpdateproduct } from "../apiroutes/adminApi";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -20,7 +20,7 @@ export default function AdminProducts() {
   const hasFetches = useRef(false);
   const [deleteProId, setDeleteProId] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isProductModalOpen , setisProductModalOpen ] = useState(false);
+  const [isProductModalOpen, setisProductModalOpen] = useState(false);
   const [currentProduct, setcurrentProduct] = useState(null);
 
 
@@ -163,16 +163,10 @@ export default function AdminProducts() {
     });
     setisProductModalOpen(true);
   };
-  
-  
 
-  // const handleProductInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setCurrentProduct((prevProduct) => ({
-  //     ...prevProduct,
-  //     [name]: value,
-  //   }));
-  // };
+
+
+
   const handleProductInputChange = (e) => {
     const { name, value } = e.target;
     setcurrentProduct((prevProduct) => ({
@@ -180,14 +174,14 @@ export default function AdminProducts() {
       [name]: value,
     }));
   };
-  
+
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setcurrentProduct((prevProduct) => ({
         ...prevProduct,
-        image: file, 
+        image: file,
       }));
     }
   };
@@ -204,11 +198,11 @@ export default function AdminProducts() {
         description: currentProduct.description?.trim() || "",
         name: currentProduct.name?.trim() || "",
       };
-  
+
       // Remove unwanted fields if your backend doesn’t accept them
       delete updatedProduct.created_at;
       delete updatedProduct.updated_at;
-  
+
       // If image is a File, send as FormData
       let payload;
       if (updatedProduct.image instanceof File) {
@@ -216,18 +210,25 @@ export default function AdminProducts() {
         Object.keys(updatedProduct).forEach((key) => {
           payload.append(key, updatedProduct[key]);
         });
+        // Include the product ID
+        if (currentProduct.id) {
+          payload.append("id", currentProduct.id); // If needed
+        }
       } else {
-        payload = updatedProduct;
+        payload = {
+          ...updatedProduct,
+          id: currentProduct.id, // If needed
+        };
       }
-  
+
       // API call (replace with your function)
-      const response = await updateProduct(payload);
-  
+      const response = await AdminUpdateproduct(currentProduct.id,payload);
+
       // Normalize response
       const productsArray = Array.isArray(response.data)
         ? response.data
         : response.data.products || [];
-  
+
       setProducts(productsArray);
       alert("Product updated successfully ✅");
       setisProductModalOpen(false);
@@ -237,7 +238,7 @@ export default function AdminProducts() {
       alert(error?.response?.data?.message || "Failed to update product ❌");
     }
   };
-  
+
 
 
   return (
@@ -318,7 +319,7 @@ export default function AdminProducts() {
               name="category"
               value={newProduct.category}
               onChange={handleChange}
-              className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
+              className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400 cursor-pointer"
             >
               <option value="">Select Category</option>
               {categories.map((cat) => (
@@ -375,7 +376,7 @@ export default function AdminProducts() {
 
           <button
             type="submit"
-            className="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition-colors col-span-full"
+            className="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition-colors col-span-full cursor-pointer"
           >
             Add Product
           </button>
@@ -411,7 +412,7 @@ export default function AdminProducts() {
               <h3 className="text-lg font-semibold mb-1 truncate flex justify-center items-center">{product.name}</h3>
 
               <div className="text-base font-medium text-gray-800 flex justify-center items-center">
-               Price: $ {parseInt(product.price)}
+                Price: $ {parseInt(product.price)}
                 {product.originalPrice && (
                   <span className="text-sm text-gray-400 line-through ml-2">
                     Rs.{product.originalPrice}
@@ -422,14 +423,14 @@ export default function AdminProducts() {
                 )}
               </div>
               <div className="text-base font-medium text-red-800 flex justify-center items-center">
-              Final Price: <span className="text-black"> ${parseInt(product.finalPrice)}</span>
+                Final Price: <span className="text-black"> ${parseInt(product.finalPrice)}</span>
                 {/* {product.finalPrice && (
                   <span className="text-sm text-gray-400 line-through ml-2">
                     Rs.{product.finalPrice}
                   </span>
                 )} */}
               </div>
-              <p className="text-sm flex items-center mt-1 justify-center">
+              <div className="text-sm flex items-center mt-1 justify-center">
                 Rating:
                 <span className="ml-2 flex relative">
                   {/* Gray background stars */}
@@ -454,7 +455,7 @@ export default function AdminProducts() {
                 <span className="ml-2 text-gray-700">
                   ({product.rating ? Number(product.rating).toFixed(2) : "-"})
                 </span>
-              </p>
+              </div>
 
               <p className="text-sm text-gray-600 mt-1 flex justify-center items-center">
                 Stock:
@@ -473,13 +474,13 @@ export default function AdminProducts() {
               </p>
 
               <div className="mt-4 flex space-x-2">
-                <button className="flex-1 bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors text-sm"
+                <button className="flex-1 bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors text-sm cursor-pointer"
                   onClick={() => handleEditClick(product)}>
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(product.id)}
-                  className="flex-1 bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition-colors text-sm"
+                  className="flex-1 bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition-colors text-sm cursor-pointer"
                 >
                   Delete
                 </button>

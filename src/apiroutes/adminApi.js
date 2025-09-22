@@ -87,4 +87,11 @@ export const getAdminRecentOrders = () => {
     });
 };
 
+export const AdminUpdateproduct = (productId,data) => {
+    return axiosInstance.put(`/product/adproupdate/${productId}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+}; 
 

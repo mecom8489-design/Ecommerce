@@ -242,7 +242,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
           <button
             type="button"
             onClick={() => setShowForgotPassword(true)}
-            className="text-xs text-[#2874f0] hover:underline self-end mb-4"
+            className="text-xs text-[#2874f0] hover:underline self-end mb-4 cursor-pointer"
           >
             Forgot Password?
           </button>

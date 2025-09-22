@@ -107,7 +107,7 @@ const AdminCategories = () => {
         {!showForm && (
           <button
             onClick={handleAddCategoryClick}
-            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded shadow"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded shadow cursor-pointer"
           >
             + Add Category
           </button>
@@ -131,7 +131,7 @@ const AdminCategories = () => {
             <button
               onClick={handleSubmit}
               disabled={!newCategory.trim()}
-              className={`px-4 py-2 rounded shadow text-white ${
+              className={`px-4 py-2 rounded shadow text-white cursor-pointer ${
                 !newCategory.trim()
                   ? "bg-green-300 cursor-not-allowed"
                   : "bg-green-600 hover:bg-green-700"
@@ -141,7 +141,7 @@ const AdminCategories = () => {
             </button>
             <button
               onClick={handleCancel}
-              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow"
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow cursor-pointer"
             >
               Cancel
             </button>
@@ -184,7 +184,7 @@ const AdminCategories = () => {
                 </div>
                 <button
                   onClick={() => handleDeleteClick(category.id)}
-                  className="flex items-center text-red-500 hover:text-red-700 mt-2"
+                  className="flex items-center text-red-500 hover:text-red-700 mt-2 cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4 mr-1" />
                   Delete
@@ -254,7 +254,7 @@ const AdminCategories = () => {
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 cursor-pointer"
               >
                 Delete
               </button>

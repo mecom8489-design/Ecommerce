@@ -20,10 +20,10 @@ import { useNavigate } from "react-router-dom";
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navigate = useNavigate();
   const handleLogout = () => {
-    Storage.removeItem('token');
-    navigate("/home"); 
+    sessionStorage.removeItem('token');
+    navigate("/home");
   };
-  
+
 
   return (
     <>
