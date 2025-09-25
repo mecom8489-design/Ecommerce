@@ -21,7 +21,12 @@ export default function AdminProducts() {
   const [deleteProId, setDeleteProId] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isProductModalOpen, setisProductModalOpen] = useState(false);
-  const [currentProduct, setcurrentProduct] = useState(null);
+  const [currentProduct, setCurrentProduct] = useState(null);
+
+  // image preview
+  const [imagePreview, setImagePreview] = useState(null);
+
+
 
 
 
@@ -151,7 +156,7 @@ export default function AdminProducts() {
 
 
   const handleEditClick = (product) => {
-    setcurrentProduct({
+    setCurrentProduct({
       ...product,
       name: product.name || "",
       price: product.price || "",
@@ -169,22 +174,13 @@ export default function AdminProducts() {
 
   const handleProductInputChange = (e) => {
     const { name, value } = e.target;
-    setcurrentProduct((prevProduct) => ({
+    setCurrentProduct((prevProduct) => ({
       ...prevProduct,
       [name]: value,
     }));
   };
 
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setcurrentProduct((prevProduct) => ({
-        ...prevProduct,
-        image: file,
-      }));
-    }
-  };
 
   const handleProductSave = async () => {
     try {
@@ -222,7 +218,7 @@ export default function AdminProducts() {
       }
 
       // API call (replace with your function)
-      const response = await AdminUpdateproduct(currentProduct.id,payload);
+      const response = await AdminUpdateproduct(currentProduct.id, payload);
 
       // Normalize response
       const productsArray = Array.isArray(response.data)
@@ -240,6 +236,21 @@ export default function AdminProducts() {
   };
 
 
+
+ 
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+
+      // If you're also setting it to currentProduct for upload later:
+      setCurrentProduct(prev => ({
+        ...prev,
+        image: file, // You might need this for form submission
+      }));
+    }
+  };
 
   return (
     <div>
@@ -405,7 +416,7 @@ export default function AdminProducts() {
                   : "https://via.placeholder.com/300x300.png?text=Product"
               }
               alt={product.name}
-              className="w-full h-60 object-cover"
+              className="w-full  h-60 object-contain p-4"
             />
 
             <div className="p-4 flex flex-col justify-between flex-grow ">
@@ -424,23 +435,17 @@ export default function AdminProducts() {
               </div>
               <div className="text-base font-medium text-red-800 flex justify-center items-center">
                 Final Price: <span className="text-black"> ${parseInt(product.finalPrice)}</span>
-                {/* {product.finalPrice && (
-                  <span className="text-sm text-gray-400 line-through ml-2">
-                    Rs.{product.finalPrice}
-                  </span>
-                )} */}
               </div>
               <div className="text-sm flex items-center mt-1 justify-center">
                 Rating:
                 <span className="ml-2 flex relative">
-                  {/* Gray background stars */}
+          
                   <div className="flex text-gray-300">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span key={i}>★</span>
                     ))}
                   </div>
 
-                  {/* Yellow overlay stars */}
                   <div
                     className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
                     style={{ width: `${(Number(product.rating) / 5) * 100}%` }}
@@ -451,7 +456,6 @@ export default function AdminProducts() {
                   </div>
                 </span>
 
-                {/* Numeric rating with 2 decimals */}
                 <span className="ml-2 text-gray-700">
                   ({product.rating ? Number(product.rating).toFixed(2) : "-"})
                 </span>
@@ -548,7 +552,7 @@ export default function AdminProducts() {
                   type="number"
                   id="price"
                   name="price"
-                  value={currentProduct.price}
+                  value={parseInt(currentProduct.price)}
                   onChange={handleProductInputChange}
                   className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter price"
@@ -556,20 +560,6 @@ export default function AdminProducts() {
               </div>
 
               {/* Original Price */}
-              <div>
-                <label htmlFor="originalPrice" className="block text-sm font-medium text-gray-700 mb-1">
-                  Original Price
-                </label>
-                <input
-                  type="number"
-                  id="originalPrice"
-                  name="originalPrice"
-                  value={currentProduct.originalPrice || ""}
-                  onChange={handleProductInputChange}
-                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Enter original price"
-                />
-              </div>
 
               {/* Discount */}
               <div>
@@ -580,7 +570,7 @@ export default function AdminProducts() {
                   type="number"
                   id="discount"
                   name="discount"
-                  value={currentProduct.discount || ""}
+                  value={parseInt(currentProduct.discount) || ""}
                   onChange={handleProductInputChange}
                   className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter discount %"
@@ -613,7 +603,7 @@ export default function AdminProducts() {
                   name="description"
                   value={currentProduct.description || ""}
                   onChange={handleProductInputChange}
-                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                   placeholder="Enter product description"
                 />
               </div>
@@ -629,16 +619,24 @@ export default function AdminProducts() {
                   name="image"
                   onChange={handleImageUpload}
                   className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4
-                     file:rounded file:border-0 file:text-sm file:font-semibold
-                     file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+           file:rounded file:border-0 file:text-sm file:font-semibold
+           file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                 />
-                {currentProduct.image && (
+
+                {/* 👇 Modified Preview Section */}
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Product Preview"
+                    className="mt-2 w-32 h-32 object-cover rounded"
+                  />
+                ) : currentProduct.image && typeof currentProduct.image === 'string' ? (
                   <img
                     src={`http://192.168.0.211:3000/uploads/${currentProduct.image}`}
                     alt="Product Preview"
                     className="mt-2 w-32 h-32 object-cover rounded"
                   />
-                )}
+                ) : null}
               </div>
             </div>
 
@@ -660,13 +658,6 @@ export default function AdminProducts() {
           </div>
         </div>
       )}
-
-
-
-
-
-
-
     </div>
   );
 }
