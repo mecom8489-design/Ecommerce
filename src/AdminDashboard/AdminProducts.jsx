@@ -586,7 +586,7 @@ export default function AdminProducts() {
                   type="number"
                   id="stock"
                   name="stock"
-                  value={currentProduct.stock || 0}
+                  value={currentProduct.stock || ""}
                   onChange={handleProductInputChange}
                   className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter stock quantity"
