@@ -17,7 +17,7 @@ export const signup = (data) => {
 }; //working fine.
 
 export const VerifyEmail = (data) => {
-    return axiosInstance.post("/password/verify-email-otp", data, {
+    return axiosInstance.post("/auth/verify-email-otp", data, {
         headers: {
             "Content-Type": "application/json",
         },

@@ -63,8 +63,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       setLoading(true);
       const response = await login({ email, password });
       await alert("Login successful ✅");
-      const role = response.data.role;
-      const token = response.data.token;
+      const role = response.data.user.role;
+      const token = response.data.token;  
       sessionStorage.setItem("token", token);
       if(role == "admin"){
         navigate("/admin"); 
