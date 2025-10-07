@@ -50,7 +50,7 @@ export default function ProductPage() {
       currentPrice: 120,
       originalPrice: 849,
       discount: 85,
-      bestseller: true,
+
       lowStock: true,
     },
     {
@@ -62,7 +62,7 @@ export default function ProductPage() {
       currentPrice: 247,
       originalPrice: 1449,
       discount: 82,
-      hotDeal: true,
+
       assured: true,
     },
     {
@@ -74,7 +74,7 @@ export default function ProductPage() {
       currentPrice: 899,
       originalPrice: 1299,
       discount: 31,
-      bestseller: true,
+
     },
     {
       id: 6,
@@ -86,7 +86,7 @@ export default function ProductPage() {
       originalPrice: 999,
       discount: 43,
       assured: true,
-    },{
+    }, {
       id: 2,
       name: "Some Product Name",
       image:
@@ -109,7 +109,7 @@ export default function ProductPage() {
       currentPrice: 120,
       originalPrice: 849,
       discount: 85,
-      bestseller: true,
+
       lowStock: true,
     },
     {
@@ -121,7 +121,7 @@ export default function ProductPage() {
       currentPrice: 247,
       originalPrice: 1449,
       discount: 82,
-      hotDeal: true,
+
       assured: true,
     },
     {
@@ -133,7 +133,7 @@ export default function ProductPage() {
       currentPrice: 899,
       originalPrice: 1299,
       discount: 31,
-      bestseller: true,
+
     },
     {
       id: 6,
@@ -146,7 +146,7 @@ export default function ProductPage() {
       discount: 43,
       assured: true,
     },
-    
+
   ];
 
   const categories = [
@@ -213,9 +213,8 @@ export default function ProductPage() {
                       Kitchen Storage & Co...
                     </span>
                     <ChevronDown
-                      className={`w-4 h-4 transition-transform ${
-                        expandedCategories.storage ? "rotate-180" : ""
-                      }`}
+                      className={`w-4 h-4 transition-transform ${expandedCategories.storage ? "rotate-180" : ""
+                        }`}
                     />
                   </div>
 
@@ -304,7 +303,7 @@ export default function ProductPage() {
           {/* Main Content */}
           <div className="flex-1 w-full">
             {/* Results Header */}
-            <div className="bg-white rounded-lg shadow-sm p-4 mb-6 w-340">
+            <div className="bg-white rounded-lg shadow-sm p-4 mb-6 w-370">
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h1 className="text-lg font-medium">
@@ -336,19 +335,19 @@ export default function ProductPage() {
               </div>
 
               {/* Products Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-320">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 w-full px-4">
                 {products.map((product) => (
                   <div
                     key={product.id}
-                    className="bg-white p-4 hover:shadow-md transition-shadow relative group"
+                    className="bg-white p-4 hover:shadow-lg transition-shadow rounded-xl relative group"
                   >
                     {/* Wishlist Heart */}
-                    <button className="absolute top-4 right-4 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
                       <Heart className="w-4 h-4 text-gray-400 hover:text-red-500" />
                     </button>
 
                     {/* Badges */}
-                    <div className="absolute top-4 left-4 space-y-1">
+                    <div className="absolute top-3 left-3 space-y-1">
                       {product.bestseller && (
                         <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded">
                           Bestseller
@@ -363,7 +362,7 @@ export default function ProductPage() {
 
                     {/* Product Image */}
                     <div className="relative mb-4">
-                      <div className="w-full h-68 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                      <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                         <img
                           src={product.image}
                           alt={product.name}
@@ -393,11 +392,6 @@ export default function ProductPage() {
                       <span className="text-xs text-gray-500">
                         ({product.reviews.toLocaleString()})
                       </span>
-                      {/* {product.assured && (
-                        <span className="text-xs text-blue-600 font-medium">
-                          ⚡Assured
-                        </span>
-                      )} */}
                     </div>
 
                     {/* Price */}
@@ -422,6 +416,7 @@ export default function ProductPage() {
                   </div>
                 ))}
               </div>
+
             </div>
           </div>
         </div>
