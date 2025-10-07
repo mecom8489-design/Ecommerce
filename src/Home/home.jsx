@@ -218,8 +218,8 @@ const Home = () => {
       },
     },
   ];
-  
-  
+
+
 
 
   const nextSlide = () => {
@@ -495,12 +495,11 @@ const Home = () => {
                     <button className="text-gray-600 hover:text-indigo-600">
                       <i className="far fa-heart"></i>
                     </button>
+
                     <button className="text-gray-600 hover:text-indigo-600">
                       <i className="fas fa-shopping-cart"></i>
                     </button>
-                    <button className="text-gray-600 hover:text-indigo-600">
-                      <i className="fas fa-eye"></i>
-                    </button>
+
                   </div>
                   <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
                     {product.discount}
@@ -578,9 +577,8 @@ const Home = () => {
           <div
             className="flex gap-4 sm:gap-6 transition-transform duration-700 ease-in-out"
             style={{
-              transform: `translateX(-${
-                (100 / products.length) * currentIndex
-              }%)`,
+              transform: `translateX(-${(100 / products.length) * currentIndex
+                }%)`,
               width: `${(products.length / itemsPerViews) * 100}%`,
             }}
           >
@@ -601,11 +599,10 @@ const Home = () => {
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
                   >
                     <Heart
-                      className={`w-5 h-5 ${
-                        favorites.has(product.id)
-                          ? "fill-red-500 text-red-500"
-                          : "text-gray-400"
-                      }`}
+                      className={`w-5 h-5 ${favorites.has(product.id)
+                        ? "fill-red-500 text-red-500"
+                        : "text-gray-400"
+                        }`}
                     />
                   </button>
                   <span
@@ -634,11 +631,10 @@ const Home = () => {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(product.rating)
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-300"
-                          }`}
+                          className={`w-4 h-4 ${i < Math.floor(product.rating)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-gray-300"
+                            }`}
                         />
                       ))}
                     </div>
@@ -679,13 +675,13 @@ const Home = () => {
       </div>
 
       {/* Pet Store UI Section  */}
-      <PetStoreUI />
+      {/* <PetStoreUI /> */}
 
       {/* Flash Deals UI Section  */}
       <FlashDealsUI />
 
       {/* Hot Categories Section  */}
-      <HotCategories />
+      {/* <HotCategories /> */}
 
       {/* Promo UI Section  */}
       {/* <PromoUI /> */}
