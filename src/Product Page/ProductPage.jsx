@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Heart, Star, ChevronDown, ChevronRight } from "lucide-react";
 import Header from "../Header/header";
 import image251 from "../assets/images/Best Seller/image-251.png";
@@ -12,7 +13,7 @@ export default function ProductPage() {
   const [expandedCategories, setExpandedCategories] = useState({
     storage: true,
   });
-
+ const navigate = useNavigate(); // ← This is required
   const products = [
     {
       id: 1,
@@ -340,6 +341,7 @@ export default function ProductPage() {
                   <div
                     key={product.id}
                     className="bg-white p-4 hover:shadow-lg transition-shadow rounded-xl relative group"
+                     onClick={() => navigate(`/ProductPage/products/${product.id}`, { state: { product } })}
                   >
                     {/* Wishlist Heart */}
                     <button className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
