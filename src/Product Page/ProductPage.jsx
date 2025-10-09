@@ -87,7 +87,7 @@ export default function ProductPage() {
       discount: 43,
       assured: true,
     }, {
-      id: 2,
+      id: 7,
       name: "Some Product Name",
       image:
         "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/2.jpg",
@@ -101,7 +101,7 @@ export default function ProductPage() {
     },
 
     {
-      id: 3,
+      id: 8,
       name: "Kitchenify Spice Set Stainless Steel",
       image: image251,
       rating: 3.8,
@@ -113,7 +113,7 @@ export default function ProductPage() {
       lowStock: true,
     },
     {
-      id: 4,
+      id: 9,
       name: "DDdecora Dish Drainer Kitchen Rack Plastic 3 in 1 Large ...",
       image: image15,
       rating: 4.2,
@@ -125,7 +125,7 @@ export default function ProductPage() {
       assured: true,
     },
     {
-      id: 5,
+      id: 10,
       name: "Premium Spice Rack Rotating Stand",
       image: image17,
       rating: 4.1,
@@ -136,7 +136,7 @@ export default function ProductPage() {
 
     },
     {
-      id: 6,
+      id: 11,
       name: "Airtight Storage Containers Set",
       image: image16,
       rating: 4.3,

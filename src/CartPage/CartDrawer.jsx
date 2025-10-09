@@ -2,36 +2,21 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 
-export default function CartDrawer({ isOpen, setIsOpen }) {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Drawer Organizer Divider 6 PCS",
-      price: 79,
-      qty: 1,
-      oldPrice: 99,
-      img: "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
-    },
-    {
-      id: 2,
-      name: "Plastic Toothbrush Cover",
-      price: 9,
-      qty: 1,
-      img: "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
-    },
-    {
-      id: 3,
-      name: "Mini Fan",
-      price: 199,
-      qty: 1,
-      img: "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
-    },
-  ]);
+export default function CartDrawer({ isOpen, setIsOpen, cart }) {
+ const [cartItems, setCartItems] = useState(
+  (cart || []).map((item) => ({ ...item, qty: item.qty || 1 }))
+);
 
+useEffect(() => {
+  setCartItems((cart || []).map((item) => ({ ...item, qty: item.qty || 1 })));
+}, [cart]);
+
+  console.log("CartDrawer items:", cartItems);
   const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.price * item.qty,
+    (acc, item) => acc + item.price * (item.qty || 1),
     0
   );
+
   const codThreshold = 299;
   const freeShippingThreshold = 495;
 
@@ -42,19 +27,22 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
   const updateQty = (id, delta) => {
     setCartItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
+        item.id === id
+          ? { ...item, qty: Math.max(1, (item.qty || 1) + delta) }
+          : item
       )
     );
   };
+
 
   const removeItem = (id) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const getImageUrl = (url) =>
-    url && url.trim() !== ""
-      ? url
-      : "https://via.placeholder.com/80?text=No+Image";
+  // const getImageUrl = (url) =>
+  //   url && url.trim() !== ""
+  //     ? url
+  //     : "https://via.placeholder.com/80?text=No+Image";
 
   // ✅ Prevent background scroll when drawer is open
   useEffect(() => {
@@ -139,12 +127,12 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                     className="flex items-center gap-4 border-b py-4"
                   >
                     <img
-                      src={getImageUrl(item.img)}
+                      src={item.image}
                       alt={item.name}
                       className="w-16 h-16 object-cover rounded"
                       onError={(e) =>
-                        (e.currentTarget.src =
-                          "https://via.placeholder.com/80?text=No+Image")
+                      (e.currentTarget.src =
+                        "https://via.placeholder.com/80?text=No+Image")
                       }
                     />
                     <div className="flex-1">

@@ -46,11 +46,10 @@ export default function product() {
                 <button
                   key={index}
                   onClick={() => setCurrentImage(index)}
-                  className={`w-20 h-20 rounded-lg border-2 overflow-hidden ${
-                    currentImage === index
+                  className={`w-20 h-20 rounded-lg border-2 overflow-hidden ${currentImage === index
                       ? "border-gray-400"
                       : "border-gray-200"
-                  } hover:border-gray-400 transition-colors`}
+                    } hover:border-gray-400 transition-colors`}
                 >
                   <img
                     src={thumb}

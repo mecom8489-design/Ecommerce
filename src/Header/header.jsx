@@ -5,11 +5,12 @@ import SignUp from "../Sign-in/signup";
 import { Link } from "react-router-dom";
 import CartDrawer from "../CartPage/CartDrawer";
 
-export default function Header() {
+export default function Header({ cart }) {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-
+const cartLength = cart?.length || 0;
+console.log(cartLength)
   return (
     <div className="w-full font-poppins">
       {/* Top Banner */}
@@ -97,12 +98,21 @@ export default function Header() {
 
             {/* Cart */}
             <button
-              className="flex items-center space-x-1 bg-yellow-400 text-black px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg hover:bg-yellow-500 transition-colors text-xs sm:text-sm cursor-pointer"
+              className="relative flex items-center space-x-1 bg-yellow-400 text-black px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg hover:bg-yellow-500 transition-colors text-xs sm:text-sm cursor-pointer"
               onClick={() => setIsCartOpen(true)}
             >
               <ShoppingCart size={18} />
-              <span className="hidden xs:inline">Cart (2)</span>
+
+              {/* Badge */}
+              {cartLength > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs sm:text-sm w-5 h-5 flex items-center justify-center rounded-full font-semibold">
+                  {cart.length}
+                </span>
+              )}
+
+              <span className="hidden xs:inline">Cart</span>
             </button>
+
           </div>
         </div>
       </div>
@@ -125,7 +135,7 @@ export default function Header() {
       </div>
 
       {/* Cart Drawer */}
-      <CartDrawer isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
+      <CartDrawer isOpen={isCartOpen} setIsOpen={setIsCartOpen} cart={cart} />
 
       {/* SignIn Popup */}
       {showSignIn && (

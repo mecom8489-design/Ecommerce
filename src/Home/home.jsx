@@ -61,6 +61,7 @@ const Home = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
+  const [cart, setCart] = useState([]);
 
   const products = [
     {
@@ -303,7 +304,7 @@ const Home = () => {
       image:
         "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
       title: "Baby fabric shoes",
-      price: "$4.00",
+      price: 4,
       oldPrice: "$5.00",
       discount: "-20%",
       rating: 4,
@@ -314,7 +315,7 @@ const Home = () => {
       image:
         "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/2.jpg",
       title: "Men's hoodies t-shirt",
-      price: "$7.00",
+      price: 7,
       oldPrice: "$17.00",
       discount: "-59%",
       rating: 3.5,
@@ -324,7 +325,7 @@ const Home = () => {
       id: 3,
       image: image251,
       title: "6 Pc Spice's Rack",
-      price: "$3.00",
+      price: 3,
       oldPrice: "$5.00",
       discount: "-40%",
       rating: 5,
@@ -335,7 +336,7 @@ const Home = () => {
       image:
         "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/4.jpg",
       title: "Woolen hat for men",
-      price: "$12.00",
+      price: 12,
       oldPrice: "$15.00",
       discount: "-20%",
       rating: 4.5,
@@ -345,7 +346,7 @@ const Home = () => {
       id: 5,
       image: image15,
       title: " Maggie Bowl ",
-      price: "$12.00",
+      price: 12,
       oldPrice: "$15.00",
       discount: "-20%",
       rating: 4.5,
@@ -355,7 +356,7 @@ const Home = () => {
       id: 6,
       image: image17,
       title: "plate set ",
-      price: "$12.00",
+      price: 12,
       oldPrice: "$15.00",
       discount: "-20%",
       rating: 4.5,
@@ -365,17 +366,32 @@ const Home = () => {
       id: 7,
       image: image16,
       title: "Silver Spoons Set",
-      price: "$12.00",
+      price: 12,
       oldPrice: "$15.00",
       discount: "-20%",
       rating: 4.5,
       reviews: 27,
     },
   ];
+
+
+
+  const addToCart = (product) => {
+    console.log("Selected product:", product); // Log selected product
+    setCart((prevCart) => {
+      const exists = prevCart.some((item) => item.id === product.id);
+      if (exists) return prevCart; // prevent duplicates
+      const updatedCart = [...prevCart, product];
+      return updatedCart;
+    });
+  };
+
+
+
   return (
     <>
       {/* Header */}
-      <Header />
+      <Header cart={cart} />
       {/* Image slider Section */}
       <div className="relative w-full h-auto md:h-120 mt-1 overflow-hidden border border-gray-200">
         {/* Slider container */}
@@ -492,11 +508,15 @@ const Home = () => {
                     className="w-full h-64 object-cover"
                   />
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
-                    <button className="text-gray-600 hover:text-indigo-600">
+                    <button className="text-gray-600 hover:text-indigo-600"
+
+                    >
                       <i className="far fa-heart"></i>
                     </button>
 
-                    <button className="text-gray-600 hover:text-indigo-600">
+                    <button className="text-gray-600 hover:text-indigo-600"
+                      onClick={() => addToCart(product)}
+                    >
                       <i className="fas fa-shopping-cart"></i>
                     </button>
 
