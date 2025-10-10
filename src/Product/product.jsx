@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ProductContext } from "../context/ProductContext";
 import Header from "../Header/header";
 import ProductReviews from "./ProductReviews";
-
+import Footer from '../Footer/footer.jsx'
 export default function product() {
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -217,6 +217,9 @@ export default function product() {
           </div>
         </div>
       </div>
+      <br></br>
+      <br></br>
+      <Footer />
     </div>
   );
 }

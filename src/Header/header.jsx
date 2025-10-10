@@ -9,9 +9,9 @@ export default function Header() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-   const { cart, updateQty, removeFromCart } = useCart();
-const cartLength = cart?.length || 0;
-console.log(cartLength)
+  const { cart, updateQty, removeFromCart } = useCart();
+  const cartLength = cart?.length || 0;
+  // console.log(cartLength)
   return (
     <div className="w-full font-poppins">
       {/* Top Banner */}
