@@ -69,7 +69,7 @@ const Home = () => {
       id: 1,
       brand: "MAISON FRANCIS KURKDJIAN",
       name: "Baccarat Rouge 540 edp spray 70ml",
-      price: "£245.00",
+      price: 245,
       image: Jacket,
       badge: "Bestseller",
       rating: 4.8,
@@ -79,7 +79,7 @@ const Home = () => {
       id: 2,
       brand: "CREED",
       name: " Multipurposes Plastic Bucket  20Ltr",
-      price: "£220.00",
+      price: 220,
       image: bucket,
       badge: "Bestseller",
       rating: 4.9,
@@ -89,7 +89,7 @@ const Home = () => {
       id: 3,
       brand: "VICTORIA BECKHAM BEAUTY",
       name: "oil Dispenser",
-      price: "£32.00",
+      price: 32,
       image: oilDispenser,
       badge: "Bestseller",
       rating: 4.6,
@@ -99,7 +99,7 @@ const Home = () => {
       id: 4,
       brand: "VIVIENNE WESTWOOD JEWELLERY",
       name: "Mini Bas Relief brass and cubic zirconia pendant...",
-      price: "£105.00",
+      price: 105,
       image: shoe,
       badge: "Bestseller",
       rating: 4.7,
@@ -109,7 +109,7 @@ const Home = () => {
       id: 5,
       brand: "COMME DES GARCONS",
       name: "Comme des Garçons PLAY x Converse canvas...",
-      price: "£140.00",
+      price: 140,
       image: shorts,
       badge: "Limited Edition",
       rating: 4.5,
@@ -119,7 +119,7 @@ const Home = () => {
       id: 6,
       brand: "VEUVE CLICQUOT",
       name: "City Arrow limited-edition Brut NV champagne 75cl",
-      price: "£74.99",
+      price: 74,
       image: watch,
       badge: "Personalise me",
       rating: 4.8,
@@ -129,7 +129,7 @@ const Home = () => {
       id: 7,
       brand: "UGG",
       name: "Classic Ultra Mini sheepskin boots",
-      price: "£155.00",
+      price: 155,
       image: perfume,
       badge: "Bestseller",
       rating: 4.9,
@@ -139,7 +139,7 @@ const Home = () => {
       id: 8,
       brand: "VIVIENNE WESTWOOD JEWELLERY",
       name: "Mayfair bas relief earrings",
-      price: "£95.00",
+      price: 95,
       image: jewellery,
       badge: "Bestseller",
       rating: 4.6,
@@ -149,7 +149,7 @@ const Home = () => {
       id: 9,
       brand: "DIOR",
       name: "DIOR Addict Lip Glow Oil 6ml",
-      price: "£33.00",
+      price: 33,
       image: image1,
       badge: "Bestseller",
       rating: 4.7,
@@ -661,7 +661,9 @@ const Home = () => {
                     <span className="text-lg font-semibold text-gray-900">
                       {product.price}
                     </span>
-                    <button className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 transition duration-200 hover:scale-105">
+                    <button className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 transition duration-200 hover:scale-105"
+                       onClick={() => addToCart(product)}
+                    >
                       <ShoppingCart className="w-5 h-5" />
                     </button>
                   </div>
