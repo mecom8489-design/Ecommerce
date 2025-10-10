@@ -13,7 +13,7 @@ export default function ProductPage() {
   const [expandedCategories, setExpandedCategories] = useState({
     storage: true,
   });
- const navigate = useNavigate(); // ← This is required
+  const navigate = useNavigate(); // ← This is required
   const products = [
     {
       id: 1,
@@ -27,6 +27,7 @@ export default function ProductPage() {
       discount: 69,
       sponsored: "Sponsored",
       assured: true,
+      description: "These stylish baby sneakers feature a soft, coral-orange canvas design enhanced with playful black and white striped accents on the toe and collar. The shoes are equipped with white laces and easy-to-fasten eyelets, making them both fashionable and functional for little feet. Their flexible soles and gentle inner lining ensure maximum comfort and support for early walkers, while the unique color and pattern combinations add a vibrant touch to any outfit. Perfect for toddlers, these sneakers blend adorable aesthetics with practical everyday wear.",
     },
     {
       id: 2,
@@ -341,7 +342,7 @@ export default function ProductPage() {
                   <div
                     key={product.id}
                     className="bg-white p-4 hover:shadow-lg transition-shadow rounded-xl relative group"
-                     onClick={() => navigate(`/ProductPage/products/${product.id}`, { state: { product } })}
+                    onClick={() => navigate(`/ProductPage/products/${product.id}`, { state: { product } })}
                   >
                     {/* Wishlist Heart */}
                     <button className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
