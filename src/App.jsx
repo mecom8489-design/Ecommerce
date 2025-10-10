@@ -23,7 +23,7 @@ import AdminUsers from "./AdminDashboard/AdminUserDashboard.jsx";
 import AdminCategories from "./AdminDashboard/AdminCategories.jsx";
 
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx"; // <-- import this
-
+import Checkout from "./CheckOut-Screen/Checkout.jsx";
 function App() {
   return (
     <Router>
@@ -31,6 +31,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/ProductPage" element={<ProductPage />} />
         <Route path="/ProductPage/products/:id" element={<Product />} />
+         <Route path="/ProductPage/products/Checkout" element={<Checkout />} />
         <Route path="/Wishlist" element={<Wishlist />} />
         <Route path="/terms&conditions" element={<Termsconditions />} />
         <Route path="/contactUs" element={<ContactUs />} />

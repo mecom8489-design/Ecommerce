@@ -14,7 +14,9 @@ import { ProductContext } from "../context/ProductContext";
 import Header from "../Header/header";
 import ProductReviews from "./ProductReviews";
 import Footer from '../Footer/footer.jsx'
+import { useCart } from "../context/CartContext"; // top of file
 export default function product() {
+   const { addToCart } = useCart();
   const { state } = useLocation();
   const navigate = useNavigate();
   const { selectedProduct, setSelectedProduct } = useContext(ProductContext);
@@ -69,9 +71,8 @@ export default function product() {
                 <button
                   key={index}
                   onClick={() => setCurrentImage(index)}
-                  className={`w-20 h-20 rounded-lg border-2 overflow-hidden ${
-                    currentImage === index ? "border-gray-400" : "border-gray-200"
-                  } hover:border-gray-400 transition-colors`}
+                  className={`w-20 h-20 rounded-lg border-2 overflow-hidden ${currentImage === index ? "border-gray-400" : "border-gray-200"
+                    } hover:border-gray-400 transition-colors`}
                 >
                   <img
                     src={thumb}
@@ -178,7 +179,11 @@ export default function product() {
             <button className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6">
               BUY IT NOW
             </button>
-
+            <button className="w-full bg-red-500 text-white py-4 rounded font-bold text-lg hover:bg-red-600 transition-colors mb-6"
+             onClick={() => addToCart(product)}
+            >
+              ADD TO CART
+            </button>
             {/* Delivery Info */}
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
