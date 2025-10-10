@@ -4,11 +4,12 @@ import SignIn from "../Sign-in/signin";
 import SignUp from "../Sign-in/signup";
 import { Link } from "react-router-dom";
 import CartDrawer from "../CartPage/CartDrawer";
-
-export default function Header({ cart }) {
+import { useCart } from "../context/CartContext";
+export default function Header() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+   const { cart, updateQty, removeFromCart } = useCart();
 const cartLength = cart?.length || 0;
 console.log(cartLength)
   return (

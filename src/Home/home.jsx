@@ -47,6 +47,7 @@ import HotCategories from "./HotCategories";
 import {
   GetSlides,
 } from "../apiroutes/authApi";
+import { useCart } from "../context/CartContext"; // top of file
 
 
 const Home = () => {
@@ -61,7 +62,7 @@ const Home = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
-  const [cart, setCart] = useState([]);
+  const { addToCart } = useCart();
 
   const products = [
     {
@@ -376,22 +377,14 @@ const Home = () => {
 
 
 
-  const addToCart = (product) => {
-    console.log("Selected product:", product); // Log selected product
-    setCart((prevCart) => {
-      const exists = prevCart.some((item) => item.id === product.id);
-      if (exists) return prevCart; // prevent duplicates
-      const updatedCart = [...prevCart, product];
-      return updatedCart;
-    });
-  };
+
 
 
 
   return (
     <>
       {/* Header */}
-      <Header cart={cart} />
+      <Header />
       {/* Image slider Section */}
       <div className="relative w-full h-auto md:h-120 mt-1 overflow-hidden border border-gray-200">
         {/* Slider container */}
