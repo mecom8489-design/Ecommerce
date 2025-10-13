@@ -17,7 +17,7 @@ export const signup = (data) => {
 }; //working fine.
 
 export const VerifyEmail = (data) => {
-    return axiosInstance.post("/auth/verify-email-otp", data, {
+    return axiosInstance.post("/auth/get-otp", data, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -25,7 +25,7 @@ export const VerifyEmail = (data) => {
 }; //working fine
 
 export const verifyOtp = (data) => {
-    return axiosInstance.post("/password/verify-otp",data, {
+    return axiosInstance.post("/auth/verify-otp",data, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -33,7 +33,7 @@ export const verifyOtp = (data) => {
 }; //working fine
 
 export const resetPassword = (data) => {
-    return axiosInstance.post("/password/reset-password",data, {
+    return axiosInstance.post("/auth/reset-password",data, {
         headers: {
             "Content-Type": "application/json",
         },

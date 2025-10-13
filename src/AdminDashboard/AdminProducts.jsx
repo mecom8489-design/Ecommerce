@@ -237,7 +237,7 @@ export default function AdminProducts() {
 
 
 
- 
+
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -409,7 +409,7 @@ export default function AdminProducts() {
               </div>
             )}
 
-            <img
+            {/* <img
               src={
                 product.image
                   ? `http://192.168.0.211:3000/uploads/${product.image}`
@@ -417,7 +417,13 @@ export default function AdminProducts() {
               }
               alt={product.name}
               className="w-full  h-60 object-contain p-4"
+            /> */}
+            <img
+              src={product.image || "https://via.placeholder.com/300x300.png?text=Product"}
+              alt={product.name}
+              className="w-full  h-60 object-contain p-4"
             />
+
 
             <div className="p-4 flex flex-col justify-between flex-grow ">
               <h3 className="text-lg font-semibold mb-1 truncate flex justify-center items-center">{product.name}</h3>
@@ -439,7 +445,7 @@ export default function AdminProducts() {
               <div className="text-sm flex items-center mt-1 justify-center">
                 Rating:
                 <span className="ml-2 flex relative">
-          
+
                   <div className="flex text-gray-300">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span key={i}>★</span>
@@ -623,20 +629,11 @@ export default function AdminProducts() {
            file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                 />
 
-                {/* 👇 Modified Preview Section */}
-                {imagePreview ? (
-                  <img
-                    src={imagePreview}
-                    alt="Product Preview"
-                    className="mt-2 w-32 h-32 object-cover rounded"
-                  />
-                ) : currentProduct.image && typeof currentProduct.image === 'string' ? (
-                  <img
-                    src={`http://192.168.0.211:3000/uploads/${currentProduct.image}`}
-                    alt="Product Preview"
-                    className="mt-2 w-32 h-32 object-cover rounded"
-                  />
-                ) : null}
+                  {imagePreview ? (
+                    <img src={imagePreview} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />
+                  ) : currentProduct?.image ? (
+                    <img src={currentProduct.image} alt="Product" className="mt-2 w-32 h-32 object-cover rounded" />
+                  ) : null}
               </div>
             </div>
 

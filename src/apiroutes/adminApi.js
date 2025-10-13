@@ -2,7 +2,7 @@ import axiosInstance from "./axiosInstance";
 
 
 export const getAdminUsers = () => {
-    return axiosInstance.get("/admin/getUsers", {
+    return axiosInstance.get("/admin/getallUsers", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -22,12 +22,12 @@ export const deleteAdminUser = (userId) => {
 };//working fine
 
 export const deleteAdminProducts = (userId) => {
-    return axiosInstance.delete(`/product/adprodelete/${userId}`);
+    return axiosInstance.delete(`/admin/products/delete/${userId}`);
 };//working fine
 
 
 export const addCategories = (data) => {
-    return axiosInstance.post("/adminCategories/addCategory",data, {
+    return axiosInstance.post("/admin/addCategory",data, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -35,7 +35,7 @@ export const addCategories = (data) => {
 };
 
 export const getAllCategories = () => {
-    return axiosInstance.get("/adminCategories/getCategories", {
+    return axiosInstance.get("/admin/getAllCategory", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -43,7 +43,7 @@ export const getAllCategories = () => {
 };
 
 export const getAddedProducts = () => {
-    return axiosInstance.get("/product/adgetproduct", {
+    return axiosInstance.get("admin/products/getall", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -51,12 +51,12 @@ export const getAddedProducts = () => {
 };
 
 export const deleteCategories = (userId) => {
-    return axiosInstance.delete(`/adminCategories/deleteCategory/${userId}`);
+    return axiosInstance.delete(`/admin/deleteCategory/${userId}`);
 };//working fine
 
 
 export const Adminproductses = (data) => {
-    return axiosInstance.post("/product/add", data, {
+    return axiosInstance.post("/admin/products/add", data, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
@@ -64,7 +64,7 @@ export const Adminproductses = (data) => {
 };  // working Fine
 
 export const getAdminOrders = () => {
-    return axiosInstance.get("/orders/getOrders", {
+    return axiosInstance.get("/admin/getAllOrders", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -72,7 +72,7 @@ export const getAdminOrders = () => {
 }; 
 
 export const getAdminDashboard = () => {
-    return axiosInstance.get("/dashboard/adstats", {
+    return axiosInstance.get("/admin/adminsts", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -80,7 +80,7 @@ export const getAdminDashboard = () => {
 };
 
 export const getAdminRecentOrders = () => {
-    return axiosInstance.get("/orders/adrecentOrders", {
+    return axiosInstance.get("/admin/recentOrders", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -88,7 +88,7 @@ export const getAdminRecentOrders = () => {
 };
 
 export const AdminUpdateproduct = (productId,data) => {
-    return axiosInstance.put(`/product/adproupdate/${productId}`, data, {
+    return axiosInstance.put(`/admin/products/update/${productId}`, data, {
         headers: {
             "Content-Type": "multipart/form-data",
         },

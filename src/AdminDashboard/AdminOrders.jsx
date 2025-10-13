@@ -53,11 +53,11 @@ export default function AdminOrders() {
                 } hover:bg-gray-100`}
               >
                 <td className="px-4 py-3 text-center">{index + 1}</td>
-                <td className="px-4 py-3 text-center">{order.id}</td>
-                <td className="px-4 py-3 text-center">{order.customer}</td>
-                <td className="px-4 py-3 text-center">{order.product}</td>
+                <td className="px-4 py-3 text-center">{order.orderid}</td>
+                <td className="px-4 py-3 text-center">{order.customername}</td>
+                <td className="px-4 py-3 text-center">{order.productname}</td>
                 <td className="px-4 py-3 text-center">
-                  {parseInt(order.price, 10)}$
+                  {parseInt(order.totalamount, 10)}$
                 </td>
                 <td className="px-4 py-3 text-center">
                   <span

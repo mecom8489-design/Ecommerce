@@ -203,9 +203,9 @@ export default function AdDashboard() {
             {Array.isArray(recentOrders) && recentOrders.map(order => (
               <tr key={order.id} className="border-t">
                 <td className="p-3">{order.id}</td>
-                <td className="p-3">{order.customer}</td>
-                <td className="p-3">{order.product}</td>
-                <td className="p-3">{parseInt(order.totalPrice) + "$"}</td>
+                <td className="p-3">{order.customername}</td>
+                <td className="p-3">{order.productname}</td>
+                <td className="p-3">{parseInt(order.totalamount) + "$"}</td>
                 <td
                   className={`p-3 font-medium ${order.status === "Completed"
                     ? "text-green-600"

@@ -120,7 +120,6 @@ export default function AdminUsers() {
                 <th className="p-3 text-center">ID</th>
                 <th className="p-3 text-center">Name</th>
                 <th className="p-3 text-center">Email</th>
-                <th className="p-3 text-center">Password</th>
                 <th className="p-3 text-center">Mobile Number</th>
                 <th className="p-3 text-center">Role</th>
                 <th className="p-3 text-center">Actions</th>
@@ -138,7 +137,6 @@ export default function AdminUsers() {
                     <td className="p-3 text-center">{user.id}</td>
                     <td className="p-3 text-center font-medium">{user.name}</td>
                     <td className="p-3 text-center">{user.email}</td>
-                    <td className="p-3 text-center">{user.password}</td>
                     <td className="p-3 text-center">{user.mobile}</td>
                     <td className="p-3 text-center">
                       <span
@@ -236,7 +234,7 @@ export default function AdminUsers() {
               </div>
 
               {/* Password */}
-              <div>
+              {/* <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                   Password
                 </label>
@@ -249,7 +247,7 @@ export default function AdminUsers() {
                   className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter password"
                 />
-              </div>
+              </div> */}
 
               {/* Mobile */}
               <div>
