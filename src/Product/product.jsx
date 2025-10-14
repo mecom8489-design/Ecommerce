@@ -16,10 +16,12 @@ import ProductReviews from "./ProductReviews";
 import Footer from '../Footer/footer.jsx'
 import { useCart } from "../context/CartContext"; // top of file
 export default function product() {
-   const { addToCart } = useCart();
+  const { addToCart } = useCart();
   const { state } = useLocation();
   const navigate = useNavigate();
   const { selectedProduct, setSelectedProduct } = useContext(ProductContext);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
 
   // Update selected product from navigation state
   useEffect(() => {
@@ -111,14 +113,30 @@ export default function product() {
               >
                 <ChevronRight className="w-6 h-6 text-gray-700" />
               </button>
-
-              <div className="bg-white rounded-lg p-8 h-156 w-130 flex items-center justify-center">
+              <div
+                className="bg-white rounded-lg p-8 h-156 w-130 flex items-center justify-center relative overflow-hidden"
+                onMouseEnter={() => setIsZoomed(true)}
+                onMouseLeave={() => setIsZoomed(false)}
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  setZoomPosition({ x, y });
+                }}
+              >
                 <img
                   src={thumbnails[currentImage]}
                   alt={product.name}
-                  className="w-full h-full object-contain"
+                  className={`w-full h-full object-contain transition-transform duration-300 ease-in-out ${isZoomed ? "scale-150 cursor-zoom-out" : "scale-100 cursor-zoom-in"
+                    }`}
+                  style={{
+                    transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                  }}
                 />
               </div>
+
+
+
             </div>
           </div>
 
@@ -176,11 +194,14 @@ export default function product() {
             </div>
 
             {/* Buy Now */}
-            <button className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6">
+            <button className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6"
+              onClick={() => navigate(`/ProductPage/products/Checkout/${product.id}`, { state: { product } })}
+
+            >
               BUY IT NOW
             </button>
             <button className="w-full bg-red-500 text-white py-4 rounded font-bold text-lg hover:bg-red-600 transition-colors mb-6"
-             onClick={() => addToCart(product)}
+              onClick={() => addToCart(product)}
             >
               ADD TO CART
             </button>

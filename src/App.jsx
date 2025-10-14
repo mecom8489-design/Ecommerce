@@ -31,14 +31,14 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/ProductPage" element={<ProductPage />} />
         <Route path="/ProductPage/products/:id" element={<Product />} />
-         <Route path="/ProductPage/products/Checkout" element={<Checkout />} />
+        <Route path="/ProductPage/products/Checkout/:id" element={<Checkout />} />
         <Route path="/Wishlist" element={<Wishlist />} />
         <Route path="/terms&conditions" element={<Termsconditions />} />
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/faq" element={<FAQSection />} />
         <Route path="/returnpolicy" element={<ReturnPolicy />} />
         <Route path="/aboutUs" element={<AboutUs />} />
-        
+
 
         {/* Protected Admin routes */}
         <Route element={<ProtectedRoute />}>
