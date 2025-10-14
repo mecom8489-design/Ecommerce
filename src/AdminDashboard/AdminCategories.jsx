@@ -199,7 +199,7 @@ const AdminCategories = () => {
               <thead className="bg-indigo-500 text-white uppercase text-sm tracking-wider">
                 <tr>
                   <th className="px-4 py-3 text-center font-medium">Sl.no</th>
-                  <th className="px-4 py-3 text-center font-medium">Product ID</th>
+                  <th className="px-4 py-3 text-center font-medium">Category ID</th>
                   <th className="px-4 py-3 text-center font-medium">Product Category</th>
                   <th className="px-4 py-3 text-center font-medium">Updated By</th>
                   <th className="px-4 py-3 text-center font-medium">Last Updated</th>
