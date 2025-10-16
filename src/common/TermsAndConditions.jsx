@@ -4,6 +4,7 @@ import Header from "../Header/header";
 import Footer from "../Footer/footer";
 import { Link } from "react-router-dom";
 import {ContactEmail} from "../apiroutes/authApi";
+import { toast } from "react-toastify";
 
 
 
@@ -26,13 +27,13 @@ export default function TermsAndConditions() {
     e.preventDefault();
 
     if (!formData.name || !formData.email || !formData.message) {
-      alert("Please fill out all fields");
+      toast.error("Please fill out all fields");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      alert("Invalid email format");
+      toast.error("Invalid email format");
       return;
     }
 
@@ -40,10 +41,10 @@ export default function TermsAndConditions() {
       setLoading(true);
       const response = await ContactEmail({formData});
       console.log(response);
-      alert("Message sent successfully ✅");
+      toast.success("Message sent successfully ✅");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to send message ❌");
+      toast.error(error.response?.data?.message || "Failed to send message ❌");
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,8 @@
 import { ShoppingCart } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { getAdminOrders } from "../apiroutes/adminApi";
+import { toast } from 'react-toastify';
+
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -21,7 +23,7 @@ export default function AdminOrders() {
         : response.data.users || [];
       setOrders(usersArray);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to fetch orders ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch orders ❌");
     }
   };
 

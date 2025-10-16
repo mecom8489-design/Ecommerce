@@ -8,6 +8,8 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import { signup } from "../apiroutes/authApi";
+import { toast } from "react-toastify";
+
 
 export default function SignUp({ setShowSignUp, setShowSignIn }) {
   const [firstName, setFirstName] = useState("");
@@ -79,12 +81,12 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
         password,
       });
 
-      alert("Account created ✅");
+      toast.success("Account created ✅");
 
       setShowSignUp(false);
       setShowSignIn(true);
     } catch (error) {
-      alert(error.response?.data?.message || "Sign Up failed ❌");
+      toast.error(error.response?.data?.message || "Sign Up failed ❌");
     } finally {
       setLoading(false);
     }

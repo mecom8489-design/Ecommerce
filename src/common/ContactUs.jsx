@@ -11,6 +11,8 @@ import {
 import Header from "../Header/header";
 import Footer from "../Footer/footer";
 import { Contactus } from "../apiroutes/userApi";
+import { toast } from "react-toastify";
+
 
 export default function ContactUs() {
     const [formData, setFormData] = useState({
@@ -29,13 +31,13 @@ export default function ContactUs() {
         e.preventDefault();
 
         if (!formData.name || !formData.email || !formData.message || !formData.mobile) {
-            alert("Please fill out all fields");
+            toast.error("Please fill out all fields");
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            alert("Invalid email format");
+            toast.error("Invalid email format");
             return;
         }
 
@@ -43,10 +45,10 @@ export default function ContactUs() {
             setLoading(true);
             const response = await Contactus({ formData });
             console.log(response);
-            alert("Message sent successfully ✅");
+            toast.success("Message sent successfully ✅");
             setFormData({ name: "", email: "", message: "",mobile: "" });
         } catch (error) {
-            alert(error.response?.data?.message || "Failed to send message ❌");
+            toast.error(error.response?.data?.message || "Failed to send message ❌");
         } finally {
             setLoading(false);
         }

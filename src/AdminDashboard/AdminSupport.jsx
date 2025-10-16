@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { Ticket } from "lucide-react";
 import { getSupportDatas,deletesupportDatas } from "../apiroutes/adminApi";
+import { toast } from 'react-toastify';
+
 
 const SupportPage = () => {
   const [enquiries, setEnquiries] = useState([]);
@@ -35,7 +37,7 @@ const SupportPage = () => {
         : response.data.supports || [];
       setEnquiries(usersArray);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to fetch enquiries ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch enquiries ❌");
     } finally {
       setLoading(false);
     }
@@ -59,13 +61,13 @@ const SupportPage = () => {
 
     try {
       await deletesupportDatas(deleteEnquiryId);
-      alert("support Data deleted successfully ✅");
+      toast.success("support Data deleted successfully ✅");
       fetchEnquiries();
       setIsDeleteModalOpen(false);
       setDeleteEnquiryId(null);
     } catch (error) {
       console.error("Delete Error:", error);
-      alert(error?.response?.data?.message || "Failed to delete Support Data ❌");
+      toast.error(error?.response?.data?.message || "Failed to delete Support Data ❌");
     }
   };
 

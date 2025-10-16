@@ -17,6 +17,8 @@ import {
 } from "recharts";
 import { getAdminDashboard, getAdminRecentOrders } from "../apiroutes/adminApi";
 import { Link } from "react-router-dom";
+import { toast } from 'react-toastify';
+
 
 export default function AdDashboard() {
   const hasFetched = useRef(false);
@@ -40,7 +42,7 @@ export default function AdDashboard() {
       const response = await getAdminDashboard();
       setData(response.data);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to fetch users ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch users ❌");
     }
   };
 
@@ -52,7 +54,7 @@ export default function AdDashboard() {
         : response.data.users || [];
       setRecentOrders(orders);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to fetch orders ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch orders ❌");
     }
   };
 
@@ -73,7 +75,7 @@ export default function AdDashboard() {
       icon: ShoppingCart,
       color: "bg-blue-100 text-blue-600",
       iconColor: "text-blue-500",
-      route: "/orders",
+      route: "/admin/orders",
     },
     {
       id: 2,
@@ -82,7 +84,7 @@ export default function AdDashboard() {
       icon: Package,
       color: "bg-green-100 text-green-600",
       iconColor: "text-green-500",
-      route: "/products",
+      route: "/admin/products",
     },
     {
       id: 3,
@@ -91,7 +93,7 @@ export default function AdDashboard() {
       icon: Users,
       color: "bg-purple-100 text-purple-600",
       iconColor: "text-purple-500",
-      route: "/users",
+      route: "/admin/users",
     },
     {
       id: 4,

@@ -4,6 +4,7 @@ import { Users as UsersIcon } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { getAdminUsers, updateAdminUser, deleteAdminUser } from "../apiroutes/adminApi";
 import { Edit, Trash2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 
 
@@ -31,7 +32,7 @@ export default function AdminUsers() {
 
       setUsers(usersArray);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to fetch users ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch users ❌");
     }
   };
 
@@ -74,12 +75,12 @@ export default function AdminUsers() {
       const response = await updateAdminUser(updatedUser);
       const usersArray = Array.isArray(response.data) ? response.data : response.data.users || [];
       setUsers(usersArray);
-      alert("User updated successfully ✅");
+      toast.success("User updated successfully ✅");
       setIsModalOpen(false);
       fetchUsers(); // Refresh the user list
     } catch (error) {
       console.error("Update Error:", error);
-      alert(error?.response?.data?.message || "Failed to update user ❌");
+      toast.error(error?.response?.data?.message || "Failed to update user ❌");
     }
   };
 
@@ -93,11 +94,11 @@ export default function AdminUsers() {
 
     try {
       await deleteAdminUser(deleteUserId);
-      alert("User deleted successfully ✅");
+      toast.success("User deleted successfully ");
       fetchUsers(); // Refresh the list
     } catch (error) {
       console.error("Delete Error:", error);
-      alert(error?.response?.data?.message || "Failed to delete user ❌");
+      toast.error(error?.response?.data?.message || "Failed to delete user ❌");
     } finally {
       setIsDeleteModalOpen(false);
       setDeleteUserId(null);

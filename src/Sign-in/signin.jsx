@@ -8,6 +8,7 @@ import {
 } from "../apiroutes/authApi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
@@ -62,7 +63,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     try {
       setLoading(true);
       const response = await login({ email, password });
-      await alert("Login successful ✅");
+      toast.success("Login successful");
       const role = response.data.user.role;
       const token = response.data.token;  
       sessionStorage.setItem("token", token);
@@ -71,7 +72,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       }
       setShowSignIn(false);
     } catch (error) {
-      alert(error.response?.data?.message || "Login failed ❌");
+      toast.error(error.response?.data?.message || "Login failed ❌");
     } finally {
       setLoading(false);
     }
@@ -79,22 +80,21 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
   const handleForgotPassword = async () => {
     if (!resetEmail) {
-      alert("Please enter your email");
+      toast.error("Please enter your email");
       return;
     }
     if (!isValidEmail(resetEmail)) {
-      alert("Invalid email format");
+      toast.error("Invalid email format");
       return;
     }
 
     try {
       setResetLoading(true);
       const response = await VerifyEmail({ email: resetEmail });
-      console.log(response);
-      alert("OTP sent to your email ✅");
+      toast.success("OTP sent to your email ");
       setShowOtpField(true);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to send reset link ❌");
+      toast.error(error.response?.data?.message || "Failed to send reset link ❌");
     } finally {
       setResetLoading(false);
     }
@@ -102,41 +102,40 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
   const handleVerifyOtp = async () => {
     if (!otp) {
-      alert("Please enter the OTP");
+      toast.error("Please enter the OTP");
       return;
     }
 
     try {
       const response = await verifyOtp({ otp: otp, email: resetEmail });
-      console.log(response);
-      alert("OTP verified ✅");
+      toast.success("OTP verified ");
       setShowOtpField(false);
       setOtp("");
       setShowNewPasswordModal(true);
     } catch (error) {
-      alert(error.response?.data?.message || "Invalid OTP ❌");
+      toast.error(error.response?.data?.message || "Invalid OTP ❌");
     }
   };
 
   const handleResetPassword = async () => {
     if (!resetEmail) {
-      alert("Email is required");
+      toast.error("Email is required");
       return;
     }
     if (!isValidEmail(resetEmail)) {
-      alert("Invalid email format");
+      toast.error("Invalid email format");
       return;
     }
     if (!newPassword || !confirmPassword) {
-      alert("Please fill all fields");
+      toast.error("Please fill all fields");
       return;
     }
     if (newPassword.length < 6) {
-      alert("Password must be at least 6 characters");
+      toast.error("Password must be at least 6 characters");
       return;
     }
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match ❌");
+      toast.error("Passwords do not match ❌");
       return;
     }
 
@@ -146,16 +145,14 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
         email: resetEmail,
         newPassword: newPassword,
       });
-      console.log(response);
-      alert("Password reset successful ✅");
-
+      toast.success("Password reset successful ");
       setShowForgotPassword(false);
       setShowNewPasswordModal(false);
       setNewPassword("");
       setConfirmPassword("");
       setResetEmail("");
     } catch (error) {
-      alert(error.response?.data?.message || "Password reset failed ❌");
+      toast.error(error.response?.data?.message || "Password reset failed ❌");
     } finally {
       setResetPasswordLoading(false);
     }

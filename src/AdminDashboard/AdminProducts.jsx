@@ -1,6 +1,8 @@
 import { Package } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Adminproductses, getAllCategories, getAddedProducts, deleteAdminProducts, AdminUpdateproduct } from "../apiroutes/adminApi";
+import { toast } from 'react-toastify';
+
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -95,8 +97,8 @@ export default function AdminProducts() {
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
-    if (!newProduct.name || !newProduct.price || !newProduct.image) {
-      alert("Please provide name, price, and image.");
+    if (!newProduct.name || !newProduct.price || !newProduct.image || !newProduct.category) {
+      toast.error("Please provide name, price,category and image.");
       return;
     }
 
@@ -124,11 +126,11 @@ export default function AdminProducts() {
         image: null,
         imagePreview: null,
       });
-      alert("Product added successfully ✅");
+      toast.success("Product added successfully ");
       fetchProducts();
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || "Failed to add product ❌");
+      toast.error(error.response?.data?.message || "Failed to add product ");
     }
   };
 
@@ -138,16 +140,16 @@ export default function AdminProducts() {
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDeleteUser = async () => {
+  const confirmDeleteProduct = async () => {
     if (!deleteProId) return;
 
     try {
       await deleteAdminProducts(deleteProId);
-      alert("User deleted successfully ✅");
+      toast.success("product deleted successfully ");
       fetchProducts(); // Refresh the list
     } catch (error) {
       console.error("Delete Error:", error);
-      alert(error?.response?.data?.message || "Failed to delete user ❌");
+      toast.error(error?.response?.data?.message || "Failed to delete user ");
     } finally {
       setIsDeleteModalOpen(false);
       setDeleteProId(null);
@@ -226,12 +228,12 @@ export default function AdminProducts() {
         : response.data.products || [];
 
       setProducts(productsArray);
-      alert("Product updated successfully ✅");
+      toast.success("Product updated successfully ");
       setisProductModalOpen(false);
       fetchProducts(); // refresh product list
     } catch (error) {
       console.error("Update Error:", error);
-      alert(error?.response?.data?.message || "Failed to update product ❌");
+      toast.error(error?.response?.data?.message || "Failed to update product ");
     }
   };
 
@@ -372,7 +374,7 @@ export default function AdminProducts() {
               id="image"
               type="file"
               name="image"
-              accept="image/*"
+              accept="image/*" 
               onChange={handleChange}
               className="border p-2 rounded-lg"
             />
@@ -408,16 +410,6 @@ export default function AdminProducts() {
                 Sale
               </div>
             )}
-
-            {/* <img
-              src={
-                product.image
-                  ? `http://192.168.0.211:3000/uploads/${product.image}`
-                  : "https://via.placeholder.com/300x300.png?text=Product"
-              }
-              alt={product.name}
-              className="w-full  h-60 object-contain p-4"
-            /> */}
             <img
               src={product.image || "https://via.placeholder.com/300x300.png?text=Product"}
               alt={product.name}
@@ -517,7 +509,7 @@ export default function AdminProducts() {
                 Cancel
               </button>
               <button
-                onClick={confirmDeleteUser}
+                onClick={confirmDeleteProduct}
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 cursor-pointer"
               >
                 Delete

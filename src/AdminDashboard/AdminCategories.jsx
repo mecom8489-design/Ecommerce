@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { addCategories, getAllCategories, deleteCategories } from "../apiroutes/adminApi";
 import { Trash2 } from "lucide-react";
+import { toast } from 'react-toastify';
+
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -65,7 +67,7 @@ const AdminCategories = () => {
       setNewCategory("");
       setError("");
       fetchCategories();
-      alert("Category added successfully ✅");
+      toast.success("Category added successfully ");
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Failed to add category.");
@@ -82,13 +84,13 @@ const AdminCategories = () => {
 
     try {
       await deleteCategories(deleteCategoryId);
-      alert("Category deleted successfully ✅");
+      toast.success("Category deleted successfully ✅");
       setIsDeleteModalOpen(false);
       setDeleteCategoryId(null);
       fetchCategories();
     } catch (error) {
       console.error("Delete Error:", error);
-      alert(error?.response?.data?.message || "Failed to delete category ❌");
+      toast.error(error?.response?.data?.message || "Failed to delete category ❌");
     }
   };
 

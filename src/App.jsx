@@ -24,10 +24,16 @@ import AdminCategories from "./AdminDashboard/AdminCategories.jsx";
 import AdminSupport from "./AdminDashboard/AdminSupport.jsx";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx"; // <-- import this
 import Checkout from "./CheckOut-Screen/Checkout.jsx";
+
+
+
+
+
 function App() {
   return (
     <Router>
       <Routes>
+      
         <Route path="/home" element={<Home />} />
         <Route path="/ProductPage" element={<ProductPage />} />
         <Route path="/ProductPage/products/:id" element={<Product />} />
