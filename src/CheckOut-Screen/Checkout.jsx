@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import { useState, useEffect, useContext } from "react";
 import { Check, ChevronDown, Plus, Minus, Info } from 'lucide-react';
-
+import { ProductContext } from "../context/ProductContext";
+import { useLocation } from "react-router-dom";
 export default function Checkout() {
   const [quantity, setQuantity] = useState(1);
   const [useGST, setUseGST] = useState(false);
+  const { selectedProduct, setSelectedProduct } = useContext(ProductContext);
+    const { state } = useLocation();
+  // Update selected product from navigation state
+  useEffect(() => {
+    if (state?.product) {
+      setSelectedProduct(state.product);
+    }
+  }, [state, setSelectedProduct]);
 
+  const product = selectedProduct || state?.product;
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -17,6 +27,7 @@ export default function Checkout() {
               <span className="font-semibold">Plus</span>
               <Plus className="w-3 h-3" />
             </div> */}
+         
           </div>
         </div>
       </header>
@@ -85,7 +96,7 @@ export default function Checkout() {
                   {/* Product Image */}
                   <div className="flex-shrink-0">
                     <img
-                      src="https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=100&h=100&fit=crop"
+                      src={product.image}
                       alt="Samsung Galaxy S25 Ultra"
                       className="w-28 h-28 object-cover border"
                     />
@@ -94,18 +105,18 @@ export default function Checkout() {
                   {/* Product Info */}
                   <div className="flex-1">
                     <h3 className="text-sm text-gray-800 mb-1">
-                      Samsung Galaxy S25 Ultra 5G (Titanium Silverblue, 2...
+                     {product.name}
                     </h3>
-                    <p className="text-xs text-gray-500 mb-2">12 GB RAM</p>
+                    {/* <p className="text-xs text-gray-500 mb-2">12 GB RAM</p>
                     <div className="flex items-center gap-2 text-xs text-gray-600 mb-2">
                       <span>Seller: MightyDeal</span>
                       <img src="https://via.placeholder.com/50x12/4A90E2/FFFFFF?text=Assured" alt="Assured" className="h-3" />
-                    </div>
+                    </div> */}
 
                     {/* Price Section */}
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-gray-400 line-through text-sm">₹1,29,999</span>
-                      <span className="text-xl font-medium text-gray-900">₹1,07,960</span>
+                      <span className="text-gray-400 line-through text-sm"> ₹{product.originalPrice}</span>
+                      <span className="text-xl font-medium text-gray-900"> ₹{product.currentPrice}</span>
                       <span className="text-green-600 text-xs font-medium">16% Off</span>
                       <span className="text-green-600 text-xs font-medium">7 offers available</span>
                       <Info className="w-3 h-3 text-gray-400" />
@@ -184,7 +195,7 @@ export default function Checkout() {
               <div className="px-4 pb-4 border-t pt-4">
                 <p className="text-sm text-gray-700">
                   Order confirmation email will be sent to{' '}
-                  <span className="font-medium">prakashsuriya668@gmail.com</span>
+                  <span className="font-medium">xxyyy@gmail.com</span>
                 </p>
               </div>
 
@@ -210,20 +221,20 @@ export default function Checkout() {
                     <span className="text-gray-700">Price (1 item)</span>
                     <Info className="w-3 h-3 text-gray-400" />
                   </div>
-                  <span className="text-gray-900">₹107,960</span>
+                  <span className="text-gray-900"> ₹{product.currentPrice}</span>
                 </div>
 
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <div className="flex items-center gap-1">
                     <span className="text-gray-700">Protect Promise Fee</span>
                     <Info className="w-3 h-3 text-gray-400" />
                   </div>
                   <span className="text-gray-900">₹149</span>
-                </div>
+                </div> */}
 
                 <div className="border-t pt-3 flex justify-between font-medium text-base">
                   <span className="text-gray-900">Total Payable</span>
-                  <span className="text-gray-900">₹108,109</span>
+                  <span className="text-gray-900"> ₹{product.currentPrice}</span>
                 </div>
 
                 <div className="pt-2">
