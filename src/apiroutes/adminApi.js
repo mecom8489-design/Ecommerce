@@ -95,3 +95,15 @@ export const AdminUpdateproduct = (productId,data) => {
     });
 }; 
 
+export const getSupportDatas = () => {
+    return axiosInstance.get("/admin/getSupportDatas", {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+}; 
+
+export const deletesupportDatas = (enquiryId) => {
+    return axiosInstance.delete(`/admin/removeSupportDatas/${enquiryId}`);
+};//working fine
+

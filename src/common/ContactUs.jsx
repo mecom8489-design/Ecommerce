@@ -10,13 +10,14 @@ import {
 } from "react-icons/fa6";
 import Header from "../Header/header";
 import Footer from "../Footer/footer";
-import { ContactEmail } from "../apiroutes/authApi";
+import { Contactus } from "../apiroutes/userApi";
 
 export default function ContactUs() {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         message: "",
+        mobile: "",
     });
     const [loading, setLoading] = useState(false);
 
@@ -27,7 +28,7 @@ export default function ContactUs() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.name || !formData.email || !formData.message) {
+        if (!formData.name || !formData.email || !formData.message || !formData.mobile) {
             alert("Please fill out all fields");
             return;
         }
@@ -40,10 +41,10 @@ export default function ContactUs() {
 
         try {
             setLoading(true);
-            const response = await ContactEmail({ formData });
+            const response = await Contactus({ formData });
             console.log(response);
             alert("Message sent successfully ✅");
-            setFormData({ name: "", email: "", message: "" });
+            setFormData({ name: "", email: "", message: "",mobile: "" });
         } catch (error) {
             alert(error.response?.data?.message || "Failed to send message ❌");
         } finally {
@@ -150,6 +151,15 @@ export default function ContactUs() {
                             name="email"
                             placeholder="Your Email *"
                             value={formData.email}
+                            onChange={handleChange}
+                            className="w-full border p-3 rounded-lg mb-4 text-base focus:ring-2 focus:ring-black outline-none"
+                            required
+                        />
+                        <input
+                            type="mobile"
+                            name="mobile"
+                            placeholder="mobile number *"
+                            value={formData.mobile}
                             onChange={handleChange}
                             className="w-full border p-3 rounded-lg mb-4 text-base focus:ring-2 focus:ring-black outline-none"
                             required

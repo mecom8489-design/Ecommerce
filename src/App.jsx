@@ -21,7 +21,7 @@ import AdminOrders from "./AdminDashboard/AdminOrders.jsx";
 import AdminProducts from "./AdminDashboard/AdminProducts.jsx";
 import AdminUsers from "./AdminDashboard/AdminUserDashboard.jsx";
 import AdminCategories from "./AdminDashboard/AdminCategories.jsx";
-
+import AdminSupport from "./AdminDashboard/AdminSupport.jsx";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx"; // <-- import this
 import Checkout from "./CheckOut-Screen/Checkout.jsx";
 function App() {
@@ -48,6 +48,7 @@ function App() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="categories" element={<AdminCategories />} />
+            <Route path="support" element={<AdminSupport />} />
           </Route>
         </Route>
 
