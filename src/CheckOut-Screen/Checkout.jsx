@@ -2,10 +2,13 @@ import { useState, useEffect, useContext } from "react";
 import { Check, ChevronDown, Plus, Minus, Info } from 'lucide-react';
 import { ProductContext } from "../context/ProductContext";
 import { useLocation } from "react-router-dom";
+import { AuthContext } from "../context/LoginAuth";
 export default function Checkout() {
   const [quantity, setQuantity] = useState(1);
   const [useGST, setUseGST] = useState(false);
   const { selectedProduct, setSelectedProduct } = useContext(ProductContext);
+    const { isLoggedIn, user, logout } = useContext(AuthContext);
+  
     const { state } = useLocation();
   // Update selected product from navigation state
   useEffect(() => {

@@ -1,48 +1,24 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import Header from "../Header/header";
 import Footer from "../Footer/footer";
 import { Link } from "react-router-dom";
+import { getWishlist, removeFromWishlist } from "../utils/wishlistUtils";
 
 const Wishlist = () => {
-  const [wishlist, setWishlist] = useState([
-    {
-      id: 1,
-      brand: "VICTORIA BECKHAM",
-      title: "Draped Long-Sleeves Stretch-Woven Midi Dress",
-      price: 72000,
-      image:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80",
-    },
-    {
-      id: 2,
-      brand: "GUCCI",
-      title: "Floral Silk Midi Dress",
-      price: 130000,
-      image:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80",
-    },
-    {
-      id: 3,
-      brand: "PRADA",
-      title: "Satin Pleated Gown",
-      price: 220000,
-      image:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80",
-    },
-    {
-      id: 4,
-      brand: "CHANEL",
-      title: "Classic Tweed Jacket Dress",
-      price: 370000,
-      image:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80",
-    },
-  ]);
+  const [wishlist, setWishlist] = useState([]);
 
-  const removeItem = (id) => {
-    setWishlist(wishlist.filter((item) => item.id !== id));
+  // const removeItem = (id) => {
+  //   setWishlist(wishlist.filter((item) => item.id !== id));
+  // };
+  useEffect(() => {
+    const savedWishlist = getWishlist();
+    setWishlist(savedWishlist);
+  }, []);
+
+  const handleRemove = (id) => {
+    removeFromWishlist(id);
+    setWishlist((prev) => prev.filter((item) => item.id !== id));
   };
-
   const formatPrice = (amount) =>
     new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -81,7 +57,7 @@ const Wishlist = () => {
                 <div className="relative">
                   {/* Remove Button */}
                   <button
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => handleRemove(item.id)}
                     className="absolute top-2 right-2 bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center text-sm"
                   >
                     ✕

@@ -1,10 +1,13 @@
 import { Search, User, Heart, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import SignIn from "../Sign-in/signin";
 import SignUp from "../Sign-in/signup";
 import { Link } from "react-router-dom";
 import CartDrawer from "../CartPage/CartDrawer";
 import { useCart } from "../context/CartContext";
+import { AuthContext } from "../context/LoginAuth";
+import { Settings, LogOut, ShoppingBag } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 export default function Header() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
@@ -12,37 +15,58 @@ export default function Header() {
   const { cart, updateQty, removeFromCart } = useCart();
   const cartLength = cart?.length || 0;
   // console.log(cartLength)
+  const { isLoggedIn, user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef();
+
+  const toggleMenu = () => setIsOpen((prev) => !prev);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="w-full font-poppins">
       {/* Top Banner */}
       <div className="my-element text-white py-2 sm:py-3 md:py-4 px-2 text-xs sm:text-sm md:text-base font-bold overflow-hidden">
         <div className="relative w-full overflow-hidden whitespace-nowrap">
           <div className="flex animate-marquee space-x-8 sm:space-x-12">
-            {Array(2).fill(null).map((_, index) => (
-              <div
-                key={index}
-                className="flex space-x-4 sm:space-x-8 items-center"
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="text-orange-400 text-base sm:text-xl">🚚</span>
-                  <span className="font-extrabold tracking-wide text-black text-[10px] sm:text-sm md:text-base">
-                    FREE SHIPPING FOR ORDERS OVER ₹990/-
-                  </span>
+            {Array(2)
+              .fill(null)
+              .map((_, index) => (
+                <div
+                  key={index}
+                  className="flex space-x-4 sm:space-x-8 items-center"
+                >
+                  <div className="flex items-center space-x-2">
+                    <span className="text-orange-400 text-base sm:text-xl">
+                      🚚
+                    </span>
+                    <span className="font-extrabold tracking-wide text-black text-[10px] sm:text-sm md:text-base">
+                      FREE SHIPPING FOR ORDERS OVER ₹990/-
+                    </span>
+                  </div>
+                  <div className="hidden sm:flex items-center space-x-2">
+                    <span className="font-extrabold uppercase text-black text-xs sm:text-sm md:text-base">
+                      AVAILABLE ONLY IN JAMSHEDPUR
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-base sm:text-xl">⚡</span>
+                    <span className="font-extrabold tracking-wide text-black text-[10px] sm:text-sm md:text-base">
+                      FAST DELIVERY
+                    </span>
+                  </div>
                 </div>
-                <div className="hidden sm:flex items-center space-x-2">
-                  <span className="font-extrabold uppercase text-black text-xs sm:text-sm md:text-base">
-                    AVAILABLE ONLY IN JAMSHEDPUR
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-base sm:text-xl">⚡</span>
-                  <span className="font-extrabold tracking-wide text-black text-[10px] sm:text-sm md:text-base">
-                    FAST DELIVERY
-                  </span>
-                </div>
-              </div>
-            ))}
-
+              ))}
           </div>
         </div>
       </div>
@@ -79,15 +103,6 @@ export default function Header() {
 
           {/* Right Icons */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Login */}
-            <button
-              className="flex items-center space-x-1 hover:text-yellow-500 text-xs sm:text-sm cursor-pointer"
-              onClick={() => setShowSignIn(true)}
-            >
-              <User size={18} />
-              <span className="hidden sm:inline">Login</span>
-            </button>
-
             {/* Wishlist */}
             <Link
               to="/wishlist"
@@ -114,6 +129,64 @@ export default function Header() {
               <span className="hidden xs:inline">Cart</span>
             </button>
 
+            {/* Login */}
+            <div className="relative" ref={menuRef}>
+              {isLoggedIn ? (
+                <>
+                  {/* Circle Icon with First Letter */}
+                  <button
+                    onClick={toggleMenu}
+                    className="w-9 h-9 rounded-full bg-yellow-600 text-white font-semibold flex items-center justify-center hover:bg-yellow-700 transition"
+                  >
+                    {user?.firstname?.charAt(0)?.toUpperCase()}
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {isOpen && (
+                    <div className="absolute right-0 mt-3 w-40 bg-white shadow-lg rounded-lg py-2 z-50 bg-yellow-100">
+                      {/* Triangle Pointer */}
+                      <div className="absolute -top-2 right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-yellow-100"></div>
+
+                      <button className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                       onClick={() => navigate("/my-orders")}
+                      >
+                        <ShoppingBag
+                          size={16}
+                          className="mr-2 text-yellow-500"
+                        />
+                        My Orders
+                      </button>
+
+                      <button className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <Settings size={16} className="mr-2 text-yellow-600" />
+                        Settings
+                      </button>
+
+                      <button
+                        onClick={logout}
+                        className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <LogOut size={16} className="mr-2 text-red-500" />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                // Show Login button if not logged in
+                <>
+                  <button
+                    onClick={() => setShowSignIn(true)}
+                    className="bg-yellow-400 text-black px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors text-sm font-semibold"
+                  >
+                    Login
+                  </button>
+
+                 
+                
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

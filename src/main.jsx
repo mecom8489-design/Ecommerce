@@ -6,16 +6,17 @@ import { Provider } from "react-redux";
 import { store } from "./ReduxStore/store.js";
 import { ProductProvider } from "./context/ProductContext.jsx"; // ✅ Import the context provider
 import { CartProvider } from "./context/CartContext";
-import { ToastContainer } from 'react-toastify';
-
+import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "./context/LoginAuth.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-
       <ProductProvider>
         <CartProvider>
           <ToastContainer />
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </CartProvider>
       </ProductProvider>
     </Provider>

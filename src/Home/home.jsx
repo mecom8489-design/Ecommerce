@@ -44,11 +44,10 @@ import SuperDeals from "./SuperDeals";
 import PetStoreUI from "./PetStore";
 import FlashDealsUI from "./FlashDeals";
 import HotCategories from "./HotCategories";
-import {
-  GetSlides,
-} from "../apiroutes/authApi";
+import { GetSlides } from "../apiroutes/authApi";
 import { useCart } from "../context/CartContext"; // top of file
-
+import { useNavigate } from "react-router-dom";
+import { addToWishlist } from "../utils/wishlistUtils";
 
 const Home = () => {
   const [current, setCurrent] = useState(0);
@@ -63,7 +62,7 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
   const { addToCart } = useCart();
-
+  const navigate = useNavigate(); // ← This is required
   const products = [
     {
       id: 1,
@@ -221,9 +220,6 @@ const Home = () => {
     },
   ];
 
-
-
-
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
@@ -375,11 +371,28 @@ const Home = () => {
     },
   ];
 
+  const handleWishlist = (product) => {
+    // const isLoggedIn = localStorage.getItem("token"); // or however you track login
 
-
-
-
-
+    // if (isLoggedIn) {
+    //   // Save to backend (API call)
+    //   fetch("http://localhost:5000/api/wishlist", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${isLoggedIn}`,
+    //     },
+    //     body: JSON.stringify(product),
+    //   })
+    //     .then((res) => res.json())
+    //     .then((data) => alert("Added to wishlist!"))
+    //     .catch((err) => console.error("Error:", err));
+    // } else {
+    // Save to localStorage
+    addToWishlist(product);
+    alert("Added to wishlist ❤️");
+    // }
+  };
 
   return (
     <>
@@ -493,6 +506,11 @@ const Home = () => {
               <div
                 key={product.id}
                 className="product-card  bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
+                onClick={() =>
+                  navigate(`/ProductPage/products/${product.id}`, {
+                    state: { product },
+                  })
+                }
               >
                 <div className="relative overflow-hidden">
                   <img
@@ -501,18 +519,19 @@ const Home = () => {
                     className="w-full h-64 object-cover"
                   />
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
-                    <button className="text-gray-600 hover:text-indigo-600"
-
+                    <button
+                      className="text-gray-600 hover:text-indigo-600"
+                      onClick={() => handleWishlist(product)}
                     >
                       <i className="far fa-heart"></i>
                     </button>
 
-                    <button className="text-gray-600 hover:text-indigo-600"
+                    <button
+                      className="text-gray-600 hover:text-indigo-600"
                       onClick={() => addToCart(product)}
                     >
                       <i className="fas fa-shopping-cart"></i>
                     </button>
-
                   </div>
                   <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
                     {product.discount}
@@ -590,8 +609,9 @@ const Home = () => {
           <div
             className="flex gap-4 sm:gap-6 transition-transform duration-700 ease-in-out"
             style={{
-              transform: `translateX(-${(100 / products.length) * currentIndex
-                }%)`,
+              transform: `translateX(-${
+                (100 / products.length) * currentIndex
+              }%)`,
               width: `${(products.length / itemsPerViews) * 100}%`,
             }}
           >
@@ -599,6 +619,11 @@ const Home = () => {
               <div
                 key={product.id}
                 className="flex-shrink-0 w-[calc(100%/1.5)] sm:w-[calc(100%/2.5)] md:w-[calc(100%/3.5)] lg:w-[calc(100%/4.5)] xl:w-[calc(90%/7)] bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.03]"
+                onClick={() =>
+                  navigate(`/ProductPage/products/${product.id}`, {
+                    state: { product },
+                  })
+                }
               >
                 {/* Image Section */}
                 <div className="relative h-48 bg-white">
@@ -610,12 +635,14 @@ const Home = () => {
                   <button
                     onClick={() => toggleFavorite(product.id)}
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
-                  >
+                    // onClick={() => handleWishlist(product)}
+                 >
                     <Heart
-                      className={`w-5 h-5 ${favorites.has(product.id)
-                        ? "fill-red-500 text-red-500"
-                        : "text-gray-400"
-                        }`}
+                      className={`w-5 h-5 ${
+                        favorites.has(product.id)
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-400"
+                      }`}
                     />
                   </button>
                   <span
@@ -644,10 +671,11 @@ const Home = () => {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-4 h-4 ${i < Math.floor(product.rating)
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
-                            }`}
+                          className={`w-4 h-4 ${
+                            i < Math.floor(product.rating)
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300"
+                          }`}
                         />
                       ))}
                     </div>
@@ -661,8 +689,9 @@ const Home = () => {
                     <span className="text-lg font-semibold text-gray-900">
                       {product.price}
                     </span>
-                    <button className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 transition duration-200 hover:scale-105"
-                       onClick={() => addToCart(product)}
+                    <button
+                      className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 transition duration-200 hover:scale-105"
+                      onClick={() => addToCart(product)}
                     >
                       <ShoppingCart className="w-5 h-5" />
                     </button>
@@ -693,7 +722,7 @@ const Home = () => {
       {/* <PetStoreUI /> */}
 
       {/* Flash Deals UI Section  */}
-      <FlashDealsUI />
+      {/* <FlashDealsUI /> */}
 
       {/* Hot Categories Section  */}
       {/* <HotCategories /> */}

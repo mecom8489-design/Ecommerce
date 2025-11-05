@@ -24,6 +24,7 @@ import AdminCategories from "./AdminDashboard/AdminCategories.jsx";
 import AdminSupport from "./AdminDashboard/AdminSupport.jsx";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx"; // <-- import this
 import Checkout from "./CheckOut-Screen/Checkout.jsx";
+import MyOrders from "./MyOrders/MyOrders.jsx";
 
 
 
@@ -44,7 +45,7 @@ function App() {
         <Route path="/faq" element={<FAQSection />} />
         <Route path="/returnpolicy" element={<ReturnPolicy />} />
         <Route path="/aboutUs" element={<AboutUs />} />
-
+        <Route path="/my-orders" element={<MyOrders />} />
 
         {/* Protected Admin routes */}
         <Route element={<ProtectedRoute />}>
