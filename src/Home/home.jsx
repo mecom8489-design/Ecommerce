@@ -48,6 +48,7 @@ import { GetSlides } from "../apiroutes/authApi";
 import { useCart } from "../context/CartContext"; // top of file
 import { useNavigate } from "react-router-dom";
 import { addToWishlist } from "../utils/wishlistUtils";
+import { Adminproductses, getAllCategories, getAddedProducts, deleteAdminProducts, AdminUpdateproduct } from "../apiroutes/adminApi";
 
 const Home = () => {
   const [current, setCurrent] = useState(0);

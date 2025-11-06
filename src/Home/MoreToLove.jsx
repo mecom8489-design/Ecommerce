@@ -1,382 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Star, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext"; // top of file
+import {
+  Adminproductses,
+  getAllCategories,
+  getAddedProducts,
+  deleteAdminProducts,
+  AdminUpdateproduct,
+} from "../apiroutes/adminApi";
+
 export default function MoreToLove() {
   const [visibleCount, setVisibleCount] = useState(18); // Show first 18 initially
   const navigate = useNavigate(); // ← This is required
-const { addToCart } = useCart();
+  const { addToCart } = useCart();
   const handleViewMore = () => {
     setVisibleCount((prev) => prev + 6); // Show 6 more on each click
   };
-  const products = [
-    {
-      id: 1,
-      image:
-        "https://images.unsplash.com/photo-1503449377594-32dd9ac4467c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Infant Jumpsuit Summer Romper Cart...",
-      price: "Rs.142.37",
-      originalPrice: "Rs.1,482.78",
-      discount: "-90%",
-      rating: null,
-      sold: null,
-      saved: "Rs.40.93",
-      sale: true,
-    },
-    {
-      id: 2,
-      image:
-        "https://images.unsplash.com/photo-1574169208507-84376144848b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Transparent Computer Glasses F...",
-      price: "Rs.54.28",
-      originalPrice: null,
-      discount: null,
-      rating: 4.7,
-      sold: "95 sold",
-      saved: "Rs.40.93",
-      sale: true,
-    },
-    {
-      id: 3,
-      image:
-        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Original Silicone Earphone Ear C...",
-      price: "Rs.159.27",
-      originalPrice: null,
-      discount: null,
-      rating: null,
-      sold: "1 sold",
-      saved: "Rs.17.8",
-      sale: true,
-    },
-    {
-      id: 4,
-      image:
-        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Kitchen Dish Drainer Towel Rack Perf...",
-      price: "Rs.363.03",
-      originalPrice: "Rs.605.05",
-      discount: "-40%",
-      rating: null,
-      sold: null,
-      saved: null,
-      sale: false,
-      customizable: true,
-    },
-    {
-      id: 5,
-      image:
-        "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "44*19mm/44*19mm/44*11mm ...",
-      price: "Rs.43.6",
-      originalPrice: null,
-      discount: null,
-      rating: 5,
-      sold: "15 sold",
-      saved: "Rs.5.34",
-      sale: true,
-    },
-    {
-      id: 6,
-      image:
-        "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "925 Silver Needle Korean Edition Cry...",
-      price: "Rs.72.07",
-      originalPrice: "Rs.146.81",
-      discount: "-51%",
-      rating: null,
-      sold: "4 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 7,
-      image:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Top Brand Men Watch Green Lu...",
-      price: "Rs.1,856.07",
-      originalPrice: null,
-      discount: null,
-      rating: null,
-      sold: "10 sold",
-      saved: "Rs.15,014.05",
-      sale: true,
-    },
-    {
-      id: 8,
-      image:
-        "https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "LED Flash Double-Row Four-Wheel R...",
-      price: "Rs.5,696.56",
-      originalPrice: "Rs.9,494.26",
-      discount: "-40%",
-      rating: null,
-      sold: "5 sold",
-      saved: null,
-      sale: false,
-      premiumQuality: true,
-    },
-    {
-      id: 9,
-      image:
-        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "2023 New Bluetooth 5.2 Wireles...",
-      price: "Rs.211.97",
-      originalPrice: null,
-      discount: null,
-      rating: null,
-      sold: "1 sold",
-      saved: "Rs.135.53",
-      sale: true,
-    },
-    {
-      id: 10,
-      image:
-        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Kitchen baking tools, cream flower ba...",
-      price: "Rs.1,742.17",
-      originalPrice: "Rs.3,484.35",
-      discount: "-50%",
-      rating: null,
-      sold: "1 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 11,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Professional Ultra-fine No. 5 Acn...",
-      price: "Rs.44.68",
-      originalPrice: null,
-      discount: null,
-      rating: 5,
-      sold: "13 sold",
-      saved: "Rs.12.66",
-      sale: true,
-    },
-    {
-      id: 12,
-      image:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80https://www.google.com/search?q=Drone+Night+Flight+LED+Light+Lighting.+image+url&sca_esv=41c54eb164886e82&rlz=1C1CHBF_enIN1144IN1146&udm=2&biw=1920&bih=919&sxsrf=AE3TifO6hV79BLnY35g9OR6jA22LlXRslA%3A1752560379136&ei=-_J1aM-FCMKuseMP5dGG-AE&ved=0ahUKEwiP7-GWnL6OAxVCV2wGHeWoAR8Q4dUDCBE&uact=5&oq=Drone+Night+Flight+LED+Light+Lighting.+image+url&gs_lp=EgNpbWciMERyb25lIE5pZ2h0IEZsaWdodCBMRUQgTGlnaHQgTGlnaHRpbmcuIGltYWdlIHVybEjtGlCzA1iwGHABeACQAQCYAV-gAcAGqgECMTC4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8IDsgcAuAcAwgcAyAcA&sclient=img#vhid=8j5M2U4wZtCXBM&vssid=mosaic",
-      title: "Drone Night Flight LED Light Lighting...",
-      price: "Rs.799.02",
-      originalPrice: "Rs.986.76",
-      discount: "-19%",
-      rating: 5,
-      sold: "4 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 13,
-      image:
-        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "2023 New Bluetooth 5.2 Wireles...",
-      price: "Rs.211.97",
-      originalPrice: null,
-      discount: null,
-      rating: null,
-      sold: "1 sold",
-      saved: "Rs.135.53",
-      sale: true,
-    },
-    {
-      id: 14,
-      image:
-        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Kitchen baking tools, cream flower ba...",
-      price: "Rs.1,742.17",
-      originalPrice: "Rs.3,484.35",
-      discount: "-50%",
-      rating: null,
-      sold: "1 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 15,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Professional Ultra-fine No. 5 Acn...",
-      price: "Rs.44.68",
-      originalPrice: null,
-      discount: null,
-      rating: 5,
-      sold: "13 sold",
-      saved: "Rs.12.66",
-      sale: true,
-    },
-    {
-      id: 16,
-      image:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80https://www.google.com/search?q=Drone+Night+Flight+LED+Light+Lighting.+image+url&sca_esv=41c54eb164886e82&rlz=1C1CHBF_enIN1144IN1146&udm=2&biw=1920&bih=919&sxsrf=AE3TifO6hV79BLnY35g9OR6jA22LlXRslA%3A1752560379136&ei=-_J1aM-FCMKuseMP5dGG-AE&ved=0ahUKEwiP7-GWnL6OAxVCV2wGHeWoAR8Q4dUDCBE&uact=5&oq=Drone+Night+Flight+LED+Light+Lighting.+image+url&gs_lp=EgNpbWciMERyb25lIE5pZ2h0IEZsaWdodCBMRUQgTGlnaHQgTGlnaHRpbmcuIGltYWdlIHVybEjtGlCzA1iwGHABeACQAQCYAV-gAcAGqgECMTC4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8IDsgcAuAcAwgcAyAcA&sclient=img#vhid=8j5M2U4wZtCXBM&vssid=mosaic",
-      title: "Drone Night Flight LED Light Lighting...",
-      price: "Rs.799.02",
-      originalPrice: "Rs.986.76",
-      discount: "-19%",
-      rating: 5,
-      sold: "4 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 17,
-      image:
-        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "2023 New Bluetooth 5.2 Wireles...",
-      price: "Rs.211.97",
-      originalPrice: null,
-      discount: null,
-      rating: null,
-      sold: "1 sold",
-      saved: "Rs.135.53",
-      sale: true,
-    },
-    {
-      id: 18,
-      image:
-        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Kitchen baking tools, cream flower ba...",
-      price: "Rs.1,742.17",
-      originalPrice: "Rs.3,484.35",
-      discount: "-50%",
-      rating: null,
-      sold: "1 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 19,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Professional Ultra-fine No. 5 Acn...",
-      price: "Rs.44.68",
-      originalPrice: null,
-      discount: null,
-      rating: 5,
-      sold: "13 sold",
-      saved: "Rs.12.66",
-      sale: true,
-    },
-    {
-      id: 20,
-      image:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80https://www.google.com/search?q=Drone+Night+Flight+LED+Light+Lighting.+image+url&sca_esv=41c54eb164886e82&rlz=1C1CHBF_enIN1144IN1146&udm=2&biw=1920&bih=919&sxsrf=AE3TifO6hV79BLnY35g9OR6jA22LlXRslA%3A1752560379136&ei=-_J1aM-FCMKuseMP5dGG-AE&ved=0ahUKEwiP7-GWnL6OAxVCV2wGHeWoAR8Q4dUDCBE&uact=5&oq=Drone+Night+Flight+LED+Light+Lighting.+image+url&gs_lp=EgNpbWciMERyb25lIE5pZ2h0IEZsaWdodCBMRUQgTGlnaHQgTGlnaHRpbmcuIGltYWdlIHVybEjtGlCzA1iwGHABeACQAQCYAV-gAcAGqgECMTC4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8IDsgcAuAcAwgcAyAcA&sclient=img#vhid=8j5M2U4wZtCXBM&vssid=mosaic",
-      title: "Drone Night Flight LED Light Lighting...",
-      price: "Rs.799.02",
-      originalPrice: "Rs.986.76",
-      discount: "-19%",
-      rating: 5,
-      sold: "4 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 21,
-      image:
-        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "2023 New Bluetooth 5.2 Wireles...",
-      price: "Rs.211.97",
-      originalPrice: null,
-      discount: null,
-      rating: null,
-      sold: "1 sold",
-      saved: "Rs.135.53",
-      sale: true,
-    },
-    {
-      id: 22,
-      image:
-        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Kitchen baking tools, cream flower ba...",
-      price: "Rs.1,742.17",
-      originalPrice: "Rs.3,484.35",
-      discount: "-50%",
-      rating: null,
-      sold: "1 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 23,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Professional Ultra-fine No. 5 Acn...",
-      price: "Rs.44.68",
-      originalPrice: null,
-      discount: null,
-      rating: 5,
-      sold: "13 sold",
-      saved: "Rs.12.66",
-      sale: true,
-    },
-    {
-      id: 24,
-      image:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80https://www.google.com/search?q=Drone+Night+Flight+LED+Light+Lighting.+image+url&sca_esv=41c54eb164886e82&rlz=1C1CHBF_enIN1144IN1146&udm=2&biw=1920&bih=919&sxsrf=AE3TifO6hV79BLnY35g9OR6jA22LlXRslA%3A1752560379136&ei=-_J1aM-FCMKuseMP5dGG-AE&ved=0ahUKEwiP7-GWnL6OAxVCV2wGHeWoAR8Q4dUDCBE&uact=5&oq=Drone+Night+Flight+LED+Light+Lighting.+image+url&gs_lp=EgNpbWciMERyb25lIE5pZ2h0IEZsaWdodCBMRUQgTGlnaHQgTGlnaHRpbmcuIGltYWdlIHVybEjtGlCzA1iwGHABeACQAQCYAV-gAcAGqgECMTC4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8IDsgcAuAcAwgcAyAcA&sclient=img#vhid=8j5M2U4wZtCXBM&vssid=mosaic",
-      title: "Drone Night Flight LED Light Lighting...",
-      price: "Rs.799.02",
-      originalPrice: "Rs.986.76",
-      discount: "-19%",
-      rating: 5,
-      sold: "4 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 25,
-      image:
-        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "2023 New Bluetooth 5.2 Wireles...",
-      price: "Rs.211.97",
-      originalPrice: null,
-      discount: null,
-      rating: null,
-      sold: "1 sold",
-      saved: "Rs.135.53",
-      sale: true,
-    },
-    {
-      id: 26,
-      image:
-        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Kitchen baking tools, cream flower ba...",
-      price: "Rs.1,742.17",
-      originalPrice: "Rs.3,484.35",
-      discount: "-50%",
-      rating: null,
-      sold: "1 sold",
-      saved: null,
-      sale: false,
-    },
-    {
-      id: 27,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80",
-      title: "Professional Ultra-fine No. 5 Acn...",
-      price: "Rs.44.68",
-      originalPrice: null,
-      discount: null,
-      rating: 5,
-      sold: "13 sold",
-      saved: "Rs.12.66",
-      sale: true,
-    },
-    {
-      id: 28,
-      image:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300&q=80https://www.google.com/search?q=Drone+Night+Flight+LED+Light+Lighting.+image+url&sca_esv=41c54eb164886e82&rlz=1C1CHBF_enIN1144IN1146&udm=2&biw=1920&bih=919&sxsrf=AE3TifO6hV79BLnY35g9OR6jA22LlXRslA%3A1752560379136&ei=-_J1aM-FCMKuseMP5dGG-AE&ved=0ahUKEwiP7-GWnL6OAxVCV2wGHeWoAR8Q4dUDCBE&uact=5&oq=Drone+Night+Flight+LED+Light+Lighting.+image+url&gs_lp=EgNpbWciMERyb25lIE5pZ2h0IEZsaWdodCBMRUQgTGlnaHQgTGlnaHRpbmcuIGltYWdlIHVybEjtGlCzA1iwGHABeACQAQCYAV-gAcAGqgECMTC4AQPIAQD4AQGYAgCgAgCYAwCIBgGSBwCgB8IDsgcAuAcAwgcAyAcA&sclient=img#vhid=8j5M2U4wZtCXBM&vssid=mosaic",
-      title: "Drone Night Flight LED Light Lighting...",
-      price: "Rs.799.02",
-      originalPrice: "Rs.986.76",
-      discount: "-19%",
-      rating: 5,
-      sold: "4 sold",
-      saved: null,
-      sale: false,
-    },
-  ];
+   const [products, setProducts] = useState([]);
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -389,6 +30,25 @@ const { addToCart } = useCart();
   };
 
   const visibleProducts = products.slice(0, visibleCount);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await getAddedProducts();
+      const rawData = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data.products)
+        ? response.data.products
+        : [];
+      setProducts(rawData);
+    } catch (err) {
+      console.error(err);
+      setError(err?.response?.data?.message || "Failed to fetch categories.");
+    }
+  };
 
   return (
     <div className=" min-h-screen py-8 mt-10">

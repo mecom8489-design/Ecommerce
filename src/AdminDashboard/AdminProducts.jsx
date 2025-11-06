@@ -49,6 +49,7 @@ export default function AdminProducts() {
   const fetchCategories = async () => {
     try {
       const response = await getAllCategories();
+      console.log(response)
       const rawData = Array.isArray(response.data)
         ? response.data
         : Array.isArray(response.data.categories)
@@ -121,7 +122,8 @@ export default function AdminProducts() {
         rating: "",
         discount: "",
         description: "",
-        category: "",
+        category: "", 
+         
         stock: "",
         image: null,
         imagePreview: null,
@@ -130,7 +132,7 @@ export default function AdminProducts() {
       fetchProducts();
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Failed to add product ");
+      toast.error(error.response?.data?.message || "Failed to add product  ");
     }
   };
 
