@@ -17,7 +17,7 @@ export default function MoreToLove() {
   const handleViewMore = () => {
     setVisibleCount((prev) => prev + 6); // Show 6 more on each click
   };
-   const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
@@ -58,83 +58,101 @@ export default function MoreToLove() {
         </h1>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 p-4">
           {visibleProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden relative group"
+              className="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer relative"
               onClick={() =>
                 navigate(`/ProductPage/products/${product.id}`, {
                   state: { product },
                 })
               }
             >
+              {/* Sale Tag */}
               {product.sale && (
-                <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded z-10">
-                  Sale
+                <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-md">
+                  SALE
                 </div>
               )}
+
+              {/* Add to Cart Button */}
               <button
-                onClick={() => addToCart(product)} // or any function like navigate('/cart')
-                className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10 hover:bg-yellow-100 active:scale-95"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart(product);
+                }}
+                className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-yellow-100 active:scale-95 z-10"
               >
-                <ShoppingCart className="w-4 h-4 text-gray-600 hover:text-yellow-600 transition-colors" />
+                <ShoppingCart className="w-5 h-5 text-gray-700 hover:text-yellow-600 transition-colors" />
               </button>
 
-              <div className="aspect-square overflow-hidden">
+              {/* Product Image */}
+              <div className="aspect-square overflow-hidden bg-gray-50">
                 <img
                   src={product.image}
-                  alt={product.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
-              <div className="p-3">
-                <h3 className="text-sm text-gray-800 mb-2 line-clamp-2 leading-tight">
-                  {product.title}
+
+              {/* Product Details */}
+              <div className="p-4">
+                <h3 className="text-base font-semibold text-gray-800 mb-1 truncate group-hover:text-blue-600 transition-colors">
+                  {product.name}
                 </h3>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-lg font-bold text-gray-900">
-                    {product.price}
+                <p className="text-sm text-gray-500 mb-3 capitalize">
+                  {product.category}
+                </p>
+
+                {/* Price */}
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xl font-bold text-gray-900">
+                   Rs.{Math.floor(product.finalPrice)}
                   </span>
                   {product.originalPrice && (
-                    <span className="text-sm text-gray-500 line-through">
-                      {product.originalPrice}
+                    <span className="text-sm text-gray-400 line-through">
+                      ₹{product.originalPrice}
                     </span>
                   )}
                   {product.discount && (
-                    <span className="text-sm text-red-500 font-medium">
-                      {product.discount}
+                    <span className="text-sm font-medium text-green-600">
+                      {Math.floor(product.discount)}% OFF
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2 mb-2">
+
+                {/* Rating & Sold */}
+                <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
                   {product.rating && (
                     <div className="flex items-center gap-1">
-                      {renderStars(product.rating)}
-                      <span className="text-xs text-gray-600 ml-1">
-                        {product.rating}
-                      </span>
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <span>{product.rating}</span>
                     </div>
                   )}
                   {product.sold && (
-                    <span className="text-xs text-gray-500">
-                      {product.sold}
+                    <span className="text-gray-500">{product.sold} sold</span>
+                  )}
+                </div>
+
+                {/* Badges */}
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {product.saved && (
+                    <span className="bg-red-50 text-red-600 px-2 py-1 rounded-full font-medium">
+                      💰 Save {product.saved}
+                    </span>
+                  )}
+                  {product.customizable && (
+                    <span className="bg-blue-50 text-blue-600 px-2 py-1 rounded-full font-medium">
+                      Customizable
+                    </span>
+                  )}
+                  {product.premiumQuality && (
+                    <span className="bg-orange-50 text-orange-600 px-2 py-1 rounded-full font-medium">
+                      Premium Quality
                     </span>
                   )}
                 </div>
-                {product.saved && (
-                  <div className="text-xs text-red-500 mb-2">
-                    💰 Save {product.saved}
-                  </div>
-                )}
-                {product.customizable && (
-                  <div className="text-xs text-blue-600 mb-2">Customizable</div>
-                )}
-                {product.premiumQuality && (
-                  <div className="text-xs text-orange-600 mb-2">
-                    Premium Quality
-                  </div>
-                )}
               </div>
             </div>
           ))}

@@ -5,7 +5,7 @@ const Myprofile = () => {
   return (
     <div>
       <Header />
-      <div className="min-h-screen border bg-gray-100 flex">
+      <div className="min-h-screen-300 border bg-gray-100 flex">
         {/* Sidebar */}
         <aside className="w-72 bg-white shadow-md border-r">
           <div className="p-6 flex items-center space-x-4 border-b">
@@ -55,7 +55,7 @@ const Myprofile = () => {
                 </li>
               </ul>
             </div> */}
-{/* 
+            {/* 
             <div>
               <p className="font-semibold text-gray-600 mb-2">MY STUFF</p>
               <ul className="space-y-1">
