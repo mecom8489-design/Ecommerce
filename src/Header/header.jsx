@@ -148,6 +148,17 @@ export default function Header() {
                       <div className="absolute -top-2 right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-yellow-100"></div>
 
                       <button className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                       onClick={() => navigate("/my-Profile")}
+                      >
+                        <ShoppingBag
+                          size={16}
+                          className="mr-2 text-yellow-500"
+                        />
+                        My Profile
+                      </button>
+
+
+                      <button className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
                        onClick={() => navigate("/my-orders")}
                       >
                         <ShoppingBag

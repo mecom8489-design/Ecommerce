@@ -25,20 +25,19 @@ import AdminSupport from "./AdminDashboard/AdminSupport.jsx";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx"; // <-- import this
 import Checkout from "./CheckOut-Screen/Checkout.jsx";
 import MyOrders from "./MyOrders/MyOrders.jsx";
-
-
-
-
+import Myprofile from "./MyProfile/Myprofile.jsx";
 
 function App() {
   return (
     <Router>
       <Routes>
-      
         <Route path="/home" element={<Home />} />
         <Route path="/ProductPage" element={<ProductPage />} />
         <Route path="/ProductPage/products/:id" element={<Product />} />
-        <Route path="/ProductPage/products/Checkout/:id" element={<Checkout />} />
+        <Route
+          path="/ProductPage/products/Checkout/:id"
+          element={<Checkout />}
+        />
         <Route path="/Wishlist" element={<Wishlist />} />
         <Route path="/terms&conditions" element={<Termsconditions />} />
         <Route path="/contactUs" element={<ContactUs />} />
@@ -46,6 +45,7 @@ function App() {
         <Route path="/returnpolicy" element={<ReturnPolicy />} />
         <Route path="/aboutUs" element={<AboutUs />} />
         <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/my-Profile" element={<Myprofile />} />
 
         {/* Protected Admin routes */}
         <Route element={<ProtectedRoute />}>
@@ -67,4 +67,3 @@ function App() {
 }
 
 export default App;
-
