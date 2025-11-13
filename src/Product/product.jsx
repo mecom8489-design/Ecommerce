@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ProductContext } from "../context/ProductContext";
 import Header from "../Header/header";
 import ProductReviews from "./ProductReviews";
-import Footer from '../Footer/footer.jsx'
+import Footer from "../Footer/footer.jsx";
 import { useCart } from "../context/CartContext"; // top of file
 export default function product() {
   const { addToCart } = useCart();
@@ -56,9 +56,12 @@ export default function product() {
   ];
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
-  const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-  const handlePrevImage = () => setCurrentImage((prev) => (prev === 0 ? thumbnails.length - 1 : prev - 1));
-  const handleNextImage = () => setCurrentImage((prev) => (prev === thumbnails.length - 1 ? 0 : prev + 1));
+  const decrementQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const handlePrevImage = () =>
+    setCurrentImage((prev) => (prev === 0 ? thumbnails.length - 1 : prev - 1));
+  const handleNextImage = () =>
+    setCurrentImage((prev) => (prev === thumbnails.length - 1 ? 0 : prev + 1));
 
   return (
     <div>
@@ -73,8 +76,11 @@ export default function product() {
                 <button
                   key={index}
                   onClick={() => setCurrentImage(index)}
-                  className={`w-20 h-20 rounded-lg border-2 overflow-hidden ${currentImage === index ? "border-gray-400" : "border-gray-200"
-                    } hover:border-gray-400 transition-colors`}
+                  className={`w-20 h-20 rounded-lg border-2 overflow-hidden ${
+                    currentImage === index
+                      ? "border-gray-400"
+                      : "border-gray-200"
+                  } hover:border-gray-400 transition-colors`}
                 >
                   <img
                     src={thumb}
@@ -127,16 +133,16 @@ export default function product() {
                 <img
                   src={thumbnails[currentImage]}
                   alt={product.name}
-                  className={`w-full h-full object-contain transition-transform duration-300 ease-in-out ${isZoomed ? "scale-150 cursor-zoom-out" : "scale-100 cursor-zoom-in"
-                    }`}
+                  className={`w-full h-full object-contain transition-transform duration-300 ease-in-out ${
+                    isZoomed
+                      ? "scale-150 cursor-zoom-out"
+                      : "scale-100 cursor-zoom-in"
+                  }`}
                   style={{
                     transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
                   }}
                 />
               </div>
-
-
-
             </div>
           </div>
 
@@ -153,8 +159,7 @@ export default function product() {
                   ₹{product.price}
                 </span>
                 <span className="text-3xl font-bold text-red-500">
-                ₹{Math.floor(product.finalPrice)}
-
+                  ₹{Math.floor(product.finalPrice)}
                 </span>
               </div>
 
@@ -186,23 +191,32 @@ export default function product() {
               </div>
 
               <button className="flex-1 bg-gray-800 text-white px-8 py-3 rounded font-medium hover:bg-gray-900 transition-colors">
-                CHECKOUT -  ₹{Math.floor(product.finalPrice * quantity)}
-
+                CHECKOUT - ₹{Math.floor(product.finalPrice * quantity)}
               </button>
-             
+
               <button className="p-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                 <Heart className="w-5 h-5 text-gray-600" />
               </button>
             </div>
 
             {/* Buy Now */}
-            <button className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6"
-              onClick={() => navigate(`/ProductPage/products/Checkout/${product.id}`, { state: { product } })}
-
+            <button
+              className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6"
+              onClick={() =>
+                navigate(`/ProductPage/products/Checkout/${product.id}`, {
+                  state: {
+                    product,
+                    quantity,
+                    totalPrice: Math.floor(product.finalPrice * quantity),
+                  },
+                })
+              }
             >
               BUY IT NOW
             </button>
-            <button className="w-full bg-red-500 text-white py-4 rounded font-bold text-lg hover:bg-red-600 transition-colors mb-6"
+
+            <button
+              className="w-full bg-red-500 text-white py-4 rounded font-bold text-lg hover:bg-red-600 transition-colors mb-6"
               onClick={() => addToCart(product)}
             >
               ADD TO CART

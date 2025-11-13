@@ -3,9 +3,11 @@ import { Check, ChevronDown, Plus, Minus, Info } from "lucide-react";
 import { ProductContext } from "../context/ProductContext";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "../context/LoginAuth";
+import { orderplace } from "../apiroutes/userApi";
+import { useNavigate } from "react-router-dom";
 export default function Checkout() {
   const [quantity, setQuantity] = useState(1);
-  const [useGST, setUseGST] = useState(false);
+  // const [useGST, setUseGST] = useState(false);
   const { selectedProduct, setSelectedProduct } = useContext(ProductContext);
   const { isLoggedIn, user, logout } = useContext(AuthContext);
 
@@ -16,11 +18,15 @@ export default function Checkout() {
       setSelectedProduct(state.product);
     }
   }, [state, setSelectedProduct]);
-
+  const navigate = useNavigate();
   const product = selectedProduct || state?.product;
-
+  const totalPrice = state?.totalPrice;
+  const Qua = state?.quantity;
+  console.log(totalPrice);
   const [address, setAddress] = useState(user?.address || "");
   const [isSaved, setIsSaved] = useState(!!user?.address);
+  const [showPopup, setShowPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSave = () => {
     if (address.trim() === "") {
@@ -35,7 +41,48 @@ export default function Checkout() {
   };
   const savedprice = product.price - product.finalPrice;
 
-  console.log(savedprice);
+  // console.log(savedprice);
+
+  const handleContinue = async () => {
+    setLoading(true); // start loading
+    try {
+      const orderData = {
+        user_id: user.id, // Assuming user object has an id
+        product_id: product.id,
+        quantity: Qua || 1,
+        price_per_unit: product.price,
+        total_price: totalPrice,
+        shipping_name: user.firstname,
+        shipping_phone: user.mobile,
+        shipping_address: address,
+        payment_method: "Online", // or "Cash on Delivery"
+        payment_status: "Pending",
+        order_status: "Processing",
+        user_email: user.email,
+        productname: product.name,
+      };
+
+      console.log("Order Data Sent:", orderData);
+
+      // Call your API function
+      const response = await orderplace(orderData);
+      console.log("Order placed successfully:", response);
+
+      // ✅ Show popup instead of alert
+      setShowPopup(true);
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order. Please try again.");
+    }finally {
+      setLoading(false); // stop loading
+    }
+  };
+
+  const nav = () => {
+    setShowPopup(false);
+    navigate("/my-orders"); // optional redirect
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -161,7 +208,7 @@ export default function Checkout() {
                   {/* Product Info */}
                   <div className="flex-1">
                     <h3 className="text-sm text-gray-800 mb-1">
-                      {product.name}
+                      {product.name} <span>({Qua} item)</span>
                     </h3>
                     {/* <p className="text-xs text-gray-500 mb-2">12 GB RAM</p>
                     <div className="flex items-center gap-2 text-xs text-gray-600 mb-2">
@@ -173,15 +220,15 @@ export default function Checkout() {
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xl font-medium text-gray-900">
                         {" "}
-                        ₹{Math.floor(product.finalPrice)}
+                        ₹{totalPrice}
                       </span>
-                      <span className="text-green-600 text-xs font-medium">
+                      {/* <span className="text-green-600 text-xs font-medium">
                         {Math.floor(product.discount)}%
-                      </span>
-                      <span className="text-gray-400 line-through text-sm">
+                      </span> */}
+                      {/* <span className="text-gray-400 line-through text-sm">
                         {" "}
                         ₹{product.price}
-                      </span>
+                      </span> */}
 
                       {/* <span className="text-green-600 text-xs font-medium">
                         7 offers available
@@ -190,10 +237,10 @@ export default function Checkout() {
                     </div>
 
                     {/* Protect Promise Fee */}
-                    <div className="flex items-center gap-1 text-xs text-gray-700 mb-3">
+                    {/* <div className="flex items-center gap-1 text-xs text-gray-700 mb-3">
                       <span>+ ₹149 Protect Promise Fee</span>
                       <Info className="w-3 h-3 text-gray-400" />
-                    </div>
+                    </div> */}
                     {/* 
                     <p className="text-xs text-gray-600 mb-3">
                       Or Pay ₹107,860 + ₹100 (with coin icon)
@@ -270,18 +317,46 @@ export default function Checkout() {
               {/* Continue Button */}
               {/* ✅ CONTINUE button */}
               <div className="px-0 pb-4 mt-4">
-                <button
-                  disabled={!isSaved} // disables if address not saved
-                  className={`w-full font-medium py-3 rounded shadow-md transition 
-            ${
-              isSaved
-                ? "bg-orange-500 hover:bg-orange-600 text-white"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-                >
-                  CONTINUE
-                </button>
-              </div>
+  <button
+    disabled={!isSaved || loading}
+    onClick={isSaved ? handleContinue : undefined}
+    className={`w-full font-medium py-3 rounded shadow-md transition flex items-center justify-center
+      ${
+        isSaved
+          ? "bg-orange-500 hover:bg-orange-600 text-white"
+          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+      }`}
+  >
+    {loading ? (
+      <div className="flex items-center gap-2">
+        <svg
+          className="animate-spin h-5 w-5 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8H4z"
+          ></path>
+        </svg>
+        <span>Placing order...</span>
+      </div>
+    ) : (
+      "CONTINUE"
+    )}
+  </button>
+</div>
+
             </div>
           </div>
 
@@ -297,13 +372,10 @@ export default function Checkout() {
               <div className="p-4 space-y-3 text-sm">
                 <div className="flex justify-between">
                   <div className="flex items-center gap-1">
-                    <span className="text-gray-700">Price (1 item)</span>
+                    <span className="text-gray-700">Price ({Qua} item)</span>
                     <Info className="w-3 h-3 text-gray-400" />
                   </div>
-                  <span className="text-gray-900">
-                    {" "}
-                    ₹{Math.floor(product.finalPrice)}
-                  </span>
+                  <span className="text-gray-900"> ₹{totalPrice}</span>
                 </div>
 
                 {/* <div className="flex justify-between">
@@ -360,6 +432,25 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+      {showPopup && (
+        <div className="fixed inset-0 bg-yellow-400 bg-opacity-90 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-80 text-center relative animate-fadeIn">
+            <h2 className="text-xl font-semibold text-green-600 mb-2">
+              🎉 Order Placed Successfully!
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Your order has been placed successfully. You’ll receive a
+              confirmation email soon.
+            </p>
+            <button
+              onClick={nav}
+              className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-lg transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-white border-t mt-8 py-4">

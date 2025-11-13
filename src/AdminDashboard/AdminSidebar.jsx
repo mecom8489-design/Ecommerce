@@ -63,7 +63,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           <NavItem to="/admin/products" icon={<Package size={18} />} label="Products" />
           <NavItem to="/admin/categories" icon={<Layers size={18} />} label="Categories" />
           <NavItem to="/admin/users" icon={<Users size={18} />} label="Users" />
-          <NavItem to="/admin/coupons" icon={<Tag size={18} />} label="Coupons" />
+          {/* <NavItem to="/admin/coupons" icon={<Tag size={18} />} label="Coupons" /> */}
           <NavItem to="/admin/shipping" icon={<Truck size={18} />} label="Shipping" />
           <NavItem to="/admin/payments" icon={<CreditCard size={18} />} label="Payments" />
           <NavItem to="/admin/reviews" icon={<Star size={18} />} label="Reviews" />

@@ -64,7 +64,7 @@ export const Adminproductses = (data) => {
 };  // working Fine
 
 export const getAdminOrders = () => {
-    return axiosInstance.get("/admin/getAllOrders", {
+    return axiosInstance.get("/ordered/all", {
         headers: {
             "Content-Type": "application/json",
         },

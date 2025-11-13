@@ -93,7 +93,7 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                   />
                   <div className="flex-1">
                     <h3 className="font-medium text-sm">{item.name}</h3>
-                    <p className="text-sm font-semibold text-red-600">₹{item.price}</p>
+                    <p className="text-sm font-semibold text-red-600">₹ ₹{Math.floor(item.finalPrice)}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <button onClick={() => updateQty(item.id, -1)} className="px-2 py-1 border rounded">-</button>
                       <span>{item.qty || 1}</span>

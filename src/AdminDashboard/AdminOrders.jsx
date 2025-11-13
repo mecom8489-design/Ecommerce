@@ -43,7 +43,9 @@ export default function AdminOrders() {
               <th className="px-4 py-3 text-center">Customer</th>
               <th className="px-4 py-3 text-center">Product</th>
               <th className="px-4 py-3 text-center">Amount</th>
-              <th className="px-4 py-3 text-center">Status</th>
+              <th className="px-4 py-3 text-center">payment Status</th>
+              <th className="px-4 py-3 text-center">order_status</th>
+              <th className="px-4 py-3 text-center">Action</th>
             </tr>
           </thead>
           <tbody className="text-gray-700">
@@ -55,11 +57,11 @@ export default function AdminOrders() {
                 } hover:bg-gray-100`}
               >
                 <td className="px-4 py-3 text-center">{index + 1}</td>
-                <td className="px-4 py-3 text-center">{order.orderid}</td>
-                <td className="px-4 py-3 text-center">{order.customername}</td>
+                <td className="px-4 py-3 text-center">{order.order_id}</td>
+                <td className="px-4 py-3 text-center">{order.shipping_name}</td>
                 <td className="px-4 py-3 text-center">{order.productname}</td>
                 <td className="px-4 py-3 text-center">
-                  {parseInt(order.totalamount, 10)}$
+                  {parseInt(order.total_price, 10)}$
                 </td>
                 <td className="px-4 py-3 text-center">
                   <span
@@ -71,9 +73,10 @@ export default function AdminOrders() {
                         : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {order.status}
+                    {order.payment_status}
                   </span>
                 </td>
+                <td className="px-4 py-3 text-center">{order.order_status}</td>
               </tr>
             ))}
             {orders.length === 0 && (
@@ -86,6 +89,7 @@ export default function AdminOrders() {
                 </td>
               </tr>
             )}
+            
           </tbody>
         </table>
       </div>

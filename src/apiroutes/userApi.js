@@ -7,3 +7,14 @@ export const Contactus = (data) => {
         },
     });
 };
+
+
+export const orderplace = (data) => {
+    return axiosInstance.post("/ordered/create",data, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+};
+
+export const getorderplace = (id) => axiosInstance.get(`/ordered/${id}`);

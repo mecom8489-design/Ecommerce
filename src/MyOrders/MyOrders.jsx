@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Search, Package, Clock, XCircle, RotateCcw } from "lucide-react";
 import Header from "../Header/header";
-
+import { getorderplace } from "../apiroutes/userApi";
+import { AuthContext } from "../context/LoginAuth";
 export default function MyOrders() {
+  const { user } = useContext(AuthContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     onTheWay: false,
@@ -15,46 +17,35 @@ export default function MyOrders() {
     older: false,
   });
 
-  const orders = [
-    {
-      id: 1,
-      name: "Home Sizzler 213 cm (7 ft) Door Polyeste...",
-      color: "Maroon",
-      price: 465,
-      status: "delivered",
-      date: "Tue Nov 04",
-      image: "🏠",
-    },
-    {
-      id: 2,
-      name: "Enflamo Back Cover for Apple iPhone 15 P...",
-      color: "Transparent",
-      price: 170,
-      status: "delivered",
-      date: "Jun 23",
-      image: "📱",
-    },
-    {
-      id: 3,
-      name: "realme Buds T310 with 12.4mm Driver, 46d...",
-      color: "Black",
-      price: 1918,
-      status: "delivered",
-      date: "Apr 10",
-      image: "🎧",
-    },
-    {
-      id: 4,
-      name: "Mi Buds 5C with 40dB Hybrid ANC, Quad-Mi...",
-      color: "Black",
-      price: 1618,
-      status: "cancelled",
-      date: "Apr 09",
-      reason:
-        "You requested a cancellation due to quality issues with the product.",
-      image: "🎧",
-    },
-  ];
+  const [orderData, setOrderData] = useState(null); // to store the fetched order
+  const [loading, setLoading] = useState(true);
+  const id = user?.id; // ✅ prevents error if user is null
+
+  useEffect(() => {
+    if (!id) return; // Wait until user is available
+    console.log(id);
+  }, [id]);
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const response = await getorderplace(id); // 👈 call API
+        console.log("Order response:", response);
+        const data = response.data;
+        setOrderData(Array.isArray(data) ? data : [data]); // ✅ Safe for both single/multiple
+      } catch (error) {
+        console.error("Error fetching order:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchOrder(); // only call when id exists
+  }, [id]); // 👈 triggers again if id changes
+
+  if (loading) return <p>Loading order details...</p>;
+
+  if (!orderData) return <p>No order found.</p>;
 
   const toggleFilter = (key) => {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -84,7 +75,7 @@ export default function MyOrders() {
 
   return (
     <div>
-        <Header/>
+      <Header />
       <div className="min-h-screen bg-gray-50">
         {/* Breadcrumb */}
         <div className="bg-white border-b">
@@ -194,7 +185,7 @@ export default function MyOrders() {
 
               {/* Order Cards */}
               <div className="space-y-4">
-                {orders.map((order) => (
+                {orderData.map((order) => (
                   <div
                     key={order.id}
                     className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow"
@@ -202,20 +193,24 @@ export default function MyOrders() {
                     <div className="p-5">
                       <div className="flex gap-4">
                         {/* Product Image */}
-                        <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center text-4xl flex-shrink-0">
-                          {order.image}
+                        <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                          <img
+                            src={order.product_image}
+                            alt={order.product_name}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
                         </div>
 
                         {/* Product Details */}
                         <div className="flex-1 min-w-0">
                           <h3 className="text-base font-medium text-gray-900 mb-1 truncate">
-                            {order.name}
+                            {order.product_name}
                           </h3>
-                          <p className="text-sm text-gray-600 mb-2">
+                          {/* <p className="text-sm text-gray-600 mb-2">
                             Color: {order.color}
-                          </p>
+                          </p> */}
                           <p className="text-lg font-semibold text-gray-900">
-                            ₹{order.price}
+                            ₹{order.total_price}
                           </p>
                         </div>
 
@@ -226,7 +221,7 @@ export default function MyOrders() {
                               order.status
                             )}`}
                           >
-                            {getStatusIcon(order.status)}
+                            {getStatusIcon(order.order_status)}
                             <span className="text-sm font-medium capitalize">
                               {order.status === "delivered"
                                 ? `Delivered on ${order.date}`
