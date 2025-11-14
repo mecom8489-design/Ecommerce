@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import {
   login,
@@ -9,9 +9,14 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-
+import { AuthContext } from "../context/LoginAuth";
 
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
+
+  const { login } = useContext(AuthContext);
+
+
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -47,6 +52,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
   const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
 
   const handleSignIn = async () => {
+    
     const fieldErrors = {};
     if (!email) fieldErrors.email = "Email is required";
     else if (!isValidEmail(email)) fieldErrors.email = "Invalid email address";
@@ -62,10 +68,13 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
     try {
       setLoading(true);
+     
       const response = await login({ email, password });
-      // console.log(response)
+       console.log(response)
       const { user } = response.data;
-      localStorage.setItem("user", JSON.stringify(user));
+      console.log("hello")
+      login(user);   // 🔥 this updates context & refreshes Header immediately
+
       toast.success("Login successful");
 
       const role = response.data.user.role;
