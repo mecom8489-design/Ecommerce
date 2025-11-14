@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const axiosInstance = axios.create({
-  baseURL: "e-commerce-backend-production-6fa0.up.railway.app/api",
+  baseURL: "https://e-commerce-backend-by70.onrender.com/api",
 });
 
 // Optional: Add interceptors for token auth
