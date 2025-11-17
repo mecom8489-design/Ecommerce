@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import {
   login,
@@ -9,9 +9,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import { AuthContext } from "../context/LoginAuth";
+
 
 
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
+  const { setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -44,6 +47,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     };
   }, []);
 
+
+
   const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
 
   const handleSignIn = async () => {
@@ -69,11 +74,12 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       toast.success("Login successful");
 
       const role = response.data.user.role;
-      const token = response.data.token;  
+      const token = response.data.token;
       sessionStorage.setItem("token", token);
-      if(role == "admin"){
-        navigate("/admin"); 
+      if (role == "admin") {
+        navigate("/admin");
       }
+      setIsLoggedIn(true);
       setShowSignIn(false);
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed ❌");
@@ -201,10 +207,12 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
                 placeholder="Enter your Email"
                 className="w-full outline-none text-sm py-2"
                 value={email}
-                onChange={(e) => {setEmail(e.target.value);  
+                onChange={(e) => {
+                  setEmail(e.target.value);
                   if (errors.email) {
-                  setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
-                }}}
+                    setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+                  }
+                }}
               />
             </div>
             {errors.email && (
@@ -221,7 +229,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
                 placeholder="Enter Password"
                 className="w-full outline-none text-sm py-2"
                 value={password}
-                onChange={(e) => {setPassword(e.target.value);
+                onChange={(e) => {
+                  setPassword(e.target.value);
                   if (errors.password) {
                     setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
                   }
@@ -252,9 +261,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
           <button
             onClick={handleSignIn}
             disabled={loading}
-            className={`bg-[#fb641b] hover:bg-[#e65c16] text-white text-sm font-medium py-3 rounded-sm shadow cursor-pointer ${
-              loading ? "opacity-70 cursor-not-allowed" : ""
-            }`}
+            className={`bg-[#fb641b] hover:bg-[#e65c16] text-white text-sm font-medium py-3 rounded-sm shadow cursor-pointer ${loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
@@ -315,9 +323,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
                 <button
                   onClick={handleForgotPassword}
                   disabled={resetLoading}
-                  className={`px-4 py-2 text-sm bg-[#2874f0] text-white rounded hover:bg-blue-600 ${
-                    resetLoading ? "opacity-70 cursor-not-allowed" : ""
-                  }`}
+                  className={`px-4 py-2 text-sm bg-[#2874f0] text-white rounded hover:bg-blue-600 ${resetLoading ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
                 >
                   {resetLoading ? "Sending..." : "Send Reset Link"}
                 </button>
@@ -392,9 +399,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
               <button
                 onClick={handleResetPassword}
                 disabled={resetPasswordLoading}
-                className={`px-4 py-2 text-sm bg-[#2874f0] text-white rounded hover:bg-blue-600 ${
-                  resetPasswordLoading ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+                className={`px-4 py-2 text-sm bg-[#2874f0] text-white rounded hover:bg-blue-600 ${resetPasswordLoading ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
               >
                 {resetPasswordLoading ? "Resetting..." : "Reset Password"}
               </button>
