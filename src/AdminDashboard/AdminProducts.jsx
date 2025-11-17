@@ -111,7 +111,7 @@ export default function AdminProducts() {
     formData.append("discount", newProduct.discount);
     formData.append("description", newProduct.description);
     formData.append("category", newProduct.category);
-    formData.append("category", newProduct.offer);
+    formData.append("offer", newProduct.offer);
     formData.append("stock", newProduct.stock);
     formData.append("image", newProduct.image);
 
