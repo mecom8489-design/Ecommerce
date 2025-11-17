@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoggedIn(false);
       setUser(null);
     }
-  }, []);
+  }, [isLoggedIn]);
 //   console.log(isLoggedIn)
   // ✅ Login handler (store in localStorage)
   const login = ( userData) => {
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, user,setIsLoggedIn, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
