@@ -59,7 +59,7 @@ export default function AdminOrders() {
                 <td className="px-4 py-3 text-center">{index + 1}</td>
                 <td className="px-4 py-3 text-center">{order.order_id}</td>
                 <td className="px-4 py-3 text-center">{order.shipping_name}</td>
-                <td className="px-4 py-3 text-center">{order.productname}</td>
+                <td className="px-4 py-3 text-center">{order.product_name}</td>
                 <td className="px-4 py-3 text-center">
                   {parseInt(order.total_price, 10)}$
                 </td>
