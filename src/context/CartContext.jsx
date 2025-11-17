@@ -19,7 +19,7 @@ export const CartProvider = ({ children }) => {
       return [...prevCart, product];
     });
 
-     // ✅ Show the toast
+     //  Show the toast
      setToastMessage(`Added To Your Cart`);
      setShowToast(true);
      setTimeout(() => setShowToast(false), 2500);
@@ -50,7 +50,7 @@ export const CartProvider = ({ children }) => {
 
   return <CartContext.Provider value={value}>
     {children}
-      {/* ✅ Toast message */}
+      {/* Toast message */}
       <Toast message={toastMessage} show={showToast} />
     </CartContext.Provider>;
 };

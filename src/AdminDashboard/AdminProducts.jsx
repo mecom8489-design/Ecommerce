@@ -28,8 +28,8 @@ export default function AdminProducts() {
 
   // image preview
   const [imagePreview, setImagePreview] = useState(null);
-
-
+  const fileInputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
 
 
@@ -111,13 +111,13 @@ export default function AdminProducts() {
     formData.append("discount", newProduct.discount);
     formData.append("description", newProduct.description);
     formData.append("category", newProduct.category);
-    formData.append("category", newProduct.offer);
+    formData.append("offer", newProduct.offer);
     formData.append("stock", newProduct.stock);
     formData.append("image", newProduct.image);
 
     try {
+      setLoading(true);
       const response = await Adminproductses(formData);
-
       setNewProduct({
         name: "",
         price: "",
@@ -130,11 +130,20 @@ export default function AdminProducts() {
         image: null,
         imagePreview: null,
       });
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+
       toast.success("Product added successfully ");
       fetchProducts();
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "Failed to add product  ");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -403,6 +412,7 @@ export default function AdminProducts() {
               name="image"
               accept="image/*"
               onChange={handleChange}
+              ref={fileInputRef}
               className="border p-2 rounded-lg"
             />
             {newProduct.imagePreview && (
@@ -415,14 +425,30 @@ export default function AdminProducts() {
           </div>
 
           {/* Submit Button */}
-          <button
+          {/* <button
             type="submit"
+            // disabled={loading}
             className="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition-colors col-span-full cursor-pointer"
           >
             Add Product
+          </button> */}
+          <button
+            type="submit"
+            onClick={handleAddProduct}
+            disabled={loading}
+            className={`
+    bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 
+    transition-colors col-span-full cursor-pointer
+    ${loading ? "opacity-70 cursor-not-allowed" : ""}
+  `}
+          >
+            {loading ? "Adding Product..." : "Add Product"}
           </button>
+
         </form>
       </div>
+
+
 
 
       {/* Products Grid */}
@@ -547,12 +573,14 @@ export default function AdminProducts() {
         </div>
       )}
 
+
       {isProductModalOpen && currentProduct && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl">
             <h2 className="text-xl font-semibold mb-4 text-center">Edit Product</h2>
 
             <div className="space-y-4">
+
               {/* Product Name */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -584,8 +612,6 @@ export default function AdminProducts() {
                   placeholder="Enter price"
                 />
               </div>
-
-              {/* Original Price */}
 
               {/* Discount */}
               <div>
@@ -619,6 +645,25 @@ export default function AdminProducts() {
                 />
               </div>
 
+              {/* Offer Dropdown */}
+              <div className="flex flex-col">
+                <label htmlFor="offer" className="mb-1 font-medium text-gray-700">
+                  Select Offer
+                </label>
+                <select
+                  id="offer"
+                  name="offer"
+                  value={currentProduct.offer || ""}
+                  onChange={handleProductInputChange}
+                  className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                >
+                  <option value="">Select an Offer</option>
+                  <option value="specialoffer">Special Offer</option>
+                  <option value="limitedtimedeal">Limited Time Deal</option>
+                  <option value="exclusiveoffer">Exclusive Offer</option>
+                </select>
+              </div>
+
               {/* Description */}
               <div>
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
@@ -645,8 +690,8 @@ export default function AdminProducts() {
                   name="image"
                   onChange={handleImageUpload}
                   className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4
-           file:rounded file:border-0 file:text-sm file:font-semibold
-           file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+              file:rounded file:border-0 file:text-sm file:font-semibold
+              file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                 />
 
                 {imagePreview ? (
@@ -675,6 +720,8 @@ export default function AdminProducts() {
           </div>
         </div>
       )}
+
+
     </div>
   );
 }

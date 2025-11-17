@@ -37,7 +37,7 @@ const SupportPage = () => {
         : response.data.supports || [];
       setEnquiries(usersArray);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch enquiries ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch enquiries ");
     } finally {
       setLoading(false);
     }
@@ -61,13 +61,13 @@ const SupportPage = () => {
 
     try {
       await deletesupportDatas(deleteEnquiryId);
-      toast.success("support Data deleted successfully ✅");
+      toast.success("support Data deleted successfully ");
       fetchEnquiries();
       setIsDeleteModalOpen(false);
       setDeleteEnquiryId(null);
     } catch (error) {
       console.error("Delete Error:", error);
-      toast.error(error?.response?.data?.message || "Failed to delete Support Data ❌");
+      toast.error(error?.response?.data?.message || "Failed to delete Support Data ");
     }
   };
 

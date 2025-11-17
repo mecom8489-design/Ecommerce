@@ -32,7 +32,7 @@ export default function AdminUsers() {
 
       setUsers(usersArray);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch users ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch users ");
     }
   };
 
@@ -75,12 +75,12 @@ export default function AdminUsers() {
       const response = await updateAdminUser(updatedUser);
       const usersArray = Array.isArray(response.data) ? response.data : response.data.users || [];
       setUsers(usersArray);
-      toast.success("User updated successfully ✅");
+      toast.success("User updated successfully ");
       setIsModalOpen(false);
       fetchUsers(); // Refresh the user list
     } catch (error) {
       console.error("Update Error:", error);
-      toast.error(error?.response?.data?.message || "Failed to update user ❌");
+      toast.error(error?.response?.data?.message || "Failed to update user ");
     }
   };
 
@@ -98,7 +98,7 @@ export default function AdminUsers() {
       fetchUsers(); // Refresh the list
     } catch (error) {
       console.error("Delete Error:", error);
-      toast.error(error?.response?.data?.message || "Failed to delete user ❌");
+      toast.error(error?.response?.data?.message || "Failed to delete user ");
     } finally {
       setIsDeleteModalOpen(false);
       setDeleteUserId(null);

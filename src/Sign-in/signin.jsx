@@ -82,7 +82,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       setIsLoggedIn(true);
       setShowSignIn(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed ❌");
+      toast.error(error.response?.data?.message || "Login failed ");
     } finally {
       setLoading(false);
     }
@@ -104,7 +104,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       toast.success("OTP sent to your email ");
       setShowOtpField(true);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to send reset link ❌");
+      toast.error(error.response?.data?.message || "Failed to send reset link ");
     } finally {
       setResetLoading(false);
     }
@@ -123,7 +123,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       setOtp("");
       setShowNewPasswordModal(true);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Invalid OTP ❌");
+      toast.error(error.response?.data?.message || "Invalid OTP ");
     }
   };
 
@@ -145,7 +145,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match ❌");
+      toast.error("Passwords do not match ");
       return;
     }
 
@@ -162,7 +162,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       setConfirmPassword("");
       setResetEmail("");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Password reset failed ❌");
+      toast.error(error.response?.data?.message || "Password reset failed ");
     } finally {
       setResetPasswordLoading(false);
     }

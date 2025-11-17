@@ -81,12 +81,12 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
         password,
       });
 
-      toast.success("Account created ✅");
+      toast.success("Account created ");
 
       setShowSignUp(false);
       setShowSignIn(true);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Sign Up failed ❌");
+      toast.error(error.response?.data?.message || "Sign Up failed ");
     } finally {
       setLoading(false);
     }

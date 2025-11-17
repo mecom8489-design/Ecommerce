@@ -42,7 +42,7 @@ export default function AdDashboard() {
       const response = await getAdminDashboard();
       setData(response.data);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch users ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch users ");
     }
   };
 
@@ -54,7 +54,7 @@ export default function AdDashboard() {
         : response.data.users || [];
       setRecentOrders(orders);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch orders ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch orders ");
     }
   };
 
