@@ -13,6 +13,7 @@ export default function AdminProducts() {
     discount: "",
     description: "",
     category: "",
+    offer: "",
     stock: "",
     image: null,
     imagePreview: null,
@@ -110,6 +111,7 @@ export default function AdminProducts() {
     formData.append("discount", newProduct.discount);
     formData.append("description", newProduct.description);
     formData.append("category", newProduct.category);
+    formData.append("category", newProduct.offer);
     formData.append("stock", newProduct.stock);
     formData.append("image", newProduct.image);
 
@@ -122,8 +124,8 @@ export default function AdminProducts() {
         rating: "",
         discount: "",
         description: "",
-        category: "", 
-         
+        category: "",
+        offer: "",
         stock: "",
         image: null,
         imagePreview: null,
@@ -167,13 +169,12 @@ export default function AdminProducts() {
       originalPrice: product.originalPrice || "",
       discount: product.discount || "",
       stock: product.stock || "",
+      offer: product.offer,
       description: product.description || "",
       image: product.image || "",
     });
     setisProductModalOpen(true);
   };
-
-
 
 
   const handleProductInputChange = (e) => {
@@ -241,8 +242,6 @@ export default function AdminProducts() {
 
 
 
-
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -267,12 +266,14 @@ export default function AdminProducts() {
       </div>
 
       {/* Add Product Form */}
+
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-lg font-semibold mb-4">Add New Product</h2>
         <form
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           onSubmit={handleAddProduct}
         >
+          {/* Product Name */}
           <div className="flex flex-col">
             <label htmlFor="name" className="mb-1 font-medium">Product Name</label>
             <input
@@ -287,6 +288,7 @@ export default function AdminProducts() {
             />
           </div>
 
+          {/* Price */}
           <div className="flex flex-col">
             <label htmlFor="price" className="mb-1 font-medium">Price</label>
             <input
@@ -301,6 +303,7 @@ export default function AdminProducts() {
             />
           </div>
 
+          {/* Rating */}
           <div className="flex flex-col">
             <label htmlFor="rating" className="mb-1 font-medium">Rating (0-5)</label>
             <input
@@ -314,6 +317,7 @@ export default function AdminProducts() {
             />
           </div>
 
+          {/* Discount */}
           <div className="flex flex-col">
             <label htmlFor="discount" className="mb-1 font-medium">Discount (%)</label>
             <input
@@ -327,6 +331,7 @@ export default function AdminProducts() {
             />
           </div>
 
+          {/* Category */}
           <div className="flex flex-col">
             <label htmlFor="category" className="mb-1 font-medium">Category</label>
             <select
@@ -345,6 +350,24 @@ export default function AdminProducts() {
             </select>
           </div>
 
+          {/* Exclusive Offer Dropdown */}
+          <div className="flex flex-col">
+            <label htmlFor="offer" className="mb-1 font-medium">Select Offer</label>
+            <select
+              id="offer"
+              name="offer"
+              value={newProduct.offer}
+              onChange={handleChange}
+              className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400 cursor-pointer"
+            >
+              <option value="" >Select an Offer</option>
+              <option value="specialoffer">Special Offer</option>
+              <option value="limitedtimedeal">Limited Time Deal</option>
+              <option value="exclusiveoffer">Exclusive Offer</option>
+            </select>
+          </div>
+
+          {/* Stock */}
           <div className="flex flex-col">
             <label htmlFor="stock" className="mb-1 font-medium">Stock</label>
             <input
@@ -358,6 +381,7 @@ export default function AdminProducts() {
             />
           </div>
 
+          {/* Description */}
           <div className="flex flex-col sm:col-span-2 lg:col-span-3">
             <label htmlFor="description" className="mb-1 font-medium">Description</label>
             <textarea
@@ -370,13 +394,14 @@ export default function AdminProducts() {
             />
           </div>
 
+          {/* Image */}
           <div className="flex flex-col">
             <label htmlFor="image" className="mb-1 font-medium">Product Image</label>
             <input
               id="image"
               type="file"
               name="image"
-              accept="image/*" 
+              accept="image/*"
               onChange={handleChange}
               className="border p-2 rounded-lg"
             />
@@ -389,6 +414,7 @@ export default function AdminProducts() {
             )}
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             className="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition-colors col-span-full cursor-pointer"
@@ -623,11 +649,11 @@ export default function AdminProducts() {
            file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                 />
 
-                  {imagePreview ? (
-                    <img src={imagePreview} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />
-                  ) : currentProduct?.image ? (
-                    <img src={currentProduct.image} alt="Product" className="mt-2 w-32 h-32 object-cover rounded" />
-                  ) : null}
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />
+                ) : currentProduct?.image ? (
+                  <img src={currentProduct.image} alt="Product" className="mt-2 w-32 h-32 object-cover rounded" />
+                ) : null}
               </div>
             </div>
 
