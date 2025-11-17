@@ -45,10 +45,10 @@ export default function ContactUs() {
             setLoading(true);
             const response = await Contactus({ formData });
             console.log(response);
-            toast.success("Message sent successfully ✅");
+            toast.success("Message sent successfully ");
             setFormData({ name: "", email: "", message: "",mobile: "" });
         } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to send message ❌");
+            toast.error(error.response?.data?.message || "Failed to send message ");
         } finally {
             setLoading(false);
         }

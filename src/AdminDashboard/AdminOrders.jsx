@@ -23,7 +23,7 @@ export default function AdminOrders() {
         : response.data.users || [];
       setOrders(usersArray);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch orders ❌");
+      toast.error(error.response?.data?.message || "Failed to fetch orders ");
     }
   };
 

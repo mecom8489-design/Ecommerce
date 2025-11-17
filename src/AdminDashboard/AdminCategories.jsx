@@ -84,13 +84,13 @@ const AdminCategories = () => {
 
     try {
       await deleteCategories(deleteCategoryId);
-      toast.success("Category deleted successfully ✅");
+      toast.success("Category deleted successfully ");
       setIsDeleteModalOpen(false);
       setDeleteCategoryId(null);
       fetchCategories();
     } catch (error) {
       console.error("Delete Error:", error);
-      toast.error(error?.response?.data?.message || "Failed to delete category ❌");
+      toast.error(error?.response?.data?.message || "Failed to delete category ");
     }
   };
 

@@ -41,10 +41,10 @@ export default function TermsAndConditions() {
       setLoading(true);
       const response = await ContactEmail({formData});
       console.log(response);
-      toast.success("Message sent successfully ✅");
+      toast.success("Message sent successfully ");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to send message ❌");
+      toast.error(error.response?.data?.message || "Failed to send message ");
     } finally {
       setLoading(false);
     }
