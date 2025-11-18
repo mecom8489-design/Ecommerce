@@ -156,35 +156,13 @@ const Home = () => {
 
 
 
+  const [viewMore, setViewMore] = useState([]);
+  const [bestSeller, setBestSeller] = useState([]);
   const [ProductADs, setProductAds] = useState([]);
   const hasFetched = useRef(false);
-
   useEffect(() => {
     if (!hasFetched.current) {
       hasFetched.current = true;
-      fetchData();
-    }
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const res = await fetch("https://e-commerce-backend-production-6fa0.up.railway.app/api/admin/all");
-      const data = await res.json();
-      setProductAds(data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const Firstproduct = ProductADs[0];
-
-
-  //ViewMore
-  const [productMore, setProductMore] = useState([]);
-  const hasFetches = useRef(false);
-  useEffect(() => {
-    if (!hasFetches.current) {
-      hasFetches.current = true;
       fetchProducts();
     }
   }, []);
@@ -192,19 +170,41 @@ const Home = () => {
   const fetchProducts = async () => {
     try {
       const response = await getAddedProducts();
-      const rawData = Array.isArray(response.data)
-        ? response.data
-        : Array.isArray(response.data.products)
-          ? response.data.products
-          : [];
-      console.log(rawData);
-      setProductMore(rawData);
-      console.log(productMore);
+
+
+      const { productAd = [], viewMore = [], bestSeller = [] } = response.data?.data || {};
+      setProductAds(productAd);
+      setViewMore(viewMore);
+      const formatted = formatBestSellerData(bestSeller);
+      setBestSeller(formatted);
+
+
     } catch (err) {
       console.error(err);
-      setError(err?.response?.data?.message || "Failed to fetch categories.");
+      setError(err?.response?.data?.message || "Failed to fetch products.");
     }
   };
+
+
+  const formatBestSellerData = (products) => {
+    return products.map((product) => ({
+      id: product.id,
+      image: product.image,
+      title: product.name,
+      price: parseFloat(product.finalPrice),
+      oldPrice: `₹${parseFloat(product.price).toFixed(2)}`,
+      discount: `${product.discount}%`,
+      rating: parseFloat(product.rating),
+      reviews: product.order_count,
+      description: product.description,
+      stock: product.stock,
+      category: product.category,
+      created_at: product.created_at,
+    }));
+  };
+
+
+
 
   // Auto-rotate every 5 seconds
   useEffect(() => {
@@ -350,81 +350,7 @@ const Home = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  const Bestsell = [
-    {
-      id: 1,
-      image:
-        "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
-      title: "Baby fabric shoes",
-      price: 4,
-      oldPrice: "$5.00",
-      discount: "-20%",
-      rating: 4,
-      reviews: 24,
-    },
-    {
-      id: 2,
-      image:
-        "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/2.jpg",
-      title: "Men's hoodies t-shirt",
-      price: 7,
-      oldPrice: "$17.00",
-      discount: "-59%",
-      rating: 3.5,
-      reviews: 18,
-    },
-    {
-      id: 3,
-      image: image251,
-      title: "6 Pc Spice's Rack",
-      price: 3,
-      oldPrice: "$5.00",
-      discount: "-40%",
-      rating: 5,
-      reviews: 32,
-    },
-    {
-      id: 4,
-      image:
-        "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/4.jpg",
-      title: "Woolen hat for men",
-      price: 12,
-      oldPrice: "$15.00",
-      discount: "-20%",
-      rating: 4.5,
-      reviews: 27,
-    },
-    {
-      id: 5,
-      image: image15,
-      title: " Maggie Bowl ",
-      price: 12,
-      oldPrice: "$15.00",
-      discount: "-20%",
-      rating: 4.5,
-      reviews: 27,
-    },
-    {
-      id: 6,
-      image: image17,
-      title: "plate set ",
-      price: 12,
-      oldPrice: "$15.00",
-      discount: "-20%",
-      rating: 4.5,
-      reviews: 27,
-    },
-    {
-      id: 7,
-      image: image16,
-      title: "Silver Spoons Set",
-      price: 12,
-      oldPrice: "$15.00",
-      discount: "-20%",
-      rating: 4.5,
-      reviews: 27,
-    },
-  ];
+
 
   const handleWishlist = (product) => {
     // const isLoggedIn = localStorage.getItem("token"); // or however you track login
@@ -546,21 +472,12 @@ const Home = () => {
       {/* Best Sellers */}
       <section className="py-5  mt-4">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Best Sellers</h2>
-            <Link
-              to="/ProductPage"
-              className="text-indigo-600 font-medium hover:underline"
-            >
-              View All
-            </Link>
-          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 [@media(min-width:1800px)]:grid-cols-7 gap-4 w-full">
-            {Bestsell.map((product) => (
+            {bestSeller.map((product) => (
               <div
                 key={product.id}
-                className="product-card  bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
+                className="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
                 onClick={() =>
                   navigate(`/ProductPage/products/${product.id}`, {
                     state: { product },
@@ -576,41 +493,49 @@ const Home = () => {
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
                     <button
                       className="text-gray-600 hover:text-indigo-600"
-                      onClick={() => handleWishlist(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleWishlist(product);
+                      }}
                     >
                       <i className="far fa-heart"></i>
                     </button>
 
                     <button
                       className="text-gray-600 hover:text-indigo-600"
-                      onClick={() => addToCart(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product);
+                      }}
                     >
                       <i className="fas fa-shopping-cart"></i>
                     </button>
                   </div>
-                  <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                    {product.discount}
-                  </span>
+                  {parseFloat(product.discount) > 0 && (
+                    <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                      {product.discount}
+                    </span>
+                  )}
                 </div>
+
                 <div className="p-4">
                   <Link to="#" className="font-medium hover:text-indigo-600">
                     {product.title}
                   </Link>
+
                   <div className="flex items-center mt-2">
-                    <span className="text-indigo-600 font-bold">
-                      {product.price}
-                    </span>
+                    <span className="text-indigo-600 font-bold">₹{product.price}</span>
                     <span className="text-gray-500 text-sm line-through ml-2">
                       {product.oldPrice}
                     </span>
                   </div>
+
                   <div className="flex items-center mt-2">
                     <div className="flex text-yellow-400">
                       {Array.from({ length: 5 }, (_, i) => {
                         const fullStar = i < Math.floor(product.rating);
                         const halfStar =
-                          product.rating % 1 !== 0 &&
-                          i === Math.floor(product.rating);
+                          product.rating % 1 !== 0 && i === Math.floor(product.rating);
                         return fullStar ? (
                           <i key={i} className="fas fa-star"></i>
                         ) : halfStar ? (
@@ -620,9 +545,7 @@ const Home = () => {
                         );
                       })}
                     </div>
-                    <span className="text-gray-500 text-sm ml-2">
-                      ({product.reviews})
-                    </span>
+                    <span className="text-gray-500 text-sm ml-2">({product.reviews})</span>
                   </div>
                 </div>
               </div>
@@ -632,7 +555,7 @@ const Home = () => {
       </section>
 
       {/* Products AD */}
-      <ProductAD product={Firstproduct} />
+      <ProductAD product={ProductADs} />
 
       {/*  Recommended for you Products Carousel  */}
       <div className="w-full max-w-8xl mx-auto p-28 mt-20 pt-0 pb-0 rounded-xl">
@@ -789,7 +712,7 @@ const Home = () => {
       {/* <SuperDeals /> */}
 
       {/* More to love Section */}
-      <MoreToLove products={productMore} />
+      <MoreToLove products={viewMore} />
 
       {/* Shop more */}
       <div className="bg-white py-12 px-6 md:px-20">
