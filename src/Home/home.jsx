@@ -48,20 +48,14 @@ import { GetSlides } from "../apiroutes/authApi";
 import { useCart } from "../context/CartContext"; // top of file
 import { useNavigate } from "react-router-dom";
 import { addToWishlist } from "../utils/wishlistUtils";
-import { Adminproductses, getAllCategories, getAddedProducts, deleteAdminProducts, AdminUpdateproduct } from "../apiroutes/adminApi";
+import { getAddedProducts } from "../apiroutes/adminApi";
 
 const Home = () => {
   const [current, setCurrent] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [favorites, setFavorites] = useState(new Set());
   const images = [image1, image2];
-  // Auto-rotate every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+
   const { addToCart } = useCart();
   const navigate = useNavigate(); // ← This is required
   const products = [
@@ -159,6 +153,66 @@ const Home = () => {
   const itemsPerViews = 0; // Show 6 products initially
   const scrollStep = 3; // Move 2 products on each scroll
   const maxIndex = Math.max(products.length - itemsPerViews, 0);
+
+
+
+  const [ProductADs, setProductAds] = useState([]);
+  const hasFetched = useRef(false);
+
+  useEffect(() => {
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetchData();
+    }
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch("https://e-commerce-backend-production-6fa0.up.railway.app/api/admin/all");
+      const data = await res.json();
+      setProductAds(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const Firstproduct = ProductADs[0];
+
+
+  //ViewMore
+  const [productMore, setProductMore] = useState([]);
+  const hasFetches = useRef(false);
+  useEffect(() => {
+    if (!hasFetches.current) {
+      hasFetches.current = true;
+      fetchProducts();
+    }
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await getAddedProducts();
+      const rawData = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data.products)
+          ? response.data.products
+          : [];
+      console.log(rawData);
+      setProductMore(rawData);
+      console.log(productMore);
+    } catch (err) {
+      console.error(err);
+      setError(err?.response?.data?.message || "Failed to fetch categories.");
+    }
+  };
+
+  // Auto-rotate every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => Math.max(prev - scrollStep, 0));
@@ -578,7 +632,7 @@ const Home = () => {
       </section>
 
       {/* Products AD */}
-      <ProductAD />
+      <ProductAD product={Firstproduct} />
 
       {/*  Recommended for you Products Carousel  */}
       <div className="w-full max-w-8xl mx-auto p-28 mt-20 pt-0 pb-0 rounded-xl">
@@ -610,9 +664,8 @@ const Home = () => {
           <div
             className="flex gap-4 sm:gap-6 transition-transform duration-700 ease-in-out"
             style={{
-              transform: `translateX(-${
-                (100 / products.length) * currentIndex
-              }%)`,
+              transform: `translateX(-${(100 / products.length) * currentIndex
+                }%)`,
               width: `${(products.length / itemsPerViews) * 100}%`,
             }}
           >
@@ -636,14 +689,13 @@ const Home = () => {
                   <button
                     onClick={() => toggleFavorite(product.id)}
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
-                    // onClick={() => handleWishlist(product)}
-                 >
+                  // onClick={() => handleWishlist(product)}
+                  >
                     <Heart
-                      className={`w-5 h-5 ${
-                        favorites.has(product.id)
-                          ? "fill-red-500 text-red-500"
-                          : "text-gray-400"
-                      }`}
+                      className={`w-5 h-5 ${favorites.has(product.id)
+                        ? "fill-red-500 text-red-500"
+                        : "text-gray-400"
+                        }`}
                     />
                   </button>
                   <span
@@ -672,11 +724,10 @@ const Home = () => {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(product.rating)
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-300"
-                          }`}
+                          className={`w-4 h-4 ${i < Math.floor(product.rating)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-gray-300"
+                            }`}
                         />
                       ))}
                     </div>
@@ -738,7 +789,7 @@ const Home = () => {
       {/* <SuperDeals /> */}
 
       {/* More to love Section */}
-      <MoreToLove />
+      <MoreToLove products={productMore} />
 
       {/* Shop more */}
       <div className="bg-white py-12 px-6 md:px-20">

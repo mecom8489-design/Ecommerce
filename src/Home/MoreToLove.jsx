@@ -2,54 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Star, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext"; // top of file
-import {
-  Adminproductses,
-  getAllCategories,
-  getAddedProducts,
-  deleteAdminProducts,
-  AdminUpdateproduct,
-} from "../apiroutes/adminApi";
 
-export default function MoreToLove() {
+
+export default function MoreToLove({products}) {
+  console.log(products);
   const [visibleCount, setVisibleCount] = useState(18); // Show first 18 initially
   const navigate = useNavigate(); // ← This is required
   const { addToCart } = useCart();
   const handleViewMore = () => {
     setVisibleCount((prev) => prev + 6); // Show 6 more on each click
   };
-  const [products, setProducts] = useState([]);
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`w-3 h-3 ${
-          i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-        }`}
-      />
-    ));
-  };
+  // const visibleProducts = products.slice(0, visibleCount);
+  const visibleProducts = (products || []).slice(0, visibleCount);
 
-  const visibleProducts = products.slice(0, visibleCount);
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await getAddedProducts();
-      const rawData = Array.isArray(response.data)
-        ? response.data
-        : Array.isArray(response.data.products)
-        ? response.data.products
-        : [];
-      setProducts(rawData);
-    } catch (err) {
-      console.error(err);
-      setError(err?.response?.data?.message || "Failed to fetch categories.");
-    }
-  };
-
+ 
   return (
     <div className=" min-h-screen py-8 mt-10">
       <div className="max-w-8xl mx-auto px-20">
@@ -98,19 +64,19 @@ export default function MoreToLove() {
 
               {/* Product Details */}
               <div className="p-4">
-              <div className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">
+                <div className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">
                   {product.category}
                 </div>
 
                 <h3 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2 group-hover:text-yellow-600 transition-colors">
                   {product.name}
                 </h3>
-               
+
 
                 {/* Price */}
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xl font-bold text-gray-900">
-                   ${Math.floor(product.finalPrice)}
+                    ${Math.floor(product.finalPrice)}
                   </span>
                   {product.originalPrice && (
                     <span className="text-sm text-gray-400 line-through">
@@ -161,7 +127,7 @@ export default function MoreToLove() {
         </div>
 
         {/* View More Button */}
-        {visibleCount < products.length && (
+        {Array.isArray(products) && visibleCount < products.length && (
           <div className="flex justify-center mt-8">
             <button
               onClick={handleViewMore}
