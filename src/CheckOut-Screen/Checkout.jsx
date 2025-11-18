@@ -390,7 +390,7 @@ export default function Checkout() {
                   <span className="text-gray-900">Total Payable</span>
                   <span className="text-gray-900">
                     {" "}
-                    ₹{Math.floor(product.finalPrice)}
+                    ₹{Math.floor(totalPrice)}
                   </span>
                 </div>
 

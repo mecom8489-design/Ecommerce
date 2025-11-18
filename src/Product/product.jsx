@@ -62,6 +62,7 @@ export default function product() {
     setCurrentImage((prev) => (prev === 0 ? thumbnails.length - 1 : prev - 1));
   const handleNextImage = () =>
     setCurrentImage((prev) => (prev === thumbnails.length - 1 ? 0 : prev + 1));
+  const finalPrice = product.price - (product.price * (product.discount / 100));
 
   return (
     <div>
@@ -156,10 +157,10 @@ export default function product() {
               {/* Price */}
               <div className="flex items-baseline space-x-3 mb-4">
                 <span className="text-xl text-gray-400 line-through">
-                  ₹{product.price}
+                  ₹{Math.floor(product.price)}
                 </span>
                 <span className="text-3xl font-bold text-red-500">
-                  ₹{Math.floor(product.finalPrice)}
+                  ₹{Math.floor(finalPrice)}
                 </span>
               </div>
 
@@ -191,7 +192,7 @@ export default function product() {
               </div>
 
               <button className="flex-1 bg-gray-800 text-white px-8 py-3 rounded font-medium hover:bg-gray-900 transition-colors">
-                CHECKOUT - ₹{Math.floor(product.finalPrice * quantity)}
+                CHECKOUT - ₹{Math.floor(finalPrice * quantity)}
               </button>
 
               <button className="p-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
@@ -207,7 +208,8 @@ export default function product() {
                   state: {
                     product,
                     quantity,
-                    totalPrice: Math.floor(product.finalPrice * quantity),
+                    totalPrice: Math.floor(finalPrice * quantity),
+                    finalPrice
                   },
                 })
               }
