@@ -5,7 +5,9 @@ import { toast } from 'react-toastify';
 
 
 export default function AdminProducts() {
-  const [products, setProducts] = useState([]);
+  const [productAd, setProductAd] = useState([]);
+  const [viewMore, setViewMore] = useState([]);
+  const [bestSeller, setBestSeller] = useState([]);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -50,7 +52,6 @@ export default function AdminProducts() {
   const fetchCategories = async () => {
     try {
       const response = await getAllCategories();
-      console.log(response)
       const rawData = Array.isArray(response.data)
         ? response.data
         : Array.isArray(response.data.categories)
@@ -66,15 +67,35 @@ export default function AdminProducts() {
     }
   };
 
+  // const fetchProducts = async () => {
+  //   try {
+  //     const response = await getAddedProducts();
+  //     const rawData = Array.isArray(response.data)
+  //       ? response.data
+  //       : Array.isArray(response.data.products)
+  //         ? response.data.products
+  //         : [];
+  //     setProducts(rawData);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setError(err?.response?.data?.message || "Failed to fetch categories.");
+  //   }
+  // };
+
   const fetchProducts = async () => {
     try {
       const response = await getAddedProducts();
-      const rawData = Array.isArray(response.data)
-        ? response.data
-        : Array.isArray(response.data.products)
-          ? response.data.products
-          : [];
-      setProducts(rawData);
+
+      const data = response.data.data;
+
+      setProductAd(data.productAd || []);
+      setViewMore(data.viewMore || []);
+      setBestSeller(data.bestSeller || []);
+      console.log(productAd);
+      console.log(viewMore);
+      console.log(bestSeller);
+
+
     } catch (err) {
       console.error(err);
       setError(err?.response?.data?.message || "Failed to fetch categories.");
@@ -264,6 +285,106 @@ export default function AdminProducts() {
     }
   };
 
+  const ProductCard = ({ product }) => (
+    <div
+      key={product.id}
+      className="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden flex flex-col w-72"
+    >
+      {product.discount && (
+        <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-br-xl z-10">
+          Sale
+        </div>
+      )}
+
+      <img
+        src={product.image || "https://via.placeholder.com/300x300.png?text=Product"}
+        alt={product.name}
+        className="w-full h-60 object-contain p-4"
+      />
+
+      <div className="p-4 flex flex-col justify-between flex-grow">
+        <h3 className="text-lg font-semibold mb-1 truncate flex justify-center items-center">
+          {product.name}
+        </h3>
+
+        <div className="text-base font-medium text-gray-800 flex justify-center items-center">
+          Price: $ {parseInt(product.price)}
+          {product.originalPrice && (
+            <span className="text-sm text-gray-400 line-through ml-2">
+              Rs.{product.originalPrice}
+            </span>
+          )}
+          {product.discount && (
+            <span className="ml-2 text-red-500 text-sm">-{parseInt(product.discount)}%</span>
+          )}
+        </div>
+
+        <div className="text-base font-medium text-red-800 flex justify-center items-center">
+          Final Price: <span className="text-black"> ${parseInt(product.finalPrice)}</span>
+        </div>
+
+        {/* Rating */}
+        <div className="text-sm flex items-center mt-1 justify-center">
+          Rating:
+          <span className="ml-2 flex relative">
+            <div className="flex text-gray-300">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span key={i}>★</span>
+              ))}
+            </div>
+
+            <div
+              className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+              style={{ width: `${(Number(product.rating) / 5) * 100}%` }}
+            >
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span key={i}>★</span>
+              ))}
+            </div>
+          </span>
+
+          <span className="ml-2 text-gray-700">
+            ({product.rating ? Number(product.rating).toFixed(2) : "-"})
+          </span>
+        </div>
+
+        {/* Stock */}
+        <p className="text-sm text-gray-600 mt-1 flex justify-center items-center">
+          Stock:
+          <span
+            className={`ml-2 px-2 py-1 rounded-full text-xs font-semibold ${product.stock > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+              }`}
+          >
+            {product.stock || 0}
+          </span>
+        </p>
+
+        {/* Description */}
+        <p className="text-sm text-gray-500 mt-1 truncate flex justify-center items-center">
+          {product.description || "-"}
+        </p>
+
+        {/* Buttons */}
+        <div className="mt-4 flex space-x-2">
+          <button
+            className="flex-1 bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors text-sm cursor-pointer"
+            onClick={() => handleEditClick(product)}
+          >
+            Edit
+          </button>
+
+          <button
+            className="flex-1 bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition-colors text-sm cursor-pointer"
+            onClick={() => handleDelete(product.id)}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+
   return (
     <div>
       {/* Header */}
@@ -425,22 +546,11 @@ export default function AdminProducts() {
           </div>
 
           {/* Submit Button */}
-          {/* <button
-            type="submit"
-            // disabled={loading}
-            className="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition-colors col-span-full cursor-pointer"
-          >
-            Add Product
-          </button> */}
           <button
             type="submit"
             onClick={handleAddProduct}
             disabled={loading}
-            className={`
-    bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 
-    transition-colors col-span-full cursor-pointer
-    ${loading ? "opacity-70 cursor-not-allowed" : ""}
-  `}
+            className={`bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition-colors col-span-full cursor-pointer ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
           >
             {loading ? "Adding Product..." : "Add Product"}
           </button>
@@ -449,102 +559,34 @@ export default function AdminProducts() {
       </div>
 
 
-
-
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 
-                gap-6 p-6 justify-items-center">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden flex flex-col w-72"
-          >
-            {product.discount && (
-              <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-br-xl z-10">
-                Sale
-              </div>
-            )}
-            <img
-              src={product.image || "https://via.placeholder.com/300x300.png?text=Product"}
-              alt={product.name}
-              className="w-full  h-60 object-contain p-4"
-            />
-
-
-            <div className="p-4 flex flex-col justify-between flex-grow ">
-              <h3 className="text-lg font-semibold mb-1 truncate flex justify-center items-center">{product.name}</h3>
-
-              <div className="text-base font-medium text-gray-800 flex justify-center items-center">
-                Price: $ {parseInt(product.price)}
-                {product.originalPrice && (
-                  <span className="text-sm text-gray-400 line-through ml-2">
-                    Rs.{product.originalPrice}
-                  </span>
-                )}
-                {product.discount && (
-                  <span className="ml-2 text-red-500 text-sm">-{parseInt(product.discount)}%</span>
-                )}
-              </div>
-              <div className="text-base font-medium text-red-800 flex justify-center items-center">
-                Final Price: <span className="text-black"> ${parseInt(product.finalPrice)}</span>
-              </div>
-              <div className="text-sm flex items-center mt-1 justify-center">
-                Rating:
-                <span className="ml-2 flex relative">
-
-                  <div className="flex text-gray-300">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={i}>★</span>
-                    ))}
-                  </div>
-
-                  <div
-                    className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
-                    style={{ width: `${(Number(product.rating) / 5) * 100}%` }}
-                  >
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={i}>★</span>
-                    ))}
-                  </div>
-                </span>
-
-                <span className="ml-2 text-gray-700">
-                  ({product.rating ? Number(product.rating).toFixed(2) : "-"})
-                </span>
-              </div>
-
-              <p className="text-sm text-gray-600 mt-1 flex justify-center items-center">
-                Stock:
-                <span
-                  className={`ml-2 px-2 py-1 rounded-full text-xs font-semibold ${product.stock > 0
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                    }`}
-                >
-                  {product.stock || 0}
-                </span>
-              </p>
-
-              <p className="text-sm text-gray-500 mt-1 truncate flex justify-center items-center">
-                {product.description || "-"}
-              </p>
-
-              <div className="mt-4 flex space-x-2">
-                <button className="flex-1 bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors text-sm cursor-pointer"
-                  onClick={() => handleEditClick(product)}>
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className="flex-1 bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition-colors text-sm cursor-pointer"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+      <h2 className="text-xl font-semibold p-4">Product Ads</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
+        {productAd.length > 0 ? (
+          productAd.map((product) => <ProductCard key={product.id} product={product} />)
+        ) : (
+          <p className="text-gray-600 col-span-full text-center">No Product Ads available</p>
+        )}
       </div>
+
+
+      <h2 className="text-xl font-semibold p-4">View More</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
+        {viewMore.length > 0 ? (
+          viewMore.map((product) => <ProductCard key={product.id} product={product} />)
+        ) : (
+          <p className="text-gray-600 col-span-full text-center">No View More products available</p>
+        )}
+      </div>
+
+      <h2 className="text-xl font-semibold p-4">Best Seller</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
+        {bestSeller.length > 0 ? (
+          bestSeller.map((product) => <ProductCard key={product.id} product={product} />)
+        ) : (
+          <p className="text-gray-600 col-span-full text-center">No Best Sellers available</p>
+        )}
+      </div>
+
 
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
