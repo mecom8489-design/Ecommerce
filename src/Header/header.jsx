@@ -54,17 +54,23 @@ export default function Header() {
   const handleSelect = (name) => {
     setSearchText(name); // Set input box
     setSuggestions([]); // Hide dropdown
-// ✅ Save search to local storage
-let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  
-// Avoid duplicate entries
-if (!history.includes(name)) {
-  history.push(name);
-}
+    // ✅ Save search to local storage
+    let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
-localStorage.setItem("searchHistory", JSON.stringify(history));
+    // Avoid duplicate entries
+    if (!history.includes(name)) {
+      history.push(name);
+    }
+
+    localStorage.setItem("searchHistory", JSON.stringify(history));
     navigate(`/ProductPage?search=${encodeURIComponent(name)}`);
   };
+
+  
+  useEffect(() => {
+    const history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+    console.log("Previous Searches:", history);
+  }, []);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
