@@ -20,6 +20,44 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef();
 
+  // search
+  const [searchText, setSearchText] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = async (value) => {
+    setSearchText(value);
+
+    // If empty input → hide suggestions
+    if (!value.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `https://e-commerce-backend-production-6fa0.up.railway.app/api/search/live-search?query=${value}`
+      );
+
+      const data = await response.json();
+
+      // backend must return { products: [...] }
+      setSuggestions(data.products || []);
+    } catch (error) {
+      console.log("Search error:", error);
+    }
+
+    setLoading(false);
+  };
+  const handleSelect = (name) => {
+    setSearchText(name); // Set input box
+    setSuggestions([]); // Hide dropdown
+
+    navigate(`/ProductPage?search=${encodeURIComponent(name)}`);
+  };
+
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
   // Close menu when clicking outside
@@ -92,9 +130,26 @@ export default function Header() {
             <div className="relative">
               <input
                 type="text"
+                value={searchText}
+                onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search for products, brands and more..."
                 className="w-full py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
+              {/* Suggestions */}
+              {searchText && suggestions.length > 0 && (
+                <div className="absolute left-0 right-0 bg-white shadow-lg rounded-lg mt-1 max-h-60 overflow-y-auto z-50">
+                  {suggestions.map((item) => (
+                    <div
+                      key={item.id || item._id}
+                      onClick={() => handleSelect(item.name)}
+                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                    >
+                      {item.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-yellow-400 text-black p-1 sm:p-2 rounded-lg hover:bg-yellow-500 transition-colors">
                 <Search size={18} />
               </button>
@@ -147,8 +202,9 @@ export default function Header() {
                       {/* Triangle Pointer */}
                       <div className="absolute -top-2 right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-yellow-100"></div>
 
-                      <button className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                       onClick={() => navigate("/my-Profile")}
+                      <button
+                        className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => navigate("/my-Profile")}
                       >
                         <ShoppingBag
                           size={16}
@@ -157,9 +213,9 @@ export default function Header() {
                         My Profile
                       </button>
 
-
-                      <button className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                       onClick={() => navigate("/my-orders")}
+                      <button
+                        className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => navigate("/my-orders")}
                       >
                         <ShoppingBag
                           size={16}
@@ -192,9 +248,6 @@ export default function Header() {
                   >
                     Login
                   </button>
-
-                 
-                
                 </>
               )}
             </div>

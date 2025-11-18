@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Heart, Star, ChevronDown, ChevronRight } from "lucide-react";
 import Header from "../Header/header";
 import image251 from "../assets/images/Best Seller/image-251.png";
@@ -13,143 +13,23 @@ export default function ProductPage() {
   const [expandedCategories, setExpandedCategories] = useState({
     storage: true,
   });
+  const location = useLocation();
+  const query = new URLSearchParams(location.search).get("search");
+
   const navigate = useNavigate(); // ← This is required
-  const products = [
-    {
-      id: 1,
-      name: "RK Grihon Plastic Grocery Container - 1200 ml, 650 ml,...",
-      image:
-        "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
-      rating: 4.2,
-      reviews: 64013,
-      currentPrice: 495,
-      originalPrice: 1590,
-      discount: 69,
-      sponsored: "Sponsored",
-      assured: true,
-      description: "These stylish baby sneakers feature a soft, coral-orange canvas design enhanced with playful black and white striped accents on the toe and collar. The shoes are equipped with white laces and easy-to-fasten eyelets, making them both fashionable and functional for little feet. Their flexible soles and gentle inner lining ensure maximum comfort and support for early walkers, while the unique color and pattern combinations add a vibrant touch to any outfit. Perfect for toddlers, these sneakers blend adorable aesthetics with practical everyday wear.",
-    },
-    {
-      id: 2,
-      name: "Some Product Name",
-      image:
-        "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/2.jpg",
-      rating: 4.4,
-      reviews: 944,
-      currentPrice: 399,
-      originalPrice: 1400,
-      discount: 73,
-      sponsored: "Sponsored",
-      assured: true,
-    },
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    if (!query) return;
 
-    {
-      id: 3,
-      name: "Kitchenify Spice Set Stainless Steel",
-      image: image251,
-      rating: 3.8,
-      reviews: 3763,
-      currentPrice: 120,
-      originalPrice: 849,
-      discount: 85,
-
-      lowStock: true,
-    },
-    {
-      id: 4,
-      name: "DDdecora Dish Drainer Kitchen Rack Plastic 3 in 1 Large ...",
-      image: image15,
-      rating: 4.2,
-      reviews: 18301,
-      currentPrice: 247,
-      originalPrice: 1449,
-      discount: 82,
-
-      assured: true,
-    },
-    {
-      id: 5,
-      name: "Premium Spice Rack Rotating Stand",
-      image: image17,
-      rating: 4.1,
-      reviews: 2156,
-      currentPrice: 899,
-      originalPrice: 1299,
-      discount: 31,
-
-    },
-    {
-      id: 6,
-      name: "Airtight Storage Containers Set",
-      image: image16,
-      rating: 4.3,
-      reviews: 5432,
-      currentPrice: 567,
-      originalPrice: 999,
-      discount: 43,
-      assured: true,
-    }, {
-      id: 7,
-      name: "Some Product Name",
-      image:
-        "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/2.jpg",
-      rating: 4.4,
-      reviews: 944,
-      currentPrice: 399,
-      originalPrice: 1400,
-      discount: 73,
-      sponsored: "Sponsored",
-      assured: true,
-    },
-
-    {
-      id: 8,
-      name: "Kitchenify Spice Set Stainless Steel",
-      image: image251,
-      rating: 3.8,
-      reviews: 3763,
-      currentPrice: 120,
-      originalPrice: 849,
-      discount: 85,
-
-      lowStock: true,
-    },
-    {
-      id: 9,
-      name: "DDdecora Dish Drainer Kitchen Rack Plastic 3 in 1 Large ...",
-      image: image15,
-      rating: 4.2,
-      reviews: 18301,
-      currentPrice: 247,
-      originalPrice: 1449,
-      discount: 82,
-
-      assured: true,
-    },
-    {
-      id: 10,
-      name: "Premium Spice Rack Rotating Stand",
-      image: image17,
-      rating: 4.1,
-      reviews: 2156,
-      currentPrice: 899,
-      originalPrice: 1299,
-      discount: 31,
-
-    },
-    {
-      id: 11,
-      name: "Airtight Storage Containers Set",
-      image: image16,
-      rating: 4.3,
-      reviews: 5432,
-      currentPrice: 567,
-      originalPrice: 999,
-      discount: 43,
-      assured: true,
-    },
-
-  ];
+    fetch(
+      `https://e-commerce-backend-production-6fa0.up.railway.app/api/search/live-search?query=${query}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data.products || []);
+      })
+      .catch((err) => console.log(err));
+  }, [query]);
 
   const categories = [
     { name: "Kitchen Containers", count: 1542 },
@@ -215,8 +95,9 @@ export default function ProductPage() {
                       Kitchen Storage & Co...
                     </span>
                     <ChevronDown
-                      className={`w-4 h-4 transition-transform ${expandedCategories.storage ? "rotate-180" : ""
-                        }`}
+                      className={`w-4 h-4 transition-transform ${
+                        expandedCategories.storage ? "rotate-180" : ""
+                      }`}
                     />
                   </div>
 
@@ -342,7 +223,11 @@ export default function ProductPage() {
                   <div
                     key={product.id}
                     className="bg-white p-4 hover:shadow-lg transition-shadow rounded-xl relative group"
-                    onClick={() => navigate(`/ProductPage/products/${product.id}`, { state: { product } })}
+                    onClick={() =>
+                      navigate(`/ProductPage/products/${product.id}`, {
+                        state: { product },
+                      })
+                    }
                   >
                     {/* Wishlist Heart */}
                     <button className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
@@ -392,9 +277,9 @@ export default function ProductPage() {
                         <span>{product.rating}</span>
                         <Star className="w-3 h-3 fill-current" />
                       </div>
-                      <span className="text-xs text-gray-500">
+                      {/* <span className="text-xs text-gray-500">
                         ({product.reviews.toLocaleString()})
-                      </span>
+                      </span> */}
                     </div>
 
                     {/* Price */}
@@ -419,7 +304,6 @@ export default function ProductPage() {
                   </div>
                 ))}
               </div>
-
             </div>
           </div>
         </div>
