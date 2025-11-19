@@ -30,6 +30,10 @@ export default function product() {
     }
   }, [state, setSelectedProduct]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const product = selectedProduct || state?.product;
   const [quantity, setQuantity] = useState(1);
   const [currentImage, setCurrentImage] = useState(0);
@@ -62,7 +66,7 @@ export default function product() {
     setCurrentImage((prev) => (prev === 0 ? thumbnails.length - 1 : prev - 1));
   const handleNextImage = () =>
     setCurrentImage((prev) => (prev === thumbnails.length - 1 ? 0 : prev + 1));
-  const finalPrice = product.price - (product.price * (product.discount / 100));
+  const finalPrice = product.price - product.price * (product.discount / 100);
 
   return (
     <div>
@@ -209,7 +213,7 @@ export default function product() {
                     product,
                     quantity,
                     totalPrice: Math.floor(finalPrice * quantity),
-                    finalPrice
+                    finalPrice,
                   },
                 })
               }

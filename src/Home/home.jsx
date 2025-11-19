@@ -154,8 +154,6 @@ const Home = () => {
   const scrollStep = 3; // Move 2 products on each scroll
   const maxIndex = Math.max(products.length - itemsPerViews, 0);
 
-
-
   const [viewMore, setViewMore] = useState([]);
   const [bestSeller, setBestSeller] = useState([]);
   const [ProductADs, setProductAds] = useState([]);
@@ -171,20 +169,20 @@ const Home = () => {
     try {
       const response = await getAddedProducts();
 
-
-      const { productAd = [], viewMore = [], bestSeller = [] } = response.data?.data || {};
+      const {
+        productAd = [],
+        viewMore = [],
+        bestSeller = [],
+      } = response.data?.data || {};
       setProductAds(productAd);
       setViewMore(viewMore);
       const formatted = formatBestSellerData(bestSeller);
       setBestSeller(formatted);
-
-
     } catch (err) {
       console.error(err);
       setError(err?.response?.data?.message || "Failed to fetch products.");
     }
   };
-
 
   const formatBestSellerData = (products) => {
     return products.map((product) => ({
@@ -202,9 +200,6 @@ const Home = () => {
       created_at: product.created_at,
     }));
   };
-
-
-
 
   // Auto-rotate every 5 seconds
   useEffect(() => {
@@ -350,7 +345,6 @@ const Home = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
 
   const handleWishlist = (product) => {
     addToWishlist(product);
@@ -506,28 +500,38 @@ const Home = () => {
                   </Link>
 
                   <div className="flex items-center mt-2">
-                    <span className="text-indigo-600 font-bold">₹{product.price}</span>
+                    <span className="text-indigo-600 font-bold">
+                      ₹{product.price}
+                    </span>
                     <span className="text-gray-500 text-sm line-through ml-2">
                       {product.oldPrice}
                     </span>
                   </div>
+                  <div className="text-sm flex items-center mt-1 ">
+                    Rating:
+                    <span className="ml-2 flex relative">
+                      <div className="flex text-gray-300">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
 
-                  <div className="flex items-center mt-2">
-                    <div className="flex text-yellow-400">
-                      {Array.from({ length: 5 }, (_, i) => {
-                        const fullStar = i < Math.floor(product.rating);
-                        const halfStar =
-                          product.rating % 1 !== 0 && i === Math.floor(product.rating);
-                        return fullStar ? (
-                          <i key={i} className="fas fa-star"></i>
-                        ) : halfStar ? (
-                          <i key={i} className="fas fa-star-half-alt"></i>
-                        ) : (
-                          <i key={i} className="far fa-star"></i>
-                        );
-                      })}
-                    </div>
-                    <span className="text-gray-500 text-sm ml-2">({product.reviews})</span>
+                      <div
+                        className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+                        style={{
+                          width: `${(Number(product.rating) / 5) * 100}%`,
+                        }}
+                      >
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+                    </span>
+                    <span className="ml-2 text-gray-700">
+                      (
+                      {product.rating ? Number(product.rating).toFixed(2) : "-"}
+                      )
+                    </span>
                   </div>
                 </div>
               </div>
@@ -569,8 +573,9 @@ const Home = () => {
           <div
             className="flex gap-4 sm:gap-6 transition-transform duration-700 ease-in-out"
             style={{
-              transform: `translateX(-${(100 / products.length) * currentIndex
-                }%)`,
+              transform: `translateX(-${
+                (100 / products.length) * currentIndex
+              }%)`,
               width: `${(products.length / itemsPerViews) * 100}%`,
             }}
           >
@@ -594,13 +599,14 @@ const Home = () => {
                   <button
                     onClick={() => toggleFavorite(product.id)}
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
-                  // onClick={() => handleWishlist(product)}
+                    // onClick={() => handleWishlist(product)}
                   >
                     <Heart
-                      className={`w-5 h-5 ${favorites.has(product.id)
-                        ? "fill-red-500 text-red-500"
-                        : "text-gray-400"
-                        }`}
+                      className={`w-5 h-5 ${
+                        favorites.has(product.id)
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-400"
+                      }`}
                     />
                   </button>
                   <span
@@ -629,10 +635,11 @@ const Home = () => {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-4 h-4 ${i < Math.floor(product.rating)
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
-                            }`}
+                          className={`w-4 h-4 ${
+                            i < Math.floor(product.rating)
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300"
+                          }`}
                         />
                       ))}
                     </div>

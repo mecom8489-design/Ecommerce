@@ -1,8 +1,13 @@
 import { Package } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { Adminproductses, getAllCategories, getAddedProducts, deleteAdminProducts, AdminUpdateproduct } from "../apiroutes/adminApi";
-import { toast } from 'react-toastify';
-
+import {
+  Adminproductses,
+  getAllCategories,
+  getAddedProducts,
+  deleteAdminProducts,
+  AdminUpdateproduct,
+} from "../apiroutes/adminApi";
+import { toast } from "react-toastify";
 
 export default function AdminProducts() {
   const [productAd, setProductAd] = useState([]);
@@ -33,8 +38,6 @@ export default function AdminProducts() {
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
 
-
-
   useEffect(() => {
     if (!hasFetched.current) {
       hasFetched.current = true;
@@ -47,7 +50,7 @@ export default function AdminProducts() {
       hasFetches.current = true;
       fetchProducts();
     }
-  }, [])
+  }, []);
 
   const fetchCategories = async () => {
     try {
@@ -55,10 +58,12 @@ export default function AdminProducts() {
       const rawData = Array.isArray(response.data)
         ? response.data
         : Array.isArray(response.data.categories)
-          ? response.data.categories
-          : [];
+        ? response.data.categories
+        : [];
 
-      const categoryNames = [...new Set(rawData.map(item => item.productCategory))];
+      const categoryNames = [
+        ...new Set(rawData.map((item) => item.productCategory)),
+      ];
 
       setCategories(categoryNames);
     } catch (err) {
@@ -66,8 +71,6 @@ export default function AdminProducts() {
       setError(err?.response?.data?.message || "Failed to fetch categories.");
     }
   };
-
-
 
   const fetchProducts = async () => {
     try {
@@ -81,33 +84,51 @@ export default function AdminProducts() {
       console.log(productAd);
       console.log(viewMore);
       console.log(bestSeller);
-
-
     } catch (err) {
       console.error(err);
       setError(err?.response?.data?.message || "Failed to fetch categories.");
     }
   };
 
-
-
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
+    // Handle image upload
     if (name === "image" && files.length > 0) {
       setNewProduct({
         ...newProduct,
         image: files[0],
         imagePreview: URL.createObjectURL(files[0]),
       });
-    } else {
-      setNewProduct({ ...newProduct, [name]: value });
+      return;
     }
+
+    let newValue = value;
+
+    // Allow only numbers for rating and discount
+    if (name === "rating" || name === "discount") {
+      if (!/^\d*\.?\d*$/.test(value)) return; // Block non-numeric input
+    }
+
+    // Apply limits
+    if (name === "rating" && value > 5) newValue = 5;
+    if (name === "discount" && value > 100) newValue = 100;
+
+    setNewProduct({
+      ...newProduct,
+      [name]: newValue,
+    });
   };
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
-    if (!newProduct.name || !newProduct.price || !newProduct.image || !newProduct.category) {
+    if (
+      !newProduct.name ||
+      !newProduct.price ||
+      !newProduct.image ||
+      !newProduct.category
+    ) {
       toast.error("Please provide name, price,category and image.");
       return;
     }
@@ -143,18 +164,15 @@ export default function AdminProducts() {
         fileInputRef.current.value = "";
       }
 
-
       toast.success("Product added successfully ");
       fetchProducts();
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "Failed to add product  ");
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
-
 
   const handleDelete = (userId) => {
     setDeleteProId(userId);
@@ -177,7 +195,6 @@ export default function AdminProducts() {
     }
   };
 
-
   const handleEditClick = (product) => {
     setCurrentProduct({
       ...product,
@@ -193,16 +210,22 @@ export default function AdminProducts() {
     setisProductModalOpen(true);
   };
 
-
   const handleProductInputChange = (e) => {
     const { name, value } = e.target;
+
+    let newValue = value;
+
+    if (name === "discount") {
+      if (value === "") newValue = ""; // allow empty while typing
+      else if (value > 100) newValue = 100; // cap at 100
+      else if (value < 0) newValue = 0; // prevent negative
+    }
+
     setCurrentProduct((prevProduct) => ({
       ...prevProduct,
-      [name]: value,
+      [name]: newValue,
     }));
   };
-
-
 
   const handleProductSave = async () => {
     try {
@@ -245,11 +268,11 @@ export default function AdminProducts() {
       fetchProducts(); // refresh product list
     } catch (error) {
       console.error("Update Error:", error);
-      toast.error(error?.response?.data?.message || "Failed to update product ");
+      toast.error(
+        error?.response?.data?.message || "Failed to update product "
+      );
     }
   };
-
-
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -257,7 +280,7 @@ export default function AdminProducts() {
       setImagePreview(URL.createObjectURL(file));
 
       // If you're also setting it to currentProduct for upload later:
-      setCurrentProduct(prev => ({
+      setCurrentProduct((prev) => ({
         ...prev,
         image: file, // You might need this for form submission
       }));
@@ -276,7 +299,10 @@ export default function AdminProducts() {
       )}
 
       <img
-        src={product.image || "https://via.placeholder.com/300x300.png?text=Product"}
+        src={
+          product.image ||
+          "https://via.placeholder.com/300x300.png?text=Product"
+        }
         alt={product.name}
         className="w-full h-60 object-contain p-4"
       />
@@ -294,12 +320,15 @@ export default function AdminProducts() {
             </span>
           )}
           {product.discount && (
-            <span className="ml-2 text-red-500 text-sm">-{parseInt(product.discount)}%</span>
+            <span className="ml-2 text-red-500 text-sm">
+              -{parseInt(product.discount)}%
+            </span>
           )}
         </div>
 
         <div className="text-base font-medium text-red-800 flex justify-center items-center">
-          Final Price: <span className="text-black"> ${parseInt(product.finalPrice)}</span>
+          Final Price:{" "}
+          <span className="text-black"> ${parseInt(product.finalPrice)}</span>
         </div>
 
         {/* Rating */}
@@ -321,7 +350,6 @@ export default function AdminProducts() {
               ))}
             </div>
           </span>
-
           <span className="ml-2 text-gray-700">
             ({product.rating ? Number(product.rating).toFixed(2) : "-"})
           </span>
@@ -331,8 +359,11 @@ export default function AdminProducts() {
         <p className="text-sm text-gray-600 mt-1 flex justify-center items-center">
           Stock:
           <span
-            className={`ml-2 px-2 py-1 rounded-full text-xs font-semibold ${product.stock > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-              }`}
+            className={`ml-2 px-2 py-1 rounded-full text-xs font-semibold ${
+              product.stock > 0
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
           >
             {product.stock || 0}
           </span>
@@ -363,7 +394,6 @@ export default function AdminProducts() {
     </div>
   );
 
-
   return (
     <div>
       {/* Header */}
@@ -378,13 +408,14 @@ export default function AdminProducts() {
 
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-lg font-semibold mb-4">Add New Product</h2>
-        <form
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          onSubmit={handleAddProduct}
-        >
+
+        {/* Removed the <form> tag */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Product Name */}
           <div className="flex flex-col">
-            <label htmlFor="name" className="mb-1 font-medium">Product Name</label>
+            <label htmlFor="name" className="mb-1 font-medium">
+              Product Name
+            </label>
             <input
               id="name"
               type="text"
@@ -399,7 +430,9 @@ export default function AdminProducts() {
 
           {/* Price */}
           <div className="flex flex-col">
-            <label htmlFor="price" className="mb-1 font-medium">Price</label>
+            <label htmlFor="price" className="mb-1 font-medium">
+              Price
+            </label>
             <input
               id="price"
               type="text"
@@ -414,7 +447,9 @@ export default function AdminProducts() {
 
           {/* Rating */}
           <div className="flex flex-col">
-            <label htmlFor="rating" className="mb-1 font-medium">Rating (0-5)</label>
+            <label htmlFor="rating" className="mb-1 font-medium">
+              Rating (0-5)
+            </label>
             <input
               id="rating"
               type="text"
@@ -428,7 +463,9 @@ export default function AdminProducts() {
 
           {/* Discount */}
           <div className="flex flex-col">
-            <label htmlFor="discount" className="mb-1 font-medium">Discount (%)</label>
+            <label htmlFor="discount" className="mb-1 font-medium">
+              Discount (%)
+            </label>
             <input
               id="discount"
               type="text"
@@ -442,7 +479,9 @@ export default function AdminProducts() {
 
           {/* Category */}
           <div className="flex flex-col">
-            <label htmlFor="category" className="mb-1 font-medium">Category</label>
+            <label htmlFor="category" className="mb-1 font-medium">
+              Category
+            </label>
             <select
               id="category"
               name="category"
@@ -459,9 +498,11 @@ export default function AdminProducts() {
             </select>
           </div>
 
-          {/* Exclusive Offer Dropdown */}
+          {/* Offer */}
           <div className="flex flex-col">
-            <label htmlFor="offer" className="mb-1 font-medium">Select Offer</label>
+            <label htmlFor="offer" className="mb-1 font-medium">
+              Select Offer
+            </label>
             <select
               id="offer"
               name="offer"
@@ -469,7 +510,7 @@ export default function AdminProducts() {
               onChange={handleChange}
               className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400 cursor-pointer"
             >
-              <option value="" >Select an Offer</option>
+              <option value="">Select an Offer</option>
               <option value="productAd">Product Ad</option>
               <option value="bestSeller">BestSeller</option>
             </select>
@@ -477,7 +518,9 @@ export default function AdminProducts() {
 
           {/* Stock */}
           <div className="flex flex-col">
-            <label htmlFor="stock" className="mb-1 font-medium">Stock</label>
+            <label htmlFor="stock" className="mb-1 font-medium">
+              Stock
+            </label>
             <input
               id="stock"
               type="text"
@@ -491,7 +534,9 @@ export default function AdminProducts() {
 
           {/* Description */}
           <div className="flex flex-col sm:col-span-2 lg:col-span-3">
-            <label htmlFor="description" className="mb-1 font-medium">Description</label>
+            <label htmlFor="description" className="mb-1 font-medium">
+              Description
+            </label>
             <textarea
               id="description"
               name="description"
@@ -504,7 +549,9 @@ export default function AdminProducts() {
 
           {/* Image */}
           <div className="flex flex-col">
-            <label htmlFor="image" className="mb-1 font-medium">Product Image</label>
+            <label htmlFor="image" className="mb-1 font-medium">
+              Product Image
+            </label>
             <input
               id="image"
               type="file"
@@ -525,26 +572,30 @@ export default function AdminProducts() {
 
           {/* Submit Button */}
           <button
-            type="submit"
+            type="button"
             onClick={handleAddProduct}
             disabled={loading}
-            className={`bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition-colors col-span-full cursor-pointer ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+            className={`bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition-colors col-span-full cursor-pointer ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
           >
             {loading ? "Adding Product..." : "Add Product"}
           </button>
-
-        </form>
+        </div>
       </div>
-
 
       <h2 className="text-xl font-semibold p-4 rounded-md bg-white text-indigo-800 border-l-4 border-indigo-500 shadow-sm">
         Product Ads
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
         {productAd.length > 0 ? (
-          productAd.map((product) => <ProductCard key={product.id} product={product} />)
+          productAd.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))
         ) : (
-          <p className="text-gray-600 col-span-full text-center">No Product Ads available</p>
+          <p className="text-gray-600 col-span-full text-center">
+            No Product Ads available
+          </p>
         )}
       </div>
 
@@ -553,9 +604,13 @@ export default function AdminProducts() {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
         {viewMore.length > 0 ? (
-          viewMore.map((product) => <ProductCard key={product.id} product={product} />)
+          viewMore.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))
         ) : (
-          <p className="text-gray-600 col-span-full text-center">No View More products available</p>
+          <p className="text-gray-600 col-span-full text-center">
+            No View More products available
+          </p>
         )}
       </div>
 
@@ -564,12 +619,15 @@ export default function AdminProducts() {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
         {bestSeller.length > 0 ? (
-          bestSeller.map((product) => <ProductCard key={product.id} product={product} />)
+          bestSeller.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))
         ) : (
-          <p className="text-gray-600 col-span-full text-center">No Best Sellers available</p>
+          <p className="text-gray-600 col-span-full text-center">
+            No Best Sellers available
+          </p>
         )}
       </div>
-
 
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
@@ -578,7 +636,8 @@ export default function AdminProducts() {
               Confirm Deletion
             </h2>
             <p className="text-center text-gray-700 mb-6">
-              Are you sure you want to delete this user? This action cannot be undone.
+              Are you sure you want to delete this user? This action cannot be
+              undone.
             </p>
             <div className="flex justify-end gap-3">
               <button
@@ -598,17 +657,20 @@ export default function AdminProducts() {
         </div>
       )}
 
-
       {isProductModalOpen && currentProduct && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl">
-            <h2 className="text-xl font-semibold mb-4 text-center">Edit Product</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center">
+              Edit Product
+            </h2>
 
             <div className="space-y-4">
-
               {/* Product Name */}
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Product Name
                 </label>
                 <input
@@ -624,7 +686,10 @@ export default function AdminProducts() {
 
               {/* Price */}
               <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="price"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Price
                 </label>
                 <input
@@ -640,7 +705,10 @@ export default function AdminProducts() {
 
               {/* Discount */}
               <div>
-                <label htmlFor="discount" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="discount"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Discount (%)
                 </label>
                 <input
@@ -656,7 +724,10 @@ export default function AdminProducts() {
 
               {/* Stock */}
               <div>
-                <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="stock"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Stock
                 </label>
                 <input
@@ -672,7 +743,10 @@ export default function AdminProducts() {
 
               {/* Offer Dropdown */}
               <div className="flex flex-col">
-                <label htmlFor="offer" className="mb-1 font-medium text-gray-700">
+                <label
+                  htmlFor="offer"
+                  className="mb-1 font-medium text-gray-700"
+                >
                   Select Offer
                 </label>
                 <select
@@ -690,7 +764,10 @@ export default function AdminProducts() {
 
               {/* Description */}
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Description
                 </label>
                 <textarea
@@ -705,7 +782,10 @@ export default function AdminProducts() {
 
               {/* Image Upload */}
               <div>
-                <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="image"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Product Image
                 </label>
                 <input
@@ -717,9 +797,17 @@ export default function AdminProducts() {
                 />
 
                 {imagePreview ? (
-                  <img src={imagePreview} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="mt-2 w-32 h-32 object-cover rounded"
+                  />
                 ) : currentProduct?.image ? (
-                  <img src={currentProduct.image} alt="Product" className="mt-2 w-32 h-32 object-cover rounded" />
+                  <img
+                    src={currentProduct.image}
+                    alt="Product"
+                    className="mt-2 w-32 h-32 object-cover rounded"
+                  />
                 ) : null}
               </div>
             </div>
