@@ -19,7 +19,7 @@ export default function MoreToLove({products}) {
   return (
     <div className=" min-h-screen py-8 mt-10">
       <div className="max-w-8xl mx-auto px-20">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+        <h1 className="text-3xl font-bold text-center mb-8 text-red-600">
           More to love
         </h1>
 

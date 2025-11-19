@@ -67,20 +67,7 @@ export default function AdminProducts() {
     }
   };
 
-  // const fetchProducts = async () => {
-  //   try {
-  //     const response = await getAddedProducts();
-  //     const rawData = Array.isArray(response.data)
-  //       ? response.data
-  //       : Array.isArray(response.data.products)
-  //         ? response.data.products
-  //         : [];
-  //     setProducts(rawData);
-  //   } catch (err) {
-  //     console.error(err);
-  //     setError(err?.response?.data?.message || "Failed to fetch categories.");
-  //   }
-  // };
+
 
   const fetchProducts = async () => {
     try {
@@ -233,7 +220,6 @@ export default function AdminProducts() {
       // Remove unwanted fields if your backend doesn’t accept them
       delete updatedProduct.created_at;
       delete updatedProduct.updated_at;
-
       // If image is a File, send as FormData
       let payload;
       if (updatedProduct.image instanceof File) {
@@ -254,14 +240,7 @@ export default function AdminProducts() {
 
       // API call (replace with your function)
       const response = await AdminUpdateproduct(currentProduct.id, payload);
-
-      // Normalize response
-      const productsArray = Array.isArray(response.data)
-        ? response.data
-        : response.data.products || [];
-
-      setProducts(productsArray);
-      toast.success("Product updated successfully ");
+      toast.success(response?.data?.message);
       setisProductModalOpen(false);
       fetchProducts(); // refresh product list
     } catch (error) {
@@ -491,9 +470,8 @@ export default function AdminProducts() {
               className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400 cursor-pointer"
             >
               <option value="" >Select an Offer</option>
-              <option value="specialoffer">Special Offer</option>
-              <option value="limitedtimedeal">Limited Time Deal</option>
-              <option value="exclusiveoffer">Exclusive Offer</option>
+              <option value="productAd">Product Ad</option>
+              <option value="bestSeller">BestSeller</option>
             </select>
           </div>
 
@@ -559,7 +537,9 @@ export default function AdminProducts() {
       </div>
 
 
-      <h2 className="text-xl font-semibold p-4">Product Ads</h2>
+      <h2 className="text-xl font-semibold p-4 rounded-md bg-white text-indigo-800 border-l-4 border-indigo-500 shadow-sm">
+        Product Ads
+      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
         {productAd.length > 0 ? (
           productAd.map((product) => <ProductCard key={product.id} product={product} />)
@@ -568,8 +548,9 @@ export default function AdminProducts() {
         )}
       </div>
 
-
-      <h2 className="text-xl font-semibold p-4">View More</h2>
+      <h2 className="text-xl font-semibold p-4 rounded-md bg-white text-indigo-800 border-l-4 border-indigo-500 shadow-sm">
+        View More
+      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
         {viewMore.length > 0 ? (
           viewMore.map((product) => <ProductCard key={product.id} product={product} />)
@@ -578,7 +559,9 @@ export default function AdminProducts() {
         )}
       </div>
 
-      <h2 className="text-xl font-semibold p-4">Best Seller</h2>
+      <h2 className="text-xl font-semibold p-4 rounded-md bg-white text-indigo-800 border-l-4 border-indigo-500 shadow-sm">
+        Best Seller
+      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
         {bestSeller.length > 0 ? (
           bestSeller.map((product) => <ProductCard key={product.id} product={product} />)
@@ -700,9 +683,8 @@ export default function AdminProducts() {
                   className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                 >
                   <option value="">Select an Offer</option>
-                  <option value="specialoffer">Special Offer</option>
-                  <option value="limitedtimedeal">Limited Time Deal</option>
-                  <option value="exclusiveoffer">Exclusive Offer</option>
+                  <option value="productAd">Product Ad</option>
+                  <option value="bestSeller">Best Seller</option>
                 </select>
               </div>
 
@@ -731,9 +713,7 @@ export default function AdminProducts() {
                   id="image"
                   name="image"
                   onChange={handleImageUpload}
-                  className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4
-              file:rounded file:border-0 file:text-sm file:font-semibold
-              file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                  className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                 />
 
                 {imagePreview ? (
@@ -762,8 +742,6 @@ export default function AdminProducts() {
           </div>
         </div>
       )}
-
-
     </div>
   );
 }

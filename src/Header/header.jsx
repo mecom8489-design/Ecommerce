@@ -258,7 +258,7 @@ export default function Header() {
                 <>
                   <button
                     onClick={() => setShowSignIn(true)}
-                    className="bg-yellow-400 text-black px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors text-sm font-semibold"
+                    className="bg-yellow-400 text-black px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors text-sm font-semibold cursor-pointer"
                   >
                     Login
                   </button>

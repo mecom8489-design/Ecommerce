@@ -353,26 +353,8 @@ const Home = () => {
 
 
   const handleWishlist = (product) => {
-    // const isLoggedIn = localStorage.getItem("token"); // or however you track login
-
-    // if (isLoggedIn) {
-    //   // Save to backend (API call)
-    //   fetch("http://localhost:5000/api/wishlist", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${isLoggedIn}`,
-    //     },
-    //     body: JSON.stringify(product),
-    //   })
-    //     .then((res) => res.json())
-    //     .then((data) => alert("Added to wishlist!"))
-    //     .catch((err) => console.error("Error:", err));
-    // } else {
-    // Save to localStorage
     addToWishlist(product);
     alert("Added to wishlist ❤️");
-    // }
   };
 
   return (
@@ -405,9 +387,7 @@ const Home = () => {
 
                   {/* Button */}
                   <button
-                    className="text-yellow-800 font-bold text-sm px-[65px] py-[14px] bg-no-repeat bg-cover bg-center cursor-pointer 
-             transition duration-300 ease-in-out 
-             transform hover:scale-130"
+                    className="text-yellow-800 font-bold text-sm px-[65px] py-[14px] bg-no-repeat bg-cover bg-center cursor-pointer transition duration-300 ease-in-out transform hover:scale-130"
                     style={{
                       backgroundImage: `url(${buttonBg})`,
                       backgroundColor: "transparent",
@@ -471,8 +451,10 @@ const Home = () => {
 
       {/* Best Sellers */}
       <section className="py-5  mt-4">
-        <div className="container mx-auto px-4">
-
+        <div className="container  mx-auto px-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            Best Sellers
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 [@media(min-width:1800px)]:grid-cols-7 gap-4 w-full">
             {bestSeller.map((product) => (
               <div
