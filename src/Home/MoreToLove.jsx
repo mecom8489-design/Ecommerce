@@ -3,8 +3,7 @@ import { Star, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext"; // top of file
 
-
-export default function MoreToLove({products}) {
+export default function MoreToLove({ products }) {
   console.log(products);
   const [visibleCount, setVisibleCount] = useState(18); // Show first 18 initially
   const navigate = useNavigate(); // ← This is required
@@ -15,7 +14,6 @@ export default function MoreToLove({products}) {
   // const visibleProducts = products.slice(0, visibleCount);
   const visibleProducts = (products || []).slice(0, visibleCount);
 
- 
   return (
     <div className=" min-h-screen py-8 mt-10">
       <div className="max-w-8xl mx-auto px-20">
@@ -64,23 +62,18 @@ export default function MoreToLove({products}) {
 
               {/* Product Details */}
               <div className="p-4">
-                <div className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">
-                  {product.category}
-                </div>
-
                 <h3 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2 group-hover:text-yellow-600 transition-colors">
                   {product.name}
                 </h3>
 
-
                 {/* Price */}
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xl font-bold text-gray-900">
-                    ${Math.floor(product.finalPrice)}
+                    ₹{Math.floor(product.finalPrice)}
                   </span>
                   {product.originalPrice && (
                     <span className="text-sm text-gray-400 line-through">
-                      ${product.originalPrice}
+                      ₹{product.originalPrice}
                     </span>
                   )}
                   {product.discount && (
@@ -91,16 +84,29 @@ export default function MoreToLove({products}) {
                 </div>
 
                 {/* Rating & Sold */}
-                <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
-                  {product.rating && (
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                      <span>{product.rating}</span>
+                <div className="text-sm flex items-center mt-1 ">
+                  Rating:
+                  <span className="ml-2 flex relative">
+                    <div className="flex text-gray-300">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i}>★</span>
+                      ))}
                     </div>
-                  )}
-                  {product.sold && (
-                    <span className="text-gray-500">{product.sold} sold</span>
-                  )}
+
+                    <div
+                      className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+                      style={{
+                        width: `${(Number(product.rating) / 5) * 100}%`,
+                      }}
+                    >
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i}>★</span>
+                      ))}
+                    </div>
+                  </span>
+                  <span className="ml-2 text-gray-700">
+                    ({product.rating ? Number(product.rating).toFixed(2) : "-"})
+                  </span>
                 </div>
 
                 {/* Badges */}

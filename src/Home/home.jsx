@@ -23,28 +23,15 @@ import image5 from "../assets/landing-page-images/image5.png";
 import image8 from "../assets/landing-page-images/image8.png";
 import Jacket from "../assets/images/products/jacket-1.jpg";
 import bucket from "../assets/images/products/bucket.png";
-import shirt from "../assets/images/products/shirt-1.jpg";
 import shoe from "../assets/images/products/shoe-1.jpg";
 import shorts from "../assets/images/products/shorts-1.jpg";
 import watch from "../assets/images/products/watch-1.jpg";
 import perfume from "../assets/images/products/perfume.jpg";
 import jewellery from "../assets/images/products/jewellery-1.jpg";
 import oilDispenser from "../assets/images/products/oil Dispenser.png";
-import BrowseCategories from "./browseCategories";
 import ProductAD from "./ProductAD";
 import buttonBg from "../assets/landing-page-images/button.png"; // adjust path if needed
-import PromoUI from "./PromoUI";
-import image251 from "../assets/images/Best Seller/image-251.png";
-import image15 from "../assets/images/Best Seller/image15.png";
-import image17 from "../assets/images/Best Seller/image17.png";
-import image16 from "../assets/images/Best Seller/image__16.png";
-import Landing from "./landing";
 import MoreToLove from "./MoreToLove"; // Import the MoreToLove component
-import SuperDeals from "./SuperDeals";
-import PetStoreUI from "./PetStore";
-import FlashDealsUI from "./FlashDeals";
-import HotCategories from "./HotCategories";
-import { GetSlides } from "../apiroutes/authApi";
 import { useCart } from "../context/CartContext"; // top of file
 import { useNavigate } from "react-router-dom";
 import { addToWishlist } from "../utils/wishlistUtils";
@@ -58,105 +45,15 @@ const Home = () => {
 
   const { addToCart } = useCart();
   const navigate = useNavigate(); // ← This is required
-  const products = [
-    {
-      id: 1,
-      brand: "MAISON FRANCIS KURKDJIAN",
-      name: "Baccarat Rouge 540 edp spray 70ml",
-      price: 245,
-      image: Jacket,
-      badge: "Bestseller",
-      rating: 4.8,
-      reviews: 1234,
-    },
-    {
-      id: 2,
-      brand: "CREED",
-      name: " Multipurposes Plastic Bucket  20Ltr",
-      price: 220,
-      image: bucket,
-      badge: "Bestseller",
-      rating: 4.9,
-      reviews: 2156,
-    },
-    {
-      id: 3,
-      brand: "VICTORIA BECKHAM BEAUTY",
-      name: "oil Dispenser",
-      price: 32,
-      image: oilDispenser,
-      badge: "Bestseller",
-      rating: 4.6,
-      reviews: 892,
-    },
-    {
-      id: 4,
-      brand: "VIVIENNE WESTWOOD JEWELLERY",
-      name: "Mini Bas Relief brass and cubic zirconia pendant...",
-      price: 105,
-      image: shoe,
-      badge: "Bestseller",
-      rating: 4.7,
-      reviews: 456,
-    },
-    {
-      id: 5,
-      brand: "COMME DES GARCONS",
-      name: "Comme des Garçons PLAY x Converse canvas...",
-      price: 140,
-      image: shorts,
-      badge: "Limited Edition",
-      rating: 4.5,
-      reviews: 789,
-    },
-    {
-      id: 6,
-      brand: "VEUVE CLICQUOT",
-      name: "City Arrow limited-edition Brut NV champagne 75cl",
-      price: 74,
-      image: watch,
-      badge: "Personalise me",
-      rating: 4.8,
-      reviews: 324,
-    },
-    {
-      id: 7,
-      brand: "UGG",
-      name: "Classic Ultra Mini sheepskin boots",
-      price: 155,
-      image: perfume,
-      badge: "Bestseller",
-      rating: 4.9,
-      reviews: 1567,
-    },
-    {
-      id: 8,
-      brand: "VIVIENNE WESTWOOD JEWELLERY",
-      name: "Mayfair bas relief earrings",
-      price: 95,
-      image: jewellery,
-      badge: "Bestseller",
-      rating: 4.6,
-      reviews: 234,
-    },
-    {
-      id: 9,
-      brand: "DIOR",
-      name: "DIOR Addict Lip Glow Oil 6ml",
-      price: 33,
-      image: image1,
-      badge: "Bestseller",
-      rating: 4.7,
-      reviews: 2890,
-    },
-  ];
-  const itemsPerViews = 0; // Show 6 products initially
-  const scrollStep = 3; // Move 2 products on each scroll
-  const maxIndex = Math.max(products.length - itemsPerViews, 0);
 
   const [viewMore, setViewMore] = useState([]);
   const [bestSeller, setBestSeller] = useState([]);
   const [ProductADs, setProductAds] = useState([]);
+  const [recommended, setRecommended] = useState([]);
+  const itemsPerViews = 0; // Show 6 products initially
+  const scrollStep = 3; // Move 2 products on each scroll
+  const maxIndex = Math.max(recommended.length - itemsPerViews, 0);
+
   const hasFetched = useRef(false);
   useEffect(() => {
     if (!hasFetched.current) {
@@ -173,11 +70,13 @@ const Home = () => {
         productAd = [],
         viewMore = [],
         bestSeller = [],
+        recommended = [],
       } = response.data?.data || {};
-      setProductAds(productAd);
+      setProductAds(productAd.slice(-1));
       setViewMore(viewMore);
+      setRecommended(recommended);
       const formatted = formatBestSellerData(bestSeller);
-      setBestSeller(formatted);
+      setBestSeller(formatted.slice(-14));
     } catch (err) {
       console.error(err);
       setError(err?.response?.data?.message || "Failed to fetch products.");
@@ -560,7 +459,7 @@ const Home = () => {
             </button>
             <button
               onClick={handleNext}
-              disabled={currentIndex + itemsPerView >= products.length}
+              disabled={currentIndex + itemsPerView >= recommended.length}
               className="p-2 rounded-full bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-5 h-5 text-gray-600" />
@@ -574,12 +473,12 @@ const Home = () => {
             className="flex gap-4 sm:gap-6 transition-transform duration-700 ease-in-out"
             style={{
               transform: `translateX(-${
-                (100 / products.length) * currentIndex
+                (100 / recommended.length) * currentIndex
               }%)`,
-              width: `${(products.length / itemsPerViews) * 100}%`,
+              width: `${(recommended.length / itemsPerViews) * 100}%`,
             }}
           >
-            {products.map((product) => (
+            {recommended.map((product) => (
               <div
                 key={product.id}
                 className="flex-shrink-0 w-[calc(100%/1.5)] sm:w-[calc(100%/2.5)] md:w-[calc(100%/3.5)] lg:w-[calc(100%/4.5)] xl:w-[calc(90%/7)] bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.03]"
@@ -590,16 +489,19 @@ const Home = () => {
                 }
               >
                 {/* Image Section */}
-                <div className="relative h-48 bg-white">
+                <div className="relative h-48 bg-white flex items-center justify-center">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="max-h-full object-contain"
                   />
+
                   <button
-                    onClick={() => toggleFavorite(product.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(product.id);
+                    }}
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
-                    // onClick={() => handleWishlist(product)}
                   >
                     <Heart
                       className={`w-5 h-5 ${
@@ -609,53 +511,70 @@ const Home = () => {
                       }`}
                     />
                   </button>
-                  <span
-                    className={`absolute bottom-3 left-3 px-2.5 py-1 text-xs font-bold rounded-full ${getBadgeColor(
-                      product.badge
-                    )} bg-opacity-80 shadow`}
-                  >
-                    {product.badge}
-                  </span>
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4 flex flex-col justify-between h-[calc(100%-12rem)] space-y-3">
+                <div className="p-4 flex flex-col justify-between h-[calc(100%-12rem)] space-y-1">
                   <div>
-                    <h3 className="text-xs text-indigo-600 font-semibold uppercase tracking-wider">
-                      {product.brand}
-                    </h3>
-                    <p className="text-sm font-medium text-gray-800 line-clamp-2">
+                    <h3 className="text-xl font-bold text-slate-800  line-clamp-2 group-hover:text-yellow-600 transition-colors">
                       {product.name}
-                    </p>
+                    </h3>
                   </div>
+
+                  <div className="flex items-center gap-2 ">
+                    <span className="text-xl font-bold text-gray-900">
+                      ₹{Math.floor(product.finalPrice)}
+                    </span>
+                    {product.originalPrice && (
+                      <span className="text-sm text-gray-400 line-through">
+                        ₹{product.originalPrice}
+                      </span>
+                    )}
+                    {product.discount && (
+                      <span className="text-sm font-medium text-green-600">
+                        {Math.floor(product.discount)}% OFF
+                      </span>
+                    )}
+                  </div>
+                  {/* Price & Cart */}
 
                   {/* Rating */}
-                  <div className="flex items-center gap-1">
-                    <div className="flex gap-[1px]">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(product.rating)
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      {product.rating} ({product.reviews})
+                  <div className="text-sm flex items-center mt-1 ">
+                    Rating:
+                    <span className="ml-2 flex relative">
+                      <div className="flex text-gray-300">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+
+                      <div
+                        className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+                        style={{
+                          width: `${(Number(product.rating) / 5) * 100}%`,
+                        }}
+                      >
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+                    </span>
+                    <span className="ml-2 text-gray-700">
+                      (
+                      {product.rating ? Number(product.rating).toFixed(2) : "-"}
+                      )
                     </span>
                   </div>
-
-                  {/* Price & Cart */}
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-semibold text-gray-900">
-                      {product.price}
-                    </span>
+                    <div className="text-[14px] font-bold">
+                      Available Stocks:<span className="text-red-600"> {product.stock}</span>
+                    </div>
                     <button
                       className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 transition duration-200 hover:scale-105"
-                      onClick={() => addToCart(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product);
+                      }}
                     >
                       <ShoppingCart className="w-5 h-5" />
                     </button>
@@ -665,21 +584,6 @@ const Home = () => {
             ))}
           </div>
         </div>
-
-        {/* Dot Indicator */}
-        {/* <div className="flex justify-center mt-6 gap-2">
-          {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => scrollToIndex(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === Math.floor(currentIndex / itemsPerView)
-                  ? "bg-black w-6"
-                  : "bg-gray-300 w-2 hover:bg-gray-400"
-              }`}
-            />
-          ))}
-        </div> */}
       </div>
 
       {/* Pet Store UI Section  */}

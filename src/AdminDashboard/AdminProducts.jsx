@@ -13,6 +13,7 @@ export default function AdminProducts() {
   const [productAd, setProductAd] = useState([]);
   const [viewMore, setViewMore] = useState([]);
   const [bestSeller, setBestSeller] = useState([]);
+  const [recommended, setRecommended] = useState([]);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -81,9 +82,7 @@ export default function AdminProducts() {
       setProductAd(data.productAd || []);
       setViewMore(data.viewMore || []);
       setBestSeller(data.bestSeller || []);
-      console.log(productAd);
-      console.log(viewMore);
-      console.log(bestSeller);
+      setRecommended(data.recommended || []);
     } catch (err) {
       console.error(err);
       setError(err?.response?.data?.message || "Failed to fetch categories.");
@@ -313,7 +312,7 @@ export default function AdminProducts() {
         </h3>
 
         <div className="text-base font-medium text-gray-800 flex justify-center items-center">
-          Price: $ {parseInt(product.price)}
+          Price: ₹ {parseInt(product.price)}
           {product.originalPrice && (
             <span className="text-sm text-gray-400 line-through ml-2">
               Rs.{product.originalPrice}
@@ -328,7 +327,7 @@ export default function AdminProducts() {
 
         <div className="text-base font-medium text-red-800 flex justify-center items-center">
           Final Price:{" "}
-          <span className="text-black"> ${parseInt(product.finalPrice)}</span>
+          <span className="text-black"> ₹{parseInt(product.finalPrice)}</span>
         </div>
 
         {/* Rating */}
@@ -626,6 +625,21 @@ export default function AdminProducts() {
         ) : (
           <p className="text-gray-600 col-span-full text-center">
             No Best Sellers available
+          </p>
+        )}
+      </div>
+
+      <h2 className="text-xl font-semibold p-4 rounded-md bg-white text-indigo-800 border-l-4 border-indigo-500 shadow-sm">
+        Recommended
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 p-6 justify-items-center">
+        {recommended.length > 0 ? (
+          recommended.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))
+        ) : (
+          <p className="text-gray-600 col-span-full text-center">
+            No Recommendeds available
           </p>
         )}
       </div>
