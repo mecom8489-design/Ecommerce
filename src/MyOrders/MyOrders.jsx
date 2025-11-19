@@ -20,7 +20,8 @@ export default function MyOrders() {
   const [orderData, setOrderData] = useState(null); // to store the fetched order
   const [loading, setLoading] = useState(true);
   const id = user?.id; // ✅ prevents error if user is null
-
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     if (!id) return; // Wait until user is available
     console.log(id);
@@ -72,11 +73,19 @@ export default function MyOrders() {
         return <Clock className="w-4 h-4" />;
     }
   };
+  const openModal = (order) => {
+    setSelectedOrder(order);
+    setIsOpen(true);
+  };
 
+  const closeModal = () => {
+    setIsOpen(false);
+    setSelectedOrder(null);
+  };
   return (
     <div>
       <Header />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen ">
         {/* Breadcrumb */}
         <div className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-3">
@@ -188,6 +197,7 @@ export default function MyOrders() {
                 {orderData.map((order) => (
                   <div
                     key={order.id}
+                    onClick={() => openModal(order)}
                     className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow"
                   >
                     <div className="p-5">
@@ -245,7 +255,60 @@ export default function MyOrders() {
             </div>
           </div>
         </div>
+   
       </div>
+      {isOpen && selectedOrder && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div className="bg-white w-full max-w-4xl h-[600px] rounded-xl shadow-lg p-6 relative overflow-y-auto">
+            {/* Close Button */}
+            <button
+              className="absolute right-3 top-3 text-gray-600 hover:text-black text-xl"
+              onClick={closeModal}
+            >
+              ✖
+            </button>
+
+            {/* Product Image */}
+            <div className="w-full h-40 rounded-lg overflow-hidden mb-4">
+              <img
+                src={selectedOrder.product_image}
+                alt={selectedOrder.product_name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Product Details */}
+            <h2 className="text-lg font-semibold mb-2">
+              {selectedOrder.product_name}
+            </h2>
+
+            <p className="text-gray-700 mb-2">
+              Price:{" "}
+              <span className="font-medium">₹{selectedOrder.total_price}</span>
+            </p>
+
+            <p className="text-gray-700 mb-2">
+              Status:{" "}
+              <span className="font-medium">{selectedOrder.status}</span>
+            </p>
+
+            <p className="text-gray-700 mb-2">
+              Ordered on:{" "}
+              <span className="font-medium">{selectedOrder.date}</span>
+            </p>
+
+            {selectedOrder.reason && (
+              <p className="text-red-600 mb-2">
+                Reason: {selectedOrder.reason}
+              </p>
+            )}
+
+            <button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg">
+              ⭐ Rate & Review Product
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
