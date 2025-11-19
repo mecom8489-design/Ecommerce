@@ -513,6 +513,7 @@ export default function AdminProducts() {
               <option value="">Select an Offer</option>
               <option value="productAd">Product Ad</option>
               <option value="bestSeller">BestSeller</option>
+              <option value="recommended">Recommended</option>
             </select>
           </div>
 
@@ -759,6 +760,7 @@ export default function AdminProducts() {
                   <option value="">Select an Offer</option>
                   <option value="productAd">Product Ad</option>
                   <option value="bestSeller">Best Seller</option>
+                  <option value="recommended">Recommended</option>
                 </select>
               </div>
 
