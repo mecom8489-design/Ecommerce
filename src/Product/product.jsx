@@ -14,12 +14,14 @@ import { ProductContext } from "../context/ProductContext";
 import Header from "../Header/header";
 import ProductReviews from "./ProductReviews";
 import Footer from "../Footer/footer.jsx";
-import { useCart } from "../context/CartContext"; // top of file
-export default function product() {
+import { useCart } from "../context/CartContext";
+
+export default function Product() {
   const { addToCart } = useCart();
   const { state } = useLocation();
   const navigate = useNavigate();
   const { selectedProduct, setSelectedProduct } = useContext(ProductContext);
+
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
 
@@ -34,7 +36,18 @@ export default function product() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const product = selectedProduct || state?.product;
+  // Normalize values from product (convert strings → numbers)
+  const rawProduct = selectedProduct || state?.product;
+
+  const product = rawProduct
+    ? {
+        ...rawProduct,
+        price: Number(rawProduct.price),
+        discount: Number(rawProduct.discount),
+        finalPrice: Number(rawProduct.finalPrice),
+      }
+    : null;
+
   const [quantity, setQuantity] = useState(1);
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -62,11 +75,9 @@ export default function product() {
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-  const handlePrevImage = () =>
-    setCurrentImage((prev) => (prev === 0 ? thumbnails.length - 1 : prev - 1));
-  const handleNextImage = () =>
-    setCurrentImage((prev) => (prev === thumbnails.length - 1 ? 0 : prev + 1));
-  const finalPrice = product.price - product.price * (product.discount / 100);
+
+  const finalPrice =
+    product.price - product.price * (product.discount / 100);
 
   return (
     <div>
@@ -75,29 +86,7 @@ export default function product() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Side - Product Images */}
           <div className="flex space-x-4 lg:sticky lg:top-0 self-start">
-            {/* Thumbnails */}
-            <div className="flex flex-col space-y-3">
-              {thumbnails.map((thumb, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImage(index)}
-                  className={`w-20 h-20 rounded-lg border-2 overflow-hidden ${
-                    currentImage === index
-                      ? "border-gray-400"
-                      : "border-gray-200"
-                  } hover:border-gray-400 transition-colors`}
-                >
-                  <img
-                    src={thumb}
-                    alt={`Product view ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-              <button className="w-20 h-20 flex items-center justify-center border-2 border-gray-200 rounded-lg hover:border-gray-400 transition-colors">
-                <ChevronDown className="w-5 h-5 text-gray-400" />
-              </button>
-            </div>
+            {/* (You can add thumbnails here if needed) */}
 
             {/* Main Image */}
             <div className="flex-1 relative">
@@ -111,19 +100,6 @@ export default function product() {
                 <Share2 className="w-5 h-5 text-gray-600" />
               </button>
 
-              <button
-                onClick={handlePrevImage}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100"
-              >
-                <ChevronLeft className="w-6 h-6 text-gray-700" />
-              </button>
-
-              <button
-                onClick={handleNextImage}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100"
-              >
-                <ChevronRight className="w-6 h-6 text-gray-700" />
-              </button>
               <div
                 className="bg-white rounded-lg p-8 h-156 w-130 flex items-center justify-center relative overflow-hidden"
                 onMouseEnter={() => setIsZoomed(true)}
@@ -151,7 +127,7 @@ export default function product() {
             </div>
           </div>
 
-          {/* Right Side - Product Details */}
+          {/* Right Side */}
           <div className="space-y-6 pr-4">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900 mb-4">
@@ -221,12 +197,14 @@ export default function product() {
               BUY IT NOW
             </button>
 
+            {/* Add to Cart */}
             <button
               className="w-full bg-red-500 text-white py-4 rounded font-bold text-lg hover:bg-red-600 transition-colors mb-6"
               onClick={() => addToCart(product)}
             >
               ADD TO CART
             </button>
+
             {/* Delivery Info */}
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
@@ -265,8 +243,7 @@ export default function product() {
           </div>
         </div>
       </div>
-      <br></br>
-      <br></br>
+
       <Footer />
     </div>
   );

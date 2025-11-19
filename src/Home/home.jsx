@@ -3,7 +3,6 @@ import {
   ChevronRight,
   Heart,
   ShoppingCart,
-  Star,
 } from "lucide-react";
 import {
   FaTshirt,
@@ -21,14 +20,6 @@ import image1 from "../assets/landing-page-images/image1.PNG";
 import image2 from "../assets/landing-page-images/image2.PNG";
 import image5 from "../assets/landing-page-images/image5.png";
 import image8 from "../assets/landing-page-images/image8.png";
-import Jacket from "../assets/images/products/jacket-1.jpg";
-import bucket from "../assets/images/products/bucket.png";
-import shoe from "../assets/images/products/shoe-1.jpg";
-import shorts from "../assets/images/products/shorts-1.jpg";
-import watch from "../assets/images/products/watch-1.jpg";
-import perfume from "../assets/images/products/perfume.jpg";
-import jewellery from "../assets/images/products/jewellery-1.jpg";
-import oilDispenser from "../assets/images/products/oil Dispenser.png";
 import ProductAD from "./ProductAD";
 import buttonBg from "../assets/landing-page-images/button.png"; // adjust path if needed
 import MoreToLove from "./MoreToLove"; // Import the MoreToLove component
