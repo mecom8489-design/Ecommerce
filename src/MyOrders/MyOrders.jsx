@@ -22,6 +22,29 @@ export default function MyOrders() {
   const id = user?.id; // ✅ prevents error if user is null
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  // STATE HANDLERS
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showReviewBox, setShowReviewBox] = useState(false);
+  const [showSupportBox, setShowSupportBox] = useState(false);
+
+  const [reviewText, setReviewText] = useState("");
+  const [supportMessage, setSupportMessage] = useState("");
+
+  // Example submit handlers
+  const handleCancelOrder = () => {
+    console.log("Order Cancelled");
+    setShowCancelConfirm(false);
+  };
+
+  const handleSubmitReview = () => {
+    console.log("Review Submitted:", reviewText);
+    setShowReviewBox(false);
+  };
+
+  const handleSendSupport = () => {
+    console.log("Support Message:", supportMessage);
+    setShowSupportBox(false);
+  };
   useEffect(() => {
     if (!id) return; // Wait until user is available
     console.log(id);
@@ -255,57 +278,176 @@ export default function MyOrders() {
             </div>
           </div>
         </div>
-   
       </div>
       {isOpen && selectedOrder && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-        <div className="bg-white w-full max-w-4xl h-[600px] rounded-xl shadow-lg p-6 relative overflow-y-auto">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="bg-white w-full max-w-8xl h-[90vh] rounded-none p-6 overflow-y-auto animate-fadeIn relative">
             {/* Close Button */}
             <button
-              className="absolute right-3 top-3 text-gray-600 hover:text-black text-xl"
+              className="absolute right-4 top-4 text-gray-500 hover:text-black text-2xl"
               onClick={closeModal}
             >
               ✖
             </button>
 
-            {/* Product Image */}
-            <div className="w-full h-40 rounded-lg overflow-hidden mb-4">
-              <img
-                src={selectedOrder.product_image}
-                alt={selectedOrder.product_name}
-                className="w-full h-full object-cover"
-              />
+            {/* Product Section */}
+            <div className="flex gap-6 border-b pb-5">
+              <div className="w-44 h-44 rounded-xl overflow-hidden shadow">
+                <img
+                  src={selectedOrder.product_image}
+                  alt={selectedOrder.product_name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <div className="flex flex-col justify-start gap-1">
+                <h2 className="text-2xl font-semibold text-gray-900">
+                  {selectedOrder.product_name}
+                </h2>
+
+                <p className="text-gray-700 text-lg">
+                  Price:{" "}
+                  <span className="font-bold text-black">
+                    ₹{selectedOrder.total_price}
+                  </span>
+                </p>
+
+                <p className="text-gray-700">
+                  Status:{" "}
+                  <span className="font-semibold text-green-600">
+                    {selectedOrder.status}
+                  </span>
+                </p>
+
+                <p className="text-gray-700">
+                  Ordered on:{" "}
+                  <span className="font-semibold">{selectedOrder.date}</span>
+                </p>
+
+                {selectedOrder.reason && (
+                  <p className="text-red-600 font-medium text-lg">
+                    ❗Cancellation Reason: {selectedOrder.reason}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* Product Details */}
-            <h2 className="text-lg font-semibold mb-2">
-              {selectedOrder.product_name}
-            </h2>
+            {/* Action Buttons Section */}
+            <div className="mt-6 flex flex-col gap-4">
+              {/* Rate & Review */}
+              <button
+                onClick={() => setShowReviewBox(true)}
+                className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-lg shadow flex items-center justify-center gap-2"
+              >
+                ⭐ Rate & Review Product
+              </button>
 
-            <p className="text-gray-700 mb-2">
-              Price:{" "}
-              <span className="font-medium">₹{selectedOrder.total_price}</span>
-            </p>
+              {/* Cancel Order */}
+              <button
+                onClick={() => setShowCancelConfirm(true)}
+                className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow flex items-center justify-center gap-2"
+              >
+                ❌ Cancel Order
+              </button>
 
-            <p className="text-gray-700 mb-2">
-              Status:{" "}
-              <span className="font-medium">{selectedOrder.status}</span>
-            </p>
+              {/* Customer Support */}
+              <button
+                onClick={() => setShowSupportBox(true)}
+                className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold py-3 rounded-lg shadow flex items-center justify-center gap-2"
+              >
+                📞 Contact Customer Support
+              </button>
+            </div>
+            {showCancelConfirm && (
+              <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl text-center">
+                  <h2 className="text-xl font-semibold mb-4">Are you sure?</h2>
+                  <p className="text-gray-700 mb-6">
+                    Do you really want to cancel this order?
+                  </p>
 
-            <p className="text-gray-700 mb-2">
-              Ordered on:{" "}
-              <span className="font-medium">{selectedOrder.date}</span>
-            </p>
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => setShowCancelConfirm(false)}
+                      className="flex-1 py-2 rounded-lg border border-gray-400 text-gray-700"
+                    >
+                      No
+                    </button>
 
-            {selectedOrder.reason && (
-              <p className="text-red-600 mb-2">
-                Reason: {selectedOrder.reason}
-              </p>
+                    <button
+                      onClick={handleCancelOrder}
+                      className="flex-1 py-2 rounded-lg bg-red-500 text-white"
+                    >
+                      Yes, Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
+            {showReviewBox && (
+              <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-2xl w-full max-w-lg shadow-xl">
+                  <h2 className="text-xl font-semibold mb-4">
+                    Write your Review
+                  </h2>
 
-            <button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg">
-              ⭐ Rate & Review Product
-            </button>
+                  <textarea
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                    placeholder="Write your experience..."
+                    className="w-full h-32 p-3 border rounded-xl mb-4"
+                  />
+
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => setShowReviewBox(false)}
+                      className="flex-1 py-2 rounded-lg border border-gray-400 text-gray-700"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      onClick={handleSubmitReview}
+                      className="flex-1 py-2 rounded-lg bg-green-600 text-white"
+                    >
+                      Submit Review
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {showSupportBox && (
+              <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-2xl w-full max-w-lg shadow-xl">
+                  <h2 className="text-xl font-semibold mb-4">
+                    Contact Support
+                  </h2>
+
+                  <textarea
+                    value={supportMessage}
+                    onChange={(e) => setSupportMessage(e.target.value)}
+                    placeholder="Describe your issue..."
+                    className="w-full h-32 p-3 border rounded-xl mb-4"
+                  />
+
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => setShowSupportBox(false)}
+                      className="flex-1 py-2 rounded-lg border border-gray-400 text-gray-700"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      onClick={handleSendSupport}
+                      className="flex-1 py-2 rounded-lg bg-blue-600 text-white"
+                    >
+                      Send Message
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
