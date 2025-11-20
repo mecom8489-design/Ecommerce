@@ -1,15 +1,17 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../Header/header";
 import Footer from "../Footer/footer";
 import { Link } from "react-router-dom";
 import { getWishlist, removeFromWishlist } from "../utils/wishlistUtils";
+import { ShoppingCart } from "lucide-react";
+import { useCart } from "../context/CartContext"; 
+import { useNavigate } from "react-router-dom";
 
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
 
-  // const removeItem = (id) => {
-  //   setWishlist(wishlist.filter((item) => item.id !== id));
-  // };
   useEffect(() => {
     const savedWishlist = getWishlist();
     setWishlist(savedWishlist);
@@ -19,12 +21,8 @@ const Wishlist = () => {
     removeFromWishlist(id);
     setWishlist((prev) => prev.filter((item) => item.id !== id));
   };
-  const formatPrice = (amount) =>
-    new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
+
+
 
   return (
     <div>
@@ -48,40 +46,100 @@ const Wishlist = () => {
         {/* Wishlist Grid */}
         {wishlist.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8">
-            {wishlist.map((item) => (
+            {wishlist.map((product) => (
               <div
-                key={item.id}
-                className="border rounded-xl shadow-sm hover:shadow-md transition p-4 flex flex-col bg-white"
+                key={product.id}
+                onClick={() =>
+                  navigate(`/ProductPage/products/${product.id}`, {
+                    state: { product },
+                  })
+                }
+                className="border rounded-xl shadow-sm hover:shadow-md transition p-4 flex flex-col bg-white cursor-pointer"
               >
                 {/* Image wrapper */}
                 <div className="relative">
-                  {/* Remove Button */}
                   <button
-                    onClick={() => handleRemove(item.id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); 
+                      handleRemove(product.id);
+                    }}
                     className="absolute top-2 right-2 bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center text-sm"
                   >
                     ✕
                   </button>
 
                   <img
-                    src={item.image}
-                    alt={item.title}
+                    src={product.image}
+                    alt={product.title}
                     className="w-full h-60 sm:h-72 md:h-80 object-cover rounded-lg"
                   />
                 </div>
 
-                {/* Text content */}
-                <h2 className="font-semibold text-sm sm:text-base mt-4">
-                  {item.brand}
-                </h2>
-                <p className="text-gray-600 text-sm sm:text-base mb-2 line-clamp-2">
-                  {item.title}
-                </p>
-                <p className="font-semibold mb-4">{formatPrice(item.price)}</p>
+                <div className="p-4 flex flex-col justify-between h-[calc(100%-12rem)] space-y-1">
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-800 line-clamp-2 transition-colors">
+                      {product.name}
+                    </h3>
+                  </div>
 
-                <button className="mt-auto w-full border border-black py-2 rounded-lg text-xs sm:text-sm md:text-base hover:bg-black hover:text-white transition">
-                  View Details
-                </button>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl font-bold text-gray-900">
+                      ₹{Math.floor(product.finalPrice)}
+                    </span>
+                    {product.originalPrice && (
+                      <span className="text-sm text-gray-400 line-through">
+                        ₹{product.originalPrice}
+                      </span>
+                    )}
+                    {product.discount && (
+                      <span className="text-sm font-medium text-green-600">
+                        {Math.floor(product.discount)}% OFF
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Rating */}
+                  <div className="text-sm flex items-center mt-1">
+                    Rating:
+                    <span className="ml-2 flex relative">
+                      <div className="flex text-gray-300">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+
+                      <div
+                        className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+                        style={{
+                          width: `${(Number(product.rating) / 5) * 100}%`,
+                        }}
+                      >
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+                    </span>
+                    <span className="ml-2 text-gray-700">
+                      ({product.rating ? Number(product.rating).toFixed(2) : "-"})
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="text-[14px] font-bold">
+                      Available Stocks:
+                      <span className="text-red-600"> {product.stock}</span>
+                    </div>
+                    <button
+                      className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 transition duration-200 hover:scale-105"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product);
+                      }}
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -89,11 +147,8 @@ const Wishlist = () => {
           // Empty State
           <div className="text-center px-4 sm:px-6 py-20">
             <p className="text-gray-600 text-lg mb-6">
-              Your wishlist is empty 😔
+              Your wishlist is empty
             </p>
-            <button className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition">
-              Continue Shopping
-            </button>
           </div>
         )}
 

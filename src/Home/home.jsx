@@ -22,6 +22,8 @@ import { useCart } from "../context/CartContext"; // top of file
 import { useNavigate } from "react-router-dom";
 import { addToWishlist } from "../utils/wishlistUtils";
 import { getAddedProducts } from "../apiroutes/adminApi";
+import Toast from "../context/ToastAddToCart"; // adjust path as needed
+
 
 const Home = () => {
   const [current, setCurrent] = useState(0);
@@ -39,6 +41,16 @@ const Home = () => {
   const itemsPerViews = 0; // Show 6 products initially
   const scrollStep = 3; // Move 2 products on each scroll
   const maxIndex = Math.max(recommended.length - itemsPerViews, 0);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+
 
   const hasFetched = useRef(false);
   useEffect(() => {
@@ -233,9 +245,7 @@ const Home = () => {
   }, []);
 
   const handleWishlist = (product) => {
-    console.log(product);
     addToWishlist(product);
-    alert("Added to wishlist ❤️");
   };
 
   return (
@@ -359,6 +369,7 @@ const Home = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         handleWishlist(product);
+                        triggerToast("Added to Wishlist ✔️");
                       }}
                     >
                       <i className="far fa-heart"></i>
@@ -499,6 +510,7 @@ const Home = () => {
                       }`}
                       onClick={(e) => {
                         e.stopPropagation();
+                        triggerToast("Added to Wishlist ✔️");
                         handleWishlist(product);
                       }}
                     />
@@ -630,6 +642,7 @@ const Home = () => {
       {/* <Landing /> */}
 
       {/* Footer */}
+      <Toast message={toastMessage} show={showToast} />
       <Footer />
     </>
   );

@@ -73,7 +73,7 @@ export default function Checkout() {
     } catch (error) {
       console.error("Error placing order:", error);
       alert("Failed to place order. Please try again.");
-    }finally {
+    } finally {
       setLoading(false); // stop loading
     }
   };
@@ -210,68 +210,17 @@ export default function Checkout() {
                     <h3 className="text-sm text-gray-800 mb-1">
                       {product.name} <span>({Qua} item)</span>
                     </h3>
-                    {/* <p className="text-xs text-gray-500 mb-2">12 GB RAM</p>
-                    <div className="flex items-center gap-2 text-xs text-gray-600 mb-2">
-                      <span>Seller: MightyDeal</span>
-                      <img src="https://via.placeholder.com/50x12/4A90E2/FFFFFF?text=Assured" alt="Assured" className="h-3" />
-                    </div> */}
 
-                    {/* Price Section */}
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xl font-medium text-gray-900">
                         {" "}
                         ₹{totalPrice}
                       </span>
-                      {/* <span className="text-green-600 text-xs font-medium">
-                        {Math.floor(product.discount)}%
-                      </span> */}
-                      {/* <span className="text-gray-400 line-through text-sm">
-                        {" "}
-                        ₹{product.price}
-                      </span> */}
-
-                      {/* <span className="text-green-600 text-xs font-medium">
-                        7 offers available
-                      </span> */}
                       <Info className="w-3 h-3 text-gray-400" />
                     </div>
 
-                    {/* Protect Promise Fee */}
-                    {/* <div className="flex items-center gap-1 text-xs text-gray-700 mb-3">
-                      <span>+ ₹149 Protect Promise Fee</span>
-                      <Info className="w-3 h-3 text-gray-400" />
-                    </div> */}
-                    {/* 
-                    <p className="text-xs text-gray-600 mb-3">
-                      Or Pay ₹107,860 + ₹100 (with coin icon)
-                    </p> */}
 
                     {/* Quantity Controls */}
-                    {/* <div className="flex items-center gap-4">
-                      <div className="flex items-center border rounded">
-                        <button
-                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                          className="p-2 hover:bg-gray-100"
-                        >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <input
-                          type="text"
-                          value={quantity}
-                          readOnly
-                          className="w-12 text-center border-x text-sm"
-                        />
-                        <button
-                          onClick={() => setQuantity(quantity + 1)}
-                          className="p-2 hover:bg-gray-100"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
-                      <button className="text-sm font-medium text-gray-700 hover:text-gray-900">
-                        REMOVE
-                      </button>
-                    </div> */}
                   </div>
 
                   {/* Delivery Info */}
@@ -280,31 +229,12 @@ export default function Checkout() {
                       <span className="text-sm">
                         👉{"  Delivery by Fri Oct 17"}
                       </span>
-                      {/* <div className="text-left">
-                        <p className="font-medium text-gray-800 mb-1">
-                          Open Box Delivery is eligible for this item. You will receive a confirmation post payment.
-                        </p>
-                        <button className="text-blue-600 font-medium hover:underline">
-                          Know More
-                        </button>
-                      </div> */}
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* GST Invoice Checkbox */}
-              {/* <div className="px-4 pb-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={useGST}
-                    onChange={(e) => setUseGST(e.target.checked)}
-                    className="w-4 h-4"
-                  />
-                  <span className="text-sm text-gray-700">Use GST Invoice</span>
-                </label>
-              </div> */}
 
               {/* Email Confirmation */}
               <div className="px-4 pb-4 border-t pt-4">
@@ -317,50 +247,43 @@ export default function Checkout() {
               {/* Continue Button */}
               {/* ✅ CONTINUE button */}
               <div className="px-0 pb-4 mt-4">
-  <button
-    disabled={!isSaved || loading}
-    onClick={isSaved ? handleContinue : undefined}
-    className={`w-full font-medium py-3 rounded shadow-md transition flex items-center justify-center
-      ${
-        isSaved
-          ? "bg-orange-500 hover:bg-orange-600 text-white"
-          : "bg-gray-300 text-gray-500 cursor-not-allowed"
-      }`}
-  >
-    {loading ? (
-      <div className="flex items-center gap-2">
-        <svg
-          className="animate-spin h-5 w-5 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v8H4z"
-          ></path>
-        </svg>
-        <span>Placing order...</span>
-      </div>
-    ) : (
-      "CONTINUE"
-    )}
-  </button>
-</div>
-
+                <button
+                  disabled={!isSaved || loading}
+                  onClick={isSaved ? handleContinue : undefined}
+                  className={`w-full font-medium py-3 rounded shadow-md transition flex items-center justify-center${isSaved ? "bg-orange-500 hover:bg-orange-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
+                >
+                  {loading ? (
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"
+                        ></path>
+                      </svg>
+                      <span>Placing order...</span>
+                    </div>
+                  ) : (
+                    "CONTINUE"
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Right Section - Price Details */}
           <div className="w-80">
             <div className="bg-white shadow-sm sticky top-6">
               <div className="p-4 border-b">
@@ -377,14 +300,6 @@ export default function Checkout() {
                   </div>
                   <span className="text-gray-900"> ₹{totalPrice}</span>
                 </div>
-
-                {/* <div className="flex justify-between">
-                  <div className="flex items-center gap-1">
-                    <span className="text-gray-700">Protect Promise Fee</span>
-                    <Info className="w-3 h-3 text-gray-400" />
-                  </div>
-                  <span className="text-gray-900">₹149</span>
-                </div> */}
 
                 <div className="border-t pt-3 flex justify-between font-medium text-base">
                   <span className="text-gray-900">Total Payable</span>

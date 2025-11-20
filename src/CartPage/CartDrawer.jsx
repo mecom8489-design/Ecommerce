@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 export default function CartDrawer({ isOpen, setIsOpen }) {
   const { cart, updateQty, removeFromCart } = useCart();
+  const navigate = useNavigate();
 
   // Calculate subtotal
   const subtotal = cart.reduce(
@@ -60,11 +62,13 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
             <div className="px-5 py-3 text-sm border-b mb-4">
               {amountToCOD > 0 ? (
                 <p className="text-gray-700">
-                  Spend <span className="font-semibold">₹{amountToCOD}</span> more to get COD
+                  Spend <span className="font-semibold">₹{amountToCOD}</span>{" "}
+                  more to get COD
                 </p>
               ) : amountToFree > 0 ? (
                 <p className="text-gray-700">
-                  Spend <span className="font-semibold">₹{amountToFree}</span> more to get Free Shipping
+                  Spend <span className="font-semibold">₹{amountToFree}</span>{" "}
+                  more to get Free Shipping
                 </p>
               ) : (
                 <p className="text-green-600 font-medium">
@@ -89,13 +93,23 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
             {/* Cart Items */}
             <div className="flex-1 overflow-y-auto px-5">
               {cart.length === 0 ? (
-                <p className="text-center text-gray-500 py-10">Your cart is empty</p>
+                <p className="text-center text-gray-500 py-10">
+                  Your cart is empty
+                </p>
               ) : (
-                cart.map((item) => (
-                  <div key={item.id} className="flex items-center gap-4 border-b py-4">
+                cart.map((product) => (
+                  <div
+                    key={product.id}
+                    className="flex items-center gap-4 border-b py-4 cursor-pointer"
+                    onClick={() =>
+                      navigate(`/ProductPage/products/${product.id}`, {
+                        state: { product },
+                      })
+                    }
+                  >
                     <img
-                      src={item.image}
-                      alt={item.name}
+                      src={product.image}
+                      alt={product.name}
                       className="w-16 h-16 object-cover rounded"
                       onError={(e) =>
                         (e.currentTarget.src =
@@ -104,40 +118,49 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                     />
 
                     <div className="flex-1">
-                      <h3 className="font-medium text-sm">{item.name}</h3>
+                      <h3 className="font-medium text-sm">{product.name}</h3>
 
                       {/* Prices */}
                       <div className="flex items-center">
                         <p className="text-sm font-semibold text-red-600">
-                          ₹{Math.floor(item.finalPrice)}
+                          ₹{Math.floor(product.finalPrice)}
                         </p>
                         <p className="text-gray-500 text-sm line-through ml-2">
-                          ₹{Math.floor(item.price)}
+                          ₹{Math.floor(product.price)}
                         </p>
                       </div>
 
                       {/* Qty Buttons */}
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="flex items-center gap-2 mt-1 ">
                         <button
-                          onClick={() => updateQty(item.id, -1)}
-                          className="px-2 py-1 border rounded"
-                          disabled={(item.qty || 1) <= 1} // Prevent qty < 1
+                          onClick={(e) => {
+                            e.stopPropagation();
+                             updateQty(product.id, -1)
+                          }}
+                          className="px-2 py-1 border rounded cursor-pointer"
+                          disabled={(product.qty || 1) <= 1} // Prevent qty < 1
                         >
                           -
                         </button>
 
-                        <span>{item.qty || 1}</span>
+                        <span>{product.qty || 1}</span>
 
                         <button
-                          onClick={() => updateQty(item.id, 1)}
-                          className="px-2 py-1 border rounded"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                             updateQty(product.id, 1)
+                          }}
+                          className="px-2 py-1 border rounded cursor-pointer"
                         >
                           +
                         </button>
 
                         <button
-                          onClick={() => removeFromCart(item.id)}
-                          className="text-sm text-gray-500 ml-3 hover:text-red-600"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                             removeFromCart(product.id, 1)
+                          }}
+                          className="text-sm text-gray-500 ml-3 hover:text-red-600 cursor-pointer"
                         >
                           Remove
                         </button>
@@ -146,9 +169,11 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
 
                     {/* Item Total */}
                     <div className="text-right">
-                      <h4 className="text-sm text-amber-700 font-bold">Total</h4>
+                      <h4 className="text-sm text-amber-700 font-bold">
+                        Total
+                      </h4>
                       <p className="font-semibold text-sm">
-                        ₹{Math.floor(item.finalPrice * (item.qty || 1))}
+                        ₹{Math.floor(product.finalPrice * (product.qty || 1))}
                       </p>
                     </div>
                   </div>

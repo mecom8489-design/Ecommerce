@@ -1,16 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Star, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext"; // top of file
+import { addToWishlist } from "../utils/wishlistUtils";
+import Toast from "../context/ToastAddToCart";
 
 export default function MoreToLove({ products }) {
-  const [visibleCount, setVisibleCount] = useState(18); // Show first 18 initially
-  const navigate = useNavigate(); // ← This is required
+  const [visibleCount, setVisibleCount] = useState(18);
+  const navigate = useNavigate();
   const { addToCart } = useCart();
-  const handleViewMore = () => {
-    setVisibleCount((prev) => prev + 6); // Show 6 more on each click
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
   };
-  // const visibleProducts = products.slice(0, visibleCount);
+
+  const handleViewMore = () => {
+    setVisibleCount((prev) => prev + 6);
+  };
+
+  const handleWishlist = (product) => {
+    addToWishlist(product);
+  };
+
   const visibleProducts = (products || []).slice(0, visibleCount);
 
   return (
@@ -20,7 +36,6 @@ export default function MoreToLove({ products }) {
           More to love
         </h1>
 
-        {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 p-4">
           {visibleProducts.map((product) => (
             <div
@@ -32,12 +47,23 @@ export default function MoreToLove({ products }) {
                 })
               }
             >
-              {/* Sale Tag */}
               {product.sale && (
                 <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-md">
                   SALE
                 </div>
               )}
+
+              {/* Wishlist Button */}
+              <button
+                className="text-gray-600 hover:text-red-700 z-10 absolute top-3 left-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleWishlist(product);
+                  triggerToast("Added to Wishlist ✔️");
+                }}
+              >
+                <i className="far fa-heart"></i>
+              </button>
 
               {/* Add to Cart Button */}
               <button
@@ -50,7 +76,6 @@ export default function MoreToLove({ products }) {
                 <ShoppingCart className="w-5 h-5 text-gray-700 hover:text-yellow-600 transition-colors" />
               </button>
 
-              {/* Product Image */}
               <div className="aspect-square overflow-hidden bg-gray-50">
                 <img
                   src={product.image}
@@ -59,13 +84,11 @@ export default function MoreToLove({ products }) {
                 />
               </div>
 
-              {/* Product Details */}
               <div className="p-4">
                 <h3 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2 group-hover:text-yellow-600 transition-colors">
                   {product.name}
                 </h3>
 
-                {/* Price */}
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xl font-bold text-gray-900">
                     ₹{Math.floor(product.finalPrice)}
@@ -82,7 +105,6 @@ export default function MoreToLove({ products }) {
                   )}
                 </div>
 
-                {/* Rating & Sold */}
                 <div className="text-sm flex items-center mt-1 ">
                   Rating:
                   <span className="ml-2 flex relative">
@@ -108,7 +130,6 @@ export default function MoreToLove({ products }) {
                   </span>
                 </div>
 
-                {/* Badges */}
                 <div className="flex flex-wrap gap-2 text-xs">
                   {product.saved && (
                     <span className="bg-red-50 text-red-600 px-2 py-1 rounded-full font-medium">
@@ -131,7 +152,6 @@ export default function MoreToLove({ products }) {
           ))}
         </div>
 
-        {/* View More Button */}
         {Array.isArray(products) && visibleCount < products.length && (
           <div className="flex justify-center mt-8">
             <button
@@ -143,6 +163,7 @@ export default function MoreToLove({ products }) {
           </div>
         )}
       </div>
+      <Toast message={toastMessage} show={showToast} />
     </div>
   );
 }
