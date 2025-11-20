@@ -42,6 +42,8 @@ export default function MyOrders() {
 
   const [reviewText, setReviewText] = useState("");
   const [supportMessage, setSupportMessage] = useState("");
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
 
   // Example submit handlers
   const handleCancelOrder = () => {
@@ -51,7 +53,7 @@ export default function MyOrders() {
 
   const handleSubmitReview = () => {
     console.log("Review Submitted:", reviewText);
-    setShowReviewBox(false);
+   
   };
 
   const handleSendSupport = () => {
@@ -380,7 +382,7 @@ export default function MyOrders() {
                               {selectedOrder.product_description}
                             </p>
                             <p className="text-lg font-normal text-gray-900">
-                              {selectedOrder.total_price}
+                              ${selectedOrder.total_price}
                             </p>
                           </div>
                         </div>
@@ -426,14 +428,55 @@ export default function MyOrders() {
 
                             {/* Right Side: Cancel Button */}
                             <button
-                              onClick={() =>
-                                handleCancelOrder(selectedOrder.order_id)
-                              }
+                              onClick={() => setShowCancelPopup(true)}
                               className="px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700"
                             >
                               Cancel Order
                             </button>
                           </div>
+                          {showCancelPopup && (
+                            <div className="fixed  inset-0 flex items-center justify-center bg-black/40 z-50">
+                              <div className="bg-white p-5 rounded-lg w-150 shadow-lg">
+                                <h2 className="text-lg font-semibold mb-3">
+                                  Reason for Cancellation
+                                </h2>
+
+                                <textarea
+                                  className="w-[500px] border p-2 rounded-md"
+                                  rows="4"
+                                  placeholder="Enter reason…"
+                                  value={cancelReason}
+                                  onChange={(e) =>
+                                    setCancelReason(e.target.value)
+                                  }
+                                ></textarea>
+
+                                {/* Buttons */}
+                                <div className="flex justify-end gap-3 mt-4">
+                                  <button
+                                    onClick={() => setShowCancelPopup(false)}
+                                    className="px-3 py-1 rounded-md bg-gray-300 hover:bg-gray-400"
+                                  >
+                                    Close
+                                  </button>
+
+                                  <button
+                                    onClick={() => {
+                                      handleCancelOrder(
+                                        selectedOrder.order_id,
+                                        cancelReason
+                                      );
+                                      setShowCancelPopup(false);
+                                      setCancelReason("");
+                                    }}
+                                    className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                  >
+                                    Submit
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
 
                           {/* Delivered */}
                           <div className="flex items-start gap-3">
@@ -482,7 +525,7 @@ export default function MyOrders() {
                           Rate your experience
                         </h2>
 
-                        <div className="flex items-center gap-3 mb-4">
+                        {/* <div className="flex items-center gap-3 mb-4">
                           <input
                             type="checkbox"
                             className="w-4 h-4 rounded border-gray-300"
@@ -490,7 +533,7 @@ export default function MyOrders() {
                           <span className="text-sm text-gray-700">
                             Rate the product
                           </span>
-                        </div>
+                        </div> */}
 
                         <div className="flex gap-2">
                           {[1, 2, 3, 4, 5].map((star) => (
@@ -520,7 +563,7 @@ export default function MyOrders() {
                           ))}
                         </div>
                         <div class="p-4">
-                          <form>
+                          <form onclick={handleSubmitReview()}>
                             <textarea
                               class="w-full p-3 border rounded-lg focus:ring focus:ring-blue-300"
                               rows="5"
@@ -605,7 +648,7 @@ export default function MyOrders() {
                               </span>
                               <span className="text-gray-400 text-xs">ⓘ</span>
                             </div>
-                            <span className="text-gray-900">₹449</span>
+                            <span className="text-gray-900">$449</span>
                           </div> */}
 
                           <div className="flex justify-between text-sm">
@@ -628,8 +671,8 @@ export default function MyOrders() {
                               <span className="text-gray-900">
                                 Total amount
                               </span>
-                              {/* <span className="text-gray-900">₹465</span> */}
-                              ₹{Number(selectedOrder.total_price) + 16}
+                              {/* <span className="text-gray-900">$465</span> */}
+                              ${Number(selectedOrder.total_price) + 16}
                             </div>
                           </div>
 
