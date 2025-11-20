@@ -175,9 +175,9 @@ export default function Product() {
                 CHECKOUT - ₹{Math.floor(finalPrice * quantity)}
               </button>
 
-              <button className="p-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+              {/* <button className="p-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                 <Heart className="w-5 h-5 text-gray-600" />
-              </button>
+              </button> */}
             </div>
 
             {/* Buy Now */}

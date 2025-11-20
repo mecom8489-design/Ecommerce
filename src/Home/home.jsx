@@ -1,9 +1,4 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  Heart,
-  ShoppingCart,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, ShoppingCart } from "lucide-react";
 import {
   FaTshirt,
   FaMale,
@@ -78,12 +73,12 @@ const Home = () => {
     return products.map((product) => ({
       id: product.id,
       image: product.image,
-      title: product.name,
-      price: parseFloat(product.finalPrice),
-      oldPrice: `₹${parseFloat(product.price).toFixed(2)}`,
+      name: product.name,
+      finalPrice: parseFloat(product.finalPrice),
+      price: `₹${parseFloat(product.price).toFixed(2)}`,
       discount: `${product.discount}%`,
       rating: parseFloat(product.rating),
-      reviews: product.order_count,
+      order_count: product.order_count,
       description: product.description,
       stock: product.stock,
       category: product.category,
@@ -237,6 +232,7 @@ const Home = () => {
   }, []);
 
   const handleWishlist = (product) => {
+    console.log(product);
     addToWishlist(product);
     alert("Added to wishlist ❤️");
   };
@@ -353,7 +349,7 @@ const Home = () => {
                 <div className="relative overflow-hidden">
                   <img
                     src={product.image}
-                    alt={product.title}
+                    alt={product.name}
                     className="w-full h-64 object-cover"
                   />
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
@@ -379,22 +375,22 @@ const Home = () => {
                   </div>
                   {parseFloat(product.discount) > 0 && (
                     <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                      {product.discount}
+                      {Math.round(parseFloat(product.discount))}%
                     </span>
                   )}
                 </div>
 
                 <div className="p-4">
                   <Link to="#" className="font-medium hover:text-indigo-600">
-                    {product.title}
+                    {product.name}
                   </Link>
 
                   <div className="flex items-center mt-2">
                     <span className="text-indigo-600 font-bold">
-                      ₹{product.price}
+                      ₹{product.finalPrice}
                     </span>
                     <span className="text-gray-500 text-sm line-through ml-2">
-                      {product.oldPrice}
+                      {product.price}
                     </span>
                   </div>
                   <div className="text-sm flex items-center mt-1 ">
@@ -500,6 +496,10 @@ const Home = () => {
                           ? "fill-red-500 text-red-500"
                           : "text-gray-400"
                       }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleWishlist(product);
+                      }}
                     />
                   </button>
                 </div>
@@ -558,7 +558,8 @@ const Home = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="text-[14px] font-bold">
-                      Available Stocks:<span className="text-red-600"> {product.stock}</span>
+                      Available Stocks:
+                      <span className="text-red-600"> {product.stock}</span>
                     </div>
                     <button
                       className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 transition duration-200 hover:scale-105"
