@@ -69,7 +69,6 @@ export default function Header() {
   
   useEffect(() => {
     const history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-    console.log("Previous Searches:", history);
   }, []);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);

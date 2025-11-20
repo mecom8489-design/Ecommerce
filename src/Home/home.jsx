@@ -74,13 +74,14 @@ const Home = () => {
       id: product.id,
       image: product.image,
       name: product.name,
-      finalPrice: parseFloat(product.finalPrice),
-      price: `₹${parseFloat(product.price).toFixed(2)}`,
-      discount: `${product.discount}%`,
-      rating: parseFloat(product.rating),
+      finalPrice: product.finalPrice,
+      price: `${parseFloat(product.price).toFixed(2)}`,
+      discount: `${product.discount}`,
+      rating: product.rating,
       order_count: product.order_count,
       description: product.description,
       stock: product.stock,
+      offer:product.offer,
       category: product.category,
       created_at: product.created_at,
     }));
@@ -387,10 +388,10 @@ const Home = () => {
 
                   <div className="flex items-center mt-2">
                     <span className="text-indigo-600 font-bold">
-                      ₹{product.finalPrice}
+                      ₹{parseFloat(product.finalPrice)}
                     </span>
                     <span className="text-gray-500 text-sm line-through ml-2">
-                      {product.price}
+                      ₹{parseFloat(product.price)}
                     </span>
                   </div>
                   <div className="text-sm flex items-center mt-1 ">
