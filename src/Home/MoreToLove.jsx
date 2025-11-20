@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext"; // top of file
 
 export default function MoreToLove({ products }) {
-  console.log(products);
   const [visibleCount, setVisibleCount] = useState(18); // Show first 18 initially
   const navigate = useNavigate(); // ← This is required
   const { addToCart } = useCart();

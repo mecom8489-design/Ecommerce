@@ -6,22 +6,25 @@ import { useCart } from "../context/CartContext";
 export default function CartDrawer({ isOpen, setIsOpen }) {
   const { cart, updateQty, removeFromCart } = useCart();
 
+  // Calculate subtotal
   const subtotal = cart.reduce(
-    (acc, item) => acc + item.price * (item.qty || 1),
+    (acc, item) => acc + item.finalPrice * (item.qty || 1),
     0
   );
 
-  const codThreshold = 299;
-  const freeShippingThreshold = 495;
+  const COD_THRESHOLD = 299;
+  const FREE_SHIP_THRESHOLD = 495;
 
-  const progress = Math.min((subtotal / freeShippingThreshold) * 100, 100);
-  const amountToCOD = Math.max(codThreshold - subtotal, 0);
-  const amountToFree = Math.max(freeShippingThreshold - subtotal, 0);
+  const progress = Math.min((subtotal / FREE_SHIP_THRESHOLD) * 100, 100);
+  const amountToCOD = Math.max(COD_THRESHOLD - subtotal, 0);
+  const amountToFree = Math.max(FREE_SHIP_THRESHOLD - subtotal, 0);
 
   // Prevent background scroll
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "auto";
-    return () => (document.body.style.overflow = "auto");
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isOpen]);
 
   return (
@@ -47,7 +50,7 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
           >
             {/* Header */}
             <div className="flex justify-between items-center border-b px-5 py-3">
-              <h2 className="text-lg font-bold">Shopping cart</h2>
+              <h2 className="text-lg font-bold">Shopping Cart</h2>
               <button onClick={() => setIsOpen(false)}>
                 <X className="w-6 h-6 cursor-pointer" />
               </button>
@@ -64,7 +67,9 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                   Spend <span className="font-semibold">₹{amountToFree}</span> more to get Free Shipping
                 </p>
               ) : (
-                <p className="text-green-600 font-medium">You unlocked Free Shipping 🎉</p>
+                <p className="text-green-600 font-medium">
+                  You unlocked Free Shipping 🎉
+                </p>
               )}
 
               <div className="mt-2">
@@ -75,52 +80,95 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                   />
                 </div>
                 <div className="flex justify-between text-xs mt-1 text-gray-500">
-                  <span>₹{codThreshold}</span>
-                  <span>₹{freeShippingThreshold}</span>
+                  <span>₹{COD_THRESHOLD}</span>
+                  <span>₹{FREE_SHIP_THRESHOLD}</span>
                 </div>
               </div>
             </div>
 
-            {/* Items */}
+            {/* Cart Items */}
             <div className="flex-1 overflow-y-auto px-5">
-              {cart.map((item) => (
-                <div key={item.id} className="flex items-center gap-4 border-b py-4">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-16 h-16 object-cover rounded"
-                    onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/80?text=No+Image")}
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-medium text-sm">{item.name}</h3>
-                    <p className="text-sm font-semibold text-red-600">₹{Math.floor(item.finalPrice)}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <button onClick={() => updateQty(item.id, -1)} className="px-2 py-1 border rounded">-</button>
-                      <span>{item.qty || 1}</span>
-                      <button onClick={() => updateQty(item.id, 1)} className="px-2 py-1 border rounded">+</button>
+              {cart.length === 0 ? (
+                <p className="text-center text-gray-500 py-10">Your cart is empty</p>
+              ) : (
+                cart.map((item) => (
+                  <div key={item.id} className="flex items-center gap-4 border-b py-4">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-16 h-16 object-cover rounded"
+                      onError={(e) =>
+                        (e.currentTarget.src =
+                          "https://via.placeholder.com/80?text=No+Image")
+                      }
+                    />
 
-                      <button
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-sm text-gray-500 ml-3 hover:text-red-600"
-                      >
-                        Remove
-                      </button>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-sm">{item.name}</h3>
+
+                      {/* Prices */}
+                      <div className="flex items-center">
+                        <p className="text-sm font-semibold text-red-600">
+                          ₹{Math.floor(item.finalPrice)}
+                        </p>
+                        <p className="text-gray-500 text-sm line-through ml-2">
+                          ₹{Math.floor(item.price)}
+                        </p>
+                      </div>
+
+                      {/* Qty Buttons */}
+                      <div className="flex items-center gap-2 mt-1">
+                        <button
+                          onClick={() => updateQty(item.id, -1)}
+                          className="px-2 py-1 border rounded"
+                          disabled={(item.qty || 1) <= 1} // Prevent qty < 1
+                        >
+                          -
+                        </button>
+
+                        <span>{item.qty || 1}</span>
+
+                        <button
+                          onClick={() => updateQty(item.id, 1)}
+                          className="px-2 py-1 border rounded"
+                        >
+                          +
+                        </button>
+
+                        <button
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-sm text-gray-500 ml-3 hover:text-red-600"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Item Total */}
+                    <div className="text-right">
+                      <h4 className="text-sm text-amber-700 font-bold">Total</h4>
+                      <p className="font-semibold text-sm">
+                        ₹{Math.floor(item.finalPrice * (item.qty || 1))}
+                      </p>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             {/* Footer */}
             <div className="border-t px-5 py-4">
               <p className="flex justify-between text-lg font-semibold">
-                <span>Subtotal</span>
-                <span>₹{subtotal}</span>
+                <span className="text-green-500">Grand total</span>
+                <span>₹{Math.floor(subtotal)}</span>
               </p>
+
               <div className="flex gap-3 mt-4">
-                <button className="flex-1 border py-3 rounded-md">View cart</button>
+                <button className="flex-1 border py-3 rounded-md">
+                  View Cart
+                </button>
                 <button className="flex-1 bg-black text-white py-3 rounded-md hover:bg-gray-800">
-                  Check out
+                  Check Out
                 </button>
               </div>
             </div>
