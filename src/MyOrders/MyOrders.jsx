@@ -27,35 +27,15 @@ export default function MyOrders() {
     older: false,
   });
 
-  
-
-
   const [orderData, setOrderData] = useState(null); // to store the fetched order
   const [loading, setLoading] = useState(true);
   const id = user?.id; // ✅ prevents error if user is null
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   // STATE HANDLERS
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-  const [showReviewBox, setShowReviewBox] = useState(false);
-  const [showSupportBox, setShowSupportBox] = useState(false);
+ 
 
-
-  const [supportMessage, setSupportMessage] = useState("");
-
-
-  // Example submit handlers
-  const handleCancelOrder = () => {
-    console.log("Order Cancelled");
-    setShowCancelConfirm(false);
-  };
-
-  
-  
-  const handleSendSupport = () => {
-    console.log("Support Message:", supportMessage);
-    setShowSupportBox(false);
-  };
+ 
   useEffect(() => {
     if (!id) return; // Wait until user is available
     console.log(id);
@@ -121,7 +101,6 @@ export default function MyOrders() {
   //   console.log("Cancel order:", id);
   //   // Call API here
   // };
-
 
   return (
     <div>
@@ -256,7 +235,7 @@ export default function MyOrders() {
 
                       {/* Product Details */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-normal text-gray-900 mb-1">
+                        <h3 className="text-base font-normal text-gray-900 mb-0">
                           {order.product_name}
                         </h3>
                         {order.color && (
@@ -275,25 +254,35 @@ export default function MyOrders() {
 
                       {/* Status and Actions */}
                       <div className="flex-shrink-0 text-right min-w-[200px]">
-                        <div className="flex items-center justify-end gap-2 mb-2">
-                          <span
-                            className={`w-2 h-2 rounded-full ${
-                              order.status === "delivered"
-                                ? "bg-green-500"
-                                : "bg-red-500"
-                            }`}
-                          ></span>
-                          <span className="text-sm font-normal text-gray-900">
-                            {new Date(order.created_at).toLocaleDateString(
-                              "en-GB",
-                              {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              }
-                            )}
-                          </span>
+                        {order.cancelled == 1 ? (
+                          <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-xl shadow-sm">
+                          <span className="text-red-600 text-sm">⚠️</span>
+                          <p className="font-medium">Order Cancelled</p>
                         </div>
+                        
+                         
+                        ) : (
+                          <div className="flex items-center justify-end gap-2 mb-2">
+                            <span
+                              className={`w-2 h-2 rounded-full ${
+                                order.order_status === "delivered"
+                                  ? "bg-green-500"
+                                  : "bg-red-500"
+                              }`}
+                            ></span>
+                            <span className="text-sm font-normal text-gray-900">
+                              {new Date(order.created_at).toLocaleDateString(
+                                "en-GB",
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                }
+                              )}
+                            </span>
+                          </div>
+                        )}
+
                         <p className="text-sm text-gray-600 mb-3">
                           {order.status === "delivered"
                             ? "Your item has been delivered"
@@ -313,7 +302,7 @@ export default function MyOrders() {
         </div>
       </div>
       {isOpen && selectedOrder && (
-       <Orderdetails selectedOrder={selectedOrder}  setIsOpen={setIsOpen}   />
+        <Orderdetails selectedOrder={selectedOrder} setIsOpen={setIsOpen}  />
       )}
     </div>
   );
