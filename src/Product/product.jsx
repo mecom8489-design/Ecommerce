@@ -15,6 +15,8 @@ import Header from "../Header/header";
 import ProductReviews from "./ProductReviews";
 import Footer from "../Footer/footer.jsx";
 import { useCart } from "../context/CartContext";
+import Toast from "../context/ToastAddToCart.jsx";
+import { addToWishlist } from "../utils/wishlistUtils.js";
 
 export default function Product() {
   const { addToCart } = useCart();
@@ -24,6 +26,19 @@ export default function Product() {
 
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+
+  const handleWishlist = (product) => {
+      addToWishlist(product);
+    };
 
   // Update selected product from navigation state
   useEffect(() => {
@@ -76,8 +91,7 @@ export default function Product() {
   const decrementQuantity = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
-  const finalPrice =
-    product.price - product.price * (product.discount / 100);
+  const finalPrice = product.price - product.price * (product.discount / 100);
 
   return (
     <div>
@@ -175,9 +189,16 @@ export default function Product() {
                 CHECKOUT - ₹{Math.floor(finalPrice * quantity)}
               </button>
 
-              {/* <button className="p-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+              <button
+                className="p-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleWishlist(product);
+                  triggerToast("Added to Wishlist ✔️");
+                }}
+              >
                 <Heart className="w-5 h-5 text-gray-600" />
-              </button> */}
+              </button>
             </div>
 
             {/* Buy Now */}
@@ -243,7 +264,7 @@ export default function Product() {
           </div>
         </div>
       </div>
-
+      <Toast message={toastMessage} show={showToast} />
       <Footer />
     </div>
   );

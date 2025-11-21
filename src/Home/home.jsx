@@ -350,7 +350,7 @@ const Home = () => {
             {bestSeller.map((product) => (
               <div
                 key={product.id}
-                className="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
+                className="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer"
                 onClick={() =>
                   navigate(`/ProductPage/products/${product.id}`, {
                     state: { product },
@@ -480,7 +480,7 @@ const Home = () => {
             {recommended.map((product) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 w-[calc(100%/1.5)] sm:w-[calc(100%/2.5)] md:w-[calc(100%/3.5)] lg:w-[calc(100%/4.5)] xl:w-[calc(90%/7)] bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.03]"
+                className="flex-shrink-0 w-[calc(100%/1.5)] sm:w-[calc(100%/2.5)] md:w-[calc(100%/3.5)] lg:w-[calc(100%/4.5)] xl:w-[calc(90%/7)] bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.03] cursor-pointer"
                 onClick={() =>
                   navigate(`/ProductPage/products/${product.id}`, {
                     state: { product },

@@ -8,13 +8,15 @@ import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/LoginAuth";
 import { Settings, LogOut, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getWishlist } from "../utils/wishlistUtils";
+
 export default function Header() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const { cart, updateQty, removeFromCart } = useCart();
+  const { cart } = useCart();
   const cartLength = cart?.length || 0;
-  // console.log(cartLength)
+
   const { isLoggedIn, user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -24,6 +26,9 @@ export default function Header() {
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const wish = getWishlist();
+  const wishlist = wish?.length || 0;
 
   const handleSearch = async (value) => {
     setSearchText(value);
@@ -65,11 +70,6 @@ export default function Header() {
     localStorage.setItem("searchHistory", JSON.stringify(history));
     navigate(`/ProductPage?search=${encodeURIComponent(name)}`);
   };
-
-  
-  useEffect(() => {
-    const history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  }, []);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
@@ -174,9 +174,15 @@ export default function Header() {
             {/* Wishlist */}
             <Link
               to="/wishlist"
-              className="flex items-center space-x-1 hover:text-yellow-500 text-xs sm:text-sm cursor-pointer"
+              className="flex items-center space-x-1 hover:text-red-500 text-xs sm:text-sm cursor-pointer"
             >
-              <Heart size={18} />
+              <Heart
+                size={20}
+                className={`transition-all duration-200 ${
+                  wishlist > 0 ? "text-red-600 fill-red-600" : "text-black"
+                }`}
+              />
+
               <span className="hidden sm:inline">Wishlist</span>
             </Link>
 
@@ -211,7 +217,7 @@ export default function Header() {
 
                   {/* Dropdown Menu */}
                   {isOpen && (
-                    <div className="absolute right-0 mt-3 w-40 bg-white shadow-lg rounded-lg py-2 z-50 bg-yellow-100">
+                    <div className="absolute right-0 mt-3 w-40 bg-white shadow-lg rounded-lg py-2 z-50 ">
                       {/* Triangle Pointer */}
                       <div className="absolute -top-2 right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-yellow-100"></div>
 
