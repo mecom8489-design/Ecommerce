@@ -23,6 +23,7 @@ export default function AdminProducts() {
     category: "",
     offer: "",
     stock: "",
+    thersold: "",
     image: null,
     imagePreview: null,
   });
@@ -141,6 +142,7 @@ export default function AdminProducts() {
     formData.append("category", newProduct.category);
     formData.append("offer", newProduct.offer);
     formData.append("stock", newProduct.stock);
+    formData.append("stock", newProduct.thersold);
     formData.append("image", newProduct.image);
 
     try {
@@ -155,6 +157,7 @@ export default function AdminProducts() {
         category: "",
         offer: "",
         stock: "",
+        thersold: "",
         image: null,
         imagePreview: null,
       });
@@ -203,6 +206,7 @@ export default function AdminProducts() {
       discount: product.discount || "",
       stock: product.stock || "",
       offer: product.offer,
+      thersold: product.thersold || "",
       description: product.description || "",
       image: product.image || "",
     });
@@ -214,10 +218,25 @@ export default function AdminProducts() {
 
     let newValue = value;
 
+    // --- Handle discount rules ---
     if (name === "discount") {
-      if (value === "") newValue = ""; // allow empty while typing
-      else if (value > 100) newValue = 100; // cap at 100
-      else if (value < 0) newValue = 0; // prevent negative
+      if (value === "") {
+        newValue = ""; // allow empty while typing
+      } else {
+        const num = Number(value);
+        if (num > 100) newValue = 100;
+        else if (num < 0) newValue = 0;
+        else newValue = num;
+      }
+    }
+
+    // --- Force numeric fields to be numbers ---
+    if (["stock", "Thersold", "price"].includes(name)) {
+      if (value === "") {
+        newValue = ""; // allow empty field
+      } else {
+        newValue = Number(value); // convert to number
+      }
     }
 
     setCurrentProduct((prevProduct) => ({
@@ -235,6 +254,7 @@ export default function AdminProducts() {
         originalPrice: Number(currentProduct.originalPrice) || 0,
         discount: Number(currentProduct.discount) || 0,
         stock: Number(currentProduct.stock) || 0,
+        thersold: Number(currentProduct.thersold) || 0,
         description: currentProduct.description?.trim() || "",
         name: currentProduct.name?.trim() || "",
       };
@@ -434,7 +454,7 @@ export default function AdminProducts() {
             </label>
             <input
               id="price"
-              type="text"
+              type="number"
               name="price"
               placeholder="Price"
               value={newProduct.price}
@@ -451,7 +471,7 @@ export default function AdminProducts() {
             </label>
             <input
               id="rating"
-              type="text"
+              type="number"
               name="rating"
               placeholder="Rating (0-5)"
               value={newProduct.rating}
@@ -467,7 +487,7 @@ export default function AdminProducts() {
             </label>
             <input
               id="discount"
-              type="text"
+              type="number"
               name="discount"
               placeholder="Discount (%)"
               value={newProduct.discount}
@@ -523,10 +543,25 @@ export default function AdminProducts() {
             </label>
             <input
               id="stock"
-              type="text"
+              type="number"
               name="stock"
               placeholder="Stock"
               value={newProduct.stock}
+              onChange={handleChange}
+              className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="thersold" className="mb-1 font-medium">
+              Thersold
+            </label>
+            <input
+              id="thersold"
+              type="number"
+              name="thersold"
+              placeholder="thersold"
+              value={newProduct.thersold}
               onChange={handleChange}
               className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-indigo-400"
             />
@@ -679,7 +714,7 @@ export default function AdminProducts() {
               Edit Product
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-1">
               {/* Product Name */}
               <div>
                 <label
@@ -753,6 +788,25 @@ export default function AdminProducts() {
                   onChange={handleProductInputChange}
                   className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter stock quantity"
+                />
+              </div>
+
+              {/* Thersold */}
+              <div>
+                <label
+                  htmlFor="Thersold"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Thersold
+                </label>
+                <input
+                  type="number"
+                  id="Thersold"
+                  name="Thersold"
+                  value={currentProduct.Thersold || ""}
+                  onChange={handleProductInputChange}
+                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Enter Thersold quantity"
                 />
               </div>
 
