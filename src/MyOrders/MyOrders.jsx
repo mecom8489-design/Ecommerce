@@ -12,7 +12,6 @@ import {
   Copy,
   ChevronLeft,
 } from "lucide-react";
-
 export default function MyOrders() {
   const { user } = useContext(AuthContext);
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,7 +52,6 @@ export default function MyOrders() {
 
   const handleSubmitReview = () => {
     console.log("Review Submitted:", reviewText);
-   
   };
 
   const handleSendSupport = () => {
@@ -125,6 +123,7 @@ export default function MyOrders() {
   //   console.log("Cancel order:", id);
   //   // Call API here
   // };
+  const fullName = `${user.firstname} ${user.lastname}`;
 
   return (
     <div>
@@ -604,7 +603,7 @@ export default function MyOrders() {
                             <Home className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
                             <div>
                               <p className="text-sm font-medium text-gray-900">
-                                Home
+                                Address
                               </p>
                               <p className="text-sm text-gray-600">
                                 No.2 kalangar nagar tc koolroad GKB Traders,
@@ -617,10 +616,10 @@ export default function MyOrders() {
                             <User className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
                             <div>
                               <p className="text-sm font-medium text-gray-900">
-                                Siva
+                                {fullName}
                               </p>
                               <p className="text-sm text-gray-600">
-                                9994354019
+                                {user.mobile}
                               </p>
                             </div>
                           </div>
