@@ -1,0 +1,445 @@
+import React, { useState, useContext } from "react";
+import {
+  Home,
+  User,
+  ChevronDown,
+  MessageCircle,
+  Download,
+  Copy,
+  ChevronLeft,
+} from "lucide-react";
+import { AuthContext } from "../context/LoginAuth";
+const Orderdetails = ({ selectedOrder, setIsOpen }) => {
+  const { user } = useContext(AuthContext);
+  const fullName = `${user.firstname} ${user.lastname}`;
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [showTotalFees, setShowTotalFees] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+
+  const handleCancelOrder = async () => {
+    // console.log("Review Submitted:", reviewText);
+
+    try {
+      const response = await fetch(
+        `https://e-commerce-backend-production-6fa0.up.railway.app/api/ordered/cancel/${selectedOrder.order_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            reason: cancelReason,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      console.log("API Response:", data);
+
+      if (response.ok) {
+        alert("Order Cancel successfully!");
+        setReviewText("");
+      } else {
+        alert("Failed to submit Order Cancel ");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong");
+    }
+  };
+
+  const handleSubmitReview = () => {
+    console.log("Support Message:", supportMessage);
+  };
+  console.log("selectedOrder:", selectedOrder.order_id);
+  return (
+    <>
+      <div>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setIsOpen(false)} // Close on outside click
+        >
+          <div
+            className="bg-white w-full max-w-8xl max-h-[100vh] overflow-y-auto rounded-lg shadow-xl"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-1 left-4 flex items-center gap-1 
+             px-3 py-1.5 rounded-full bg-white shadow 
+             text-gray-800 hover:bg-gray-100 transition-all"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span className="text-sm font-medium">Back</span>
+            </button>
+
+            <div className="min-h-screen bg-gray-50 rounded-lg">
+              {/* Breadcrumb */}
+              <div className="bg-white border-b border-gray-200 rounded-t-lg">
+                <div className="max-w-7xl mx-auto px-6 py-3">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <span className="hover:text-blue-600 cursor-pointer">
+                      Home
+                    </span>
+                    <span>›</span>
+                    <span className="hover:text-blue-600 cursor-pointer">
+                      My Account
+                    </span>
+                    <span>›</span>
+                    <span className="hover:text-blue-600 cursor-pointer">
+                      My Orders
+                    </span>
+                    <span>›</span>
+                    <span className="text-gray-900">OD335850880580880100</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main Content */}
+              <div className="max-w-7xl mx-auto px-6 py-6">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
+                  {/* Left Column - Order Details */}
+                  <div className="space-y-4">
+                    {/* Product Info Card */}
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <div className="flex gap-4">
+                        <img
+                          src={selectedOrder.product_image}
+                          alt="Product"
+                          className="w-20 h-20 object-cover rounded border border-gray-200"
+                        />
+                        <div className="flex-1">
+                          <h1 className="text-base font-normal text-gray-900 mb-1">
+                            {selectedOrder.product_name}
+                          </h1>
+                          {/* <p className="text-sm text-gray-600 mb-1">Maroon</p> */}
+                          <p className="text-sm text-gray-600 mb-2">
+                            {selectedOrder.product_description}
+                          </p>
+                          <p className="text-lg font-normal text-gray-900">
+                            ${selectedOrder.total_price}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Order Status Timeline */}
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <div className="space-y-4">
+                        {/* Order Confirmed */}
+                        <div className="flex items-start justify-between gap-3">
+                          {/* Left Section */}
+                          <div className="flex items-start gap-3">
+                            <div className="flex flex-col items-center">
+                              <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                              <div className="w-0.5 h-8 bg-green-500"></div>
+                            </div>
+
+                            <div className="pt-0.5">
+                              <p className="text-sm text-gray-900">
+                                Order Confirmed,&nbsp;
+                                {new Date(
+                                  selectedOrder.created_at
+                                ).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Right Side: Cancel Button */}
+                          <button
+                            onClick={() => setShowCancelPopup(true)}
+                            className="px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700"
+                          >
+                            Cancel Order
+                          </button>
+                        </div>
+                        {showCancelPopup && (
+                          <div className="fixed  inset-0 flex items-center justify-center bg-black/40 z-50">
+                            <div className="bg-white p-5 rounded-lg w-150 shadow-lg">
+                              <h2 className="text-lg font-semibold mb-3">
+                                Reason for Cancellation
+                              </h2>
+
+                              <textarea
+                                className="w-[500px] border p-2 rounded-md"
+                                rows="4"
+                                placeholder="Enter reason…"
+                                value={cancelReason}
+                                onChange={(e) =>
+                                  setCancelReason(e.target.value)
+                                }
+                              ></textarea>
+
+                              {/* Buttons */}
+                              <div className="flex justify-end gap-3 mt-4">
+                                <button
+                                  onClick={() => setShowCancelPopup(false)}
+                                  className="px-3 py-1 rounded-md bg-gray-300 hover:bg-gray-400"
+                                >
+                                  Close
+                                </button>
+
+                                <button
+                                  onClick={() => {
+                                    handleCancelOrder(
+                                      selectedOrder.order_id,
+                                      cancelReason
+                                    );
+                                    setShowCancelPopup(false);
+                                    setCancelReason("");
+                                  }}
+                                  className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                >
+                                  Submit
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Delivered */}
+                        <div className="flex items-start gap-3">
+                          <div className="flex flex-col items-center">
+                            <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                              <svg
+                                className="w-3 h-3 text-white"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                          <div className="pt-0">
+                            <p className="text-sm text-gray-900">
+                              Delivered, Nov 05
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* <button className="text-blue-600 text-sm font-normal mt-4 hover:text-blue-700 flex items-center gap-1">
+                          See All Updates
+                          <span className="text-xs">›</span>
+                        </button> */}
+
+                      {/* <p className="text-sm text-gray-500 mt-6">
+                          Return policy ended on Nov 11
+                        </p> */}
+                    </div>
+
+                    {/* Chat Button */}
+                    {/* <button className="w-full bg-white rounded-lg shadow-sm p-4 flex items-center justify-center gap-2 text-gray-700 hover:bg-gray-50 border border-gray-200">
+                        <MessageCircle className="w-5 h-5" />
+                        Chat with us
+                      </button> */}
+
+                    {/* Rate Your Experience */}
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <h2 className="text-base font-normal text-gray-900 mb-4">
+                        Rate your experience
+                      </h2>
+
+                      {/* <div className="flex items-center gap-3 mb-4">
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4 rounded border-gray-300"
+                          />
+                          <span className="text-sm text-gray-700">
+                            Rate the product
+                          </span>
+                        </div> */}
+
+                      <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            onClick={() => setRating(star)}
+                            className="focus:outline-none"
+                          >
+                            <svg
+                              className={`w-8 h-8 ${
+                                rating >= star
+                                  ? "text-yellow-400 fill-current"
+                                  : "text-gray-300"
+                              }`}
+                              stroke="currentColor"
+                              fill={rating >= star ? "currentColor" : "none"}
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1.5}
+                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                              />
+                            </svg>
+                          </button>
+                        ))}
+                      </div>
+                      <div class="p-4">
+                        <form onSubmit={handleSubmitReview}>
+                          <textarea
+                            className="w-full p-3 border rounded-lg focus:ring focus:ring-blue-300"
+                            rows="5"
+                            placeholder="Enter your text here..."
+                            value={reviewText}
+                            onChange={(e) => setReviewText(e.target.value)}
+                          ></textarea>
+
+                          <button
+                            type="submit"
+                            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                          >
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+
+                    {/* Order ID */}
+                    <div className="bg-white rounded-lg shadow-sm p-4">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <span>Order #OD335850880580880100</span>
+                        <button className="text-blue-600 hover:text-blue-700">
+                          <Copy className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column - Delivery & Price Details */}
+                  <div className="space-y-4">
+                    {/* Delivery Details Card */}
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <h2 className="text-base font-medium text-gray-900 mb-4">
+                        Delivery details
+                      </h2>
+
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-3">
+                          <Home className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              Address
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              No.2 kalangar nagar tc koolroad GKB Traders,
+                              Tindiva...
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <User className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {fullName}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {user.mobile}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Price Details Card */}
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <h2 className="text-base font-medium text-gray-900 mb-4">
+                        Price details
+                      </h2>
+
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-700">Listing price</span>
+                          <span className="text-gray-900">
+                            ${selectedOrder.total_price}
+                          </span>
+                        </div>
+
+                        {/* <div className="flex justify-between text-sm">
+                            <div className="flex items-center gap-1">
+                              <span className="text-gray-700">
+                                Special price
+                              </span>
+                              <span className="text-gray-400 text-xs">ⓘ</span>
+                            </div>
+                            <span className="text-gray-900">$449</span>
+                          </div> */}
+
+                        <div className="flex justify-between text-sm">
+                          <button
+                            className="flex items-center gap-1 text-gray-700"
+                            onClick={() => setShowTotalFees(!showTotalFees)}
+                          >
+                            <span>Total fees</span>
+                            <ChevronDown
+                              className={`w-4 h-4 transition-transform ${
+                                showTotalFees ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+                          <span className="text-gray-900">$16</span>
+                        </div>
+
+                        <div className="border-t border-gray-200 pt-3 mt-3">
+                          <div className="flex justify-between text-sm font-medium">
+                            <span className="text-gray-900">Total amount</span>
+                            {/* <span className="text-gray-900">$465</span> */}$
+                            {Number(selectedOrder.total_price) + 16}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                          <span className="text-sm text-gray-700">
+                            Payment method
+                          </span>
+                          <div className="flex items-center gap-1 text-sm text-gray-900">
+                            <span className="text-lg">💵</span>
+                            <span>Cash On Delivery</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Download Invoice Button */}
+                    {/* <button className="w-full bg-white rounded-lg shadow-sm p-4 flex items-center justify-center gap-2 text-gray-700 hover:bg-gray-50 border border-gray-200">
+                        <Download className="w-5 h-5" />
+                        Download Invoice
+                      </button> */}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Orderdetails;

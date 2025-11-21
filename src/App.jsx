@@ -40,12 +40,13 @@ function App() {
         />
         <Route path="/Wishlist" element={<Wishlist />} />
         <Route path="/terms&conditions" element={<Termsconditions />} />
-        <Route path="/contactUs" element={<ContactUs />} />
+        <Route path="/Contact-us" element={<ContactUs />} />
         <Route path="/faq" element={<FAQSection />} />
         <Route path="/returnpolicy" element={<ReturnPolicy />} />
         <Route path="/aboutUs" element={<AboutUs />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/my-Profile" element={<Myprofile />} />
+       
 
         {/* Protected Admin routes */}
         <Route element={<ProtectedRoute />}>
