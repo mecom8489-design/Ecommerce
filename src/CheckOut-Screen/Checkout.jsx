@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Check, Info, ArrowLeft } from "lucide-react";
+import { Check, Info, ArrowLeft } from "lucide-react";
 import { ProductContext } from "../context/ProductContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -8,6 +9,10 @@ import { orderplace } from "../apiroutes/userApi";
 
 
 export default function Checkout() {
+  const { selectedProduct, setSelectedProduct, checkoutInfo } =
+    useContext(ProductContext);
+
+  const { user } = useContext(AuthContext);
   const { selectedProduct, setSelectedProduct, checkoutInfo } =
     useContext(ProductContext);
 
@@ -26,6 +31,10 @@ export default function Checkout() {
 
 
   const product = selectedProduct || state?.product;
+
+  const Qua = checkoutInfo.quantity;
+  const totalPrice = checkoutInfo.totalPrice;
+
 
   const Qua = checkoutInfo.quantity;
   const totalPrice = checkoutInfo.totalPrice;
@@ -56,6 +65,7 @@ export default function Checkout() {
         user_id: user.id,
         user_id: user.id,
         product_id: product.id,
+        quantity: Qua,
         quantity: Qua,
         price_per_unit: product.price,
         total_price: totalPrice,
@@ -91,9 +101,19 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
       {/* Header */}
       <header className="my-element text-white px-4 py-3 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 text-black font-medium hover:underline cursor-pointer"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back</span>
+          </button>
+
+          <h1 className="text-2xl font-bold italic">E ShopEasy</h1>
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-1 text-black font-medium hover:underline cursor-pointer"
@@ -108,13 +128,18 @@ export default function Checkout() {
 
       {/* Main */}
       <div className="max-w-7xl mx-auto px-4 py-6 flex-grow">
+      {/* Main */}
+      <div className="max-w-7xl mx-auto px-4 py-6 flex-grow">
         <div className="flex gap-4">
           {/* Left */}
+          {/* Left */}
           <div className="flex-1 space-y-4">
+            {/* LOGIN */}
             {/* LOGIN */}
             <div className="bg-white shadow-sm">
               <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-4">
+                  <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">1</span>
                   <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">1</span>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-700 font-medium">LOGIN</span>
@@ -128,9 +153,12 @@ export default function Checkout() {
             </div>
 
             {/* ADDRESS */}
+            {/* ADDRESS */}
             <div className="bg-white shadow-sm">
               <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-4">
+                  <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">2</span>
+                  <span className="text-gray-700 font-medium">DELIVERY ADDRESS</span>
                   <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">2</span>
                   <span className="text-gray-700 font-medium">DELIVERY ADDRESS</span>
                 </div>
@@ -141,6 +169,7 @@ export default function Checkout() {
                 {isSaved ? (
                   <div>
                     <p className="text-sm text-gray-700">
+                      <span className="font-medium">{user.firstname}</span> {address}
                       <span className="font-medium">{user.firstname}</span> {address}
                     </p>
 
@@ -163,10 +192,12 @@ export default function Checkout() {
                       placeholder="Enter your address"
                       onChange={(e) => setAddress(e.target.value)}
                       className="w-full border border-gray-300 rounded-md p-2"
+                      className="w-full border border-gray-300 rounded-md p-2"
                     />
 
                     <button
                       onClick={handleSave}
+                      className="mt-3 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md"
                       className="mt-3 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md"
                     >
                       Save Address
@@ -177,8 +208,10 @@ export default function Checkout() {
             </div>
 
             {/* ORDER SUMMARY */}
+            {/* ORDER SUMMARY */}
             <div className="bg-white shadow-sm">
               <div className="flex items-center gap-4 p-4 text-black">
+                <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">3</span>
                 <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">3</span>
                 <span className="font-medium">ORDER SUMMARY</span>
               </div>
@@ -201,6 +234,7 @@ export default function Checkout() {
 
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xl font-medium text-gray-900">₹{totalPrice}</span>
+                      <span className="text-xl font-medium text-gray-900">₹{totalPrice}</span>
                       <Info className="w-3 h-3 text-gray-400" />
                     </div>
                   </div>
@@ -208,15 +242,24 @@ export default function Checkout() {
               </div>
 
               <div className="px-4 pb-4 border-t pt-4">
+              <div className="px-4 pb-4 border-t pt-4">
                 <p className="text-sm text-gray-700">
                   Order confirmation email will be sent to <span className="font-medium">{user.email}</span>
+                  Order confirmation email will be sent to <span className="font-medium">{user.email}</span>
                 </p>
+              </div>
               </div>
 
               <div className="px-0 pb-4 mt-4">
                 <button
                   disabled={!isSaved || loading}
+                  disabled={!isSaved || loading}
                   onClick={handleContinue}
+                  className={`w-full font-medium py-3 rounded shadow-md transition flex items-center justify-center ${
+                    isSaved ? "bg-orange-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  {loading ? "Placing Order..." : "CONTINUE"}
                   className={`w-full font-medium py-3 rounded shadow-md transition flex items-center justify-center ${
                     isSaved ? "bg-orange-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
@@ -228,9 +271,11 @@ export default function Checkout() {
           </div>
 
           {/* Right Section */}
+          {/* Right Section */}
           <div className="w-80">
             <div className="bg-white shadow-sm sticky top-6">
               <div className="p-4 border-b">
+                <h3 className="text-gray-500 font-medium text-sm">PRICE DETAILS</h3>
                 <h3 className="text-gray-500 font-medium text-sm">PRICE DETAILS</h3>
               </div>
 
@@ -238,15 +283,20 @@ export default function Checkout() {
                 <div className="flex justify-between">
                   <span className="text-gray-700">Price ({Qua} item)</span>
                   <span className="text-gray-900">₹{totalPrice}</span>
+                  <span className="text-gray-700">Price ({Qua} item)</span>
+                  <span className="text-gray-900">₹{totalPrice}</span>
                 </div>
 
                 <div className="border-t pt-3 flex justify-between font-medium text-base">
+                  <span>Total Payable</span>
+                  <span>₹{totalPrice}</span>
                   <span>Total Payable</span>
                   <span>₹{totalPrice}</span>
                 </div>
 
                 <div className="pt-2">
                   <p className="text-green-600 font-medium">
+                    Your Total Savings on this order ₹{savedprice * Qua}
                     Your Total Savings on this order ₹{savedprice * Qua}
                   </p>
                 </div>
@@ -255,12 +305,15 @@ export default function Checkout() {
               <div className="px-4 pb-4 pt-2 text-xs text-gray-600 border-t">
                 <p>
                   Safe and Secure Payments. Easy returns. 100% Authentic products.
+                  Safe and Secure Payments. Easy returns. 100% Authentic products.
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* SUCCESS POPUP */}
 
       {/* SUCCESS POPUP */}
       {showPopup && (
@@ -271,6 +324,7 @@ export default function Checkout() {
               🎉 Order Placed Successfully!
             </h2>
             <p className="text-gray-600 mb-4">
+              Your order has been placed successfully.
               Your order has been placed successfully.
             </p>
             <button
@@ -285,6 +339,8 @@ export default function Checkout() {
 
       {/* ⭐ FOOTER ADDED BACK ⭐ */}
       <footer className="bg-white border-t py-4 mt-6">
+      {/* ⭐ FOOTER ADDED BACK ⭐ */}
+      <footer className="bg-white border-t py-4 mt-6">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-xs text-gray-600">
           <div className="flex gap-4">
             <span>Returns Policy</span>
@@ -297,12 +353,15 @@ export default function Checkout() {
             <span>Privacy</span>
           </div>
 
+
           <div className="flex gap-4">
             <span>© 2007-2025 E ShopEasy.com</span>
             <span>
               Need help? Visit the{" "}
               <a href="#" className="text-blue-600 hover:underline">Help Center</a>{" "}
+              <a href="#" className="text-blue-600 hover:underline">Help Center</a>{" "}
               or{" "}
+              <a href="#" className="text-blue-600 hover:underline">Contact Us</a>
               <a href="#" className="text-blue-600 hover:underline">Contact Us</a>
             </span>
           </div>
@@ -311,4 +370,5 @@ export default function Checkout() {
     </div>
   );
 }
+
 

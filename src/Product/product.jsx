@@ -32,6 +32,15 @@ export default function Product() {
     setCurrentProductId,
   } = useContext(ProductContext);
 
+  const {
+    selectedProduct,
+    setSelectedProduct,
+    checkoutInfo,
+    setCheckoutInfo,
+    currentProductId,
+    setCurrentProductId,
+  } = useContext(ProductContext);
+
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
 
@@ -66,6 +75,7 @@ export default function Product() {
       }
     : null;
 
+  const [quantity, setQuantity] = useState(checkoutInfo?.quantity || 1);
   const [quantity, setQuantity] = useState(checkoutInfo?.quantity || 1);
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -109,8 +119,29 @@ export default function Product() {
       totalPrice: Math.floor(finalPrice * newQty),
     });
   };
+  const incrementQuantity = () => {
+    const newQty = quantity + 1;
+    setQuantity(newQty); // update local quantity
+    setCheckoutInfo({
+      quantity: newQty,
+      finalPrice,
+      totalPrice: Math.floor(finalPrice * newQty),
+    }); // update context separately
+  };
+
+  const decrementQuantity = () => {
+    const newQty = quantity > 1 ? quantity - 1 : 1;
+    setQuantity(newQty);
+    setCheckoutInfo({
+      quantity: newQty,
+      finalPrice,
+      totalPrice: Math.floor(finalPrice * newQty),
+    });
+  };
 
   const finalPrice = product.price - product.price * (product.discount / 100);
+
+ 
 
  
   useEffect(() => {
@@ -137,7 +168,36 @@ export default function Product() {
         
         setSelectedProduct(state.product); 
       }
+      const newProductId = state.product.id;
+
+      // If different product, reset quantity & checkout info
+      if (currentProductId !== newProductId) {
+        setSelectedProduct(state.product);
+
+        const finalPrice =
+          state.product.price -
+          state.product.price * (state.product.discount / 100);
+
+        setCheckoutInfo({
+          quantity: 1,
+          totalPrice: Math.floor(finalPrice),
+          finalPrice: finalPrice,
+        });
+
+        setQuantity(1); 
+        setCurrentProductId(newProductId); 
+      } else {
+        
+        setSelectedProduct(state.product); 
+      }
     }
+  }, [
+    state,
+    currentProductId,
+    setSelectedProduct,
+    setCheckoutInfo,
+    setCurrentProductId,
+  ]);
   }, [
     state,
     currentProductId,
@@ -253,6 +313,17 @@ export default function Product() {
             </div>
             <button
               className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6"
+              onClick={() => {
+                setSelectedProduct(product);
+
+                setCheckoutInfo({
+                  quantity,
+                  totalPrice: Math.floor(finalPrice * quantity),
+                  finalPrice,
+                });
+
+                navigate(`/ProductPage/products/Checkout/${product.id}`);
+              }}
               onClick={() => {
                 setSelectedProduct(product);
 
