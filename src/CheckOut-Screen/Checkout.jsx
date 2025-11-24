@@ -237,19 +237,19 @@ export default function Checkout() {
               {/* GST Invoice Checkbox */}
 
               {/* Email Confirmation */}
-              <div className="px-4 pb-4 border-t pt-4">
+              {/* <div className="px-4 pb-4 border-t pt-4">
                 <p className="text-sm text-gray-700">
                   Order confirmation email will be sent to{" "}
                   <span className="font-medium">{user.email}</span>
                 </p>
-              </div>
+              </div> */}
 
               {/* Continue Button */}
               {/* ✅ CONTINUE button */}
               <div className="px-0 pb-4 mt-4">
                 <button
-                  disabled={!isSaved || loading}
-                  onClick={isSaved ? handleContinue : undefined}
+                  disabled={ loading}
+                  onClick={handleContinue}
                   className={`w-full font-medium py-3 rounded shadow-md transition flex items-center justify-center${isSaved ? "bg-orange-500 hover:bg-orange-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
                 >
                   {loading ? (
