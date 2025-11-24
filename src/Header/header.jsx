@@ -31,32 +31,6 @@ export default function Header() {
   const wish = getWishlist();
   const wishlist = wish?.length || 0;
 
-  // const handleSearch = async (value) => {
-  //   setSearchText(value);
-
-  //   // If empty input → hide suggestions
-  //   if (!value.trim()) {
-  //     setSuggestions([]);
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await fetch(
-  //       `https://e-commerce-backend-production-6fa0.up.railway.app/api/search/live-search?query=${value}`
-  //     );
-
-  //     const data = await response.json();
-
-  //     // backend must return { products: [...] }
-  //     setSuggestions(data.products || []);
-  //   } catch (error) {
-  //     console.log("Search error:", error);
-  //   }
-
-  //   setLoading(false);
-  // };
 
   const controller = useRef(null); // For aborting old requests
   const cache = useRef({});
@@ -199,7 +173,6 @@ export default function Header() {
               <input
                 type="text"
                 value={searchText}
-                // onChange={(e) => handleSearch(e.target.value)}
                 onChange={handleInputChange}
                 placeholder="Search for products, brands and more..."
                 className="w-full py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
