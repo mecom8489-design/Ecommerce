@@ -1,43 +1,71 @@
-import React from "react";
-import { Star } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
+
 
 const ProductReviews = () => {
+  
+  const { state } = useLocation();
+  const productId = state?.product.id;
 
-      
-const reviews = [
-    {
-      name: "Aarav Sharma",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-      rating: 5,
-      date: "12 Aug 2025",
-      comment: "Amazing product, quality is top-notch!",
-    //   images: ["https://via.placeholder.com/100", "https://via.placeholder.com/100"]
-    },
-    {
-      name: "Simran Kaur",
-      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-      rating: 4,
-      date: "8 Aug 2025",
-      comment: "Good value for money. Packaging could be better.",
-      images: []
-    },
-    {
-      name: "Rohit Verma",
-      avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-      rating: 5,
-      date: "1 Aug 2025",
-      comment: "Love it! Will buy again.",
-    //   images: ["https://via.placeholder.com/100"]
-    }
-  ];
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  const hasFetched = useRef(false); // 🔥 Fix double API call
 
+  useEffect(() => {
+    if (!productId) return;
 
-  // Calculate average rating
+    // ❗ Prevent double API triggering in React Strict Mode
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
+    fetch(
+      `https://e-commerce-backend-production-6fa0.up.railway.app/api/review/reviews/${productId}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        const mapped = (data.reviews || []).map((r) => ({
+          name: r.user_name,
+          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
+            r.user_name
+          )}&background=random`,
+          rating: r.rating,
+          date: new Date(r.created_at).toLocaleDateString("en-GB"),
+          comment: r.review_text,
+          images: r.product_image ? [r.product_image] : [],
+        }));
+
+        setReviews(mapped);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error fetching reviews:", err);
+        setLoading(false);
+      });
+  }, [productId]);
+
+  // ---------------------- LOADING --------------------------
+  if (loading) {
+    return (
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-10 max-w-2xl text-center">
+        Loading reviews...
+      </div>
+    );
+  }
+
+  // ---------------------- NO REVIEWS -----------------------
+  if (reviews.length === 0) {
+    return (
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-10 max-w-2xl text-center">
+        <p className="text-gray-600 font-medium">No reviews available.</p>
+      </div>
+    );
+  }
+
+  // ---------------------- AVERAGES -------------------------
   const averageRating =
     reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
 
-  // Rating breakdown
   const ratingBreakdown = [5, 4, 3, 2, 1].map((star) => {
     const count = reviews.filter((r) => r.rating === star).length;
     return {
@@ -47,37 +75,45 @@ const reviews = [
     };
   });
 
+  // ---------------------- MAIN UI --------------------------
   return (
-    <div className="bg-white  border border-gray-200 rounded-2xl p-6 mt-10 max-w-2xl ">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-10 max-w-2xl">
       {/* Overall Rating */}
       <div className="flex flex-col md:flex-row md:items-center gap-6 mb-8">
         <div className="text-center md:text-left">
           <h2 className="text-3xl font-bold text-gray-900">
             {averageRating.toFixed(1)}/5
           </h2>
-          <div className="flex justify-center md:justify-start mt-1">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-5 h-5 ${
-                  i < Math.floor(averageRating)
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "text-gray-300"
-                }`}
-              />
-            ))}
-          </div>
+
+          {/* Overall Stars */}
+          <span className="flex relative justify-center md:justify-start mt-1">
+            <div className="flex text-gray-300 text-xl">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span key={i}>★</span>
+              ))}
+            </div>
+
+            <div
+              className="flex text-yellow-500 text-xl absolute left-0 top-0 overflow-hidden"
+              style={{ width: `${(averageRating / 5) * 100}%` }}
+            >
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span key={i}>★</span>
+              ))}
+            </div>
+          </span>
+
           <p className="text-gray-500 mt-1">{reviews.length} reviews</p>
         </div>
 
         {/* Rating Breakdown */}
         <div className="flex-1">
-          {ratingBreakdown.map(({ star, count, percentage }) => (
+          {ratingBreakdown.map(({ star, percentage }) => (
             <div key={star} className="flex items-center gap-3 mb-2">
               <span className="text-gray-600 w-10">{star}★</span>
               <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
                 <div
-                  className="bg-yellow-400  h-full"
+                  className="bg-yellow-400 h-full"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
@@ -89,7 +125,7 @@ const reviews = [
         </div>
       </div>
 
-      {/* Customer Review Cards */}
+      {/* Reviews List */}
       <div className="space-y-6">
         {reviews.slice(0, 3).map((r, idx) => (
           <div
@@ -108,40 +144,39 @@ const reviews = [
               </div>
             </div>
 
-            {/* Star rating */}
-            <div className="flex gap-1 mb-2">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-4 h-4 ${
-                    i < r.rating
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300"
-                  }`}
-                />
-              ))}
+            {/* Star Rating */}
+            <div className="text-sm flex items-center mt-1 mb-2">
+              <span className="mr-2">Rating:</span>
+
+              <span className="flex relative">
+                {/* Gray stars */}
+                <div className="flex text-gray-300">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
+                </div>
+
+                {/* Yellow stars */}
+                <div
+                  className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+                  style={{ width: `${(Number(r.rating) / 5) * 100}%` }}
+                >
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
+                </div>
+              </span>
+
+              <span className="ml-2 text-gray-700">
+                ({Number(r.rating).toFixed(2)})
+              </span>
             </div>
 
             <p className="text-gray-700 mb-3">{r.comment}</p>
-
-            {/* Review Images */}
-            {r.images && r.images.length > 0 && (
-              <div className="flex gap-2">
-                {r.images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    alt="review"
-                    className="w-16 h-16 rounded-lg object-cover border"
-                  />
-                ))}
-              </div>
-            )}
           </div>
         ))}
       </div>
 
-      {/* View More Button */}
       <button className="mt-6 w-full py-2 px-4 border rounded-lg text-gray-700 hover:bg-gray-100 transition">
         View all reviews
       </button>

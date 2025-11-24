@@ -18,6 +18,7 @@ import { useCart } from "../context/CartContext";
 import Toast from "../context/ToastAddToCart.jsx";
 import { addToWishlist } from "../utils/wishlistUtils.js";
 
+
 export default function Product() {
   const { addToCart } = useCart();
   const { state } = useLocation();
@@ -37,15 +38,10 @@ export default function Product() {
   };
 
   const handleWishlist = (product) => {
-      addToWishlist(product);
-    };
+    addToWishlist(product);
+  };
 
   // Update selected product from navigation state
-  useEffect(() => {
-    if (state?.product) {
-      setSelectedProduct(state.product);
-    }
-  }, [state, setSelectedProduct]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -92,6 +88,12 @@ export default function Product() {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const finalPrice = product.price - product.price * (product.discount / 100);
+
+  useEffect(() => {
+    if (state?.product) {
+      setSelectedProduct(state.product);
+    }
+  }, [state, setSelectedProduct,product]);
 
   return (
     <div>
@@ -260,7 +262,7 @@ export default function Product() {
               </p>
             </div>
 
-            <ProductReviews />
+            <ProductReviews  />
           </div>
         </div>
       </div>
