@@ -18,7 +18,6 @@ import { useCart } from "../context/CartContext";
 import Toast from "../context/ToastAddToCart.jsx";
 import { addToWishlist } from "../utils/wishlistUtils.js";
 
-
 export default function Product() {
   const { addToCart } = useCart();
   const { state } = useLocation();
@@ -93,7 +92,7 @@ export default function Product() {
     if (state?.product) {
       setSelectedProduct(state.product);
     }
-  }, [state, setSelectedProduct,product]);
+  }, [state, setSelectedProduct, product]);
 
   return (
     <div>
@@ -262,7 +261,7 @@ export default function Product() {
               </p>
             </div>
 
-            <ProductReviews  />
+            <ProductReviews />
           </div>
         </div>
       </div>
