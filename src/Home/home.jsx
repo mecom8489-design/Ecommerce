@@ -127,18 +127,7 @@ const Home = () => {
     });
   };
 
-  const getBadgeColor = (badge) => {
-    switch (badge) {
-      case "Bestseller":
-        return "bg-black text-white";
-      case "Limited Edition":
-        return "bg-red-500 text-white";
-      case "Personalise me":
-        return "bg-purple-500 text-white";
-      default:
-        return "bg-gray-500 text-white";
-    }
-  };
+  
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
