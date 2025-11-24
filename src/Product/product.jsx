@@ -188,7 +188,7 @@ export default function Product() {
               </div>
 
               <button className="flex-1 bg-gray-800 text-white px-8 py-3 rounded font-medium hover:bg-gray-900 transition-colors">
-                CHECKOUT - ₹{Math.floor(finalPrice * quantity)}
+                Total - ₹ {Math.floor(finalPrice * quantity)}
               </button>
 
               <button
