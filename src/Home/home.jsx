@@ -428,7 +428,7 @@ const Home = () => {
       </section>
 
       {/* Products AD */}
-      <ProductAD product={ProductADs} />
+      {/* <ProductAD product={ProductADs} /> */}
 
       {/*  Recommended for you Products Carousel  */}
       <div className="w-full max-w-8xl mx-auto p-28 mt-20 pt-0 pb-0 rounded-xl">

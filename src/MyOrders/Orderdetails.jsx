@@ -17,6 +17,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
   const [reviewText, setReviewText] = useState("");
   const [showTotalFees, setShowTotalFees] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
+  const [isSubmitted, setisSubmitted] = useState(false);
 
   const handleCancelOrder = async () => {
     // console.log("Review Submitted:", reviewText);
@@ -50,11 +51,52 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
       alert("Something went wrong");
     }
   };
+  // console.log(" selectedOrder:", selectedOrder.product_id);
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
 
-  const handleSubmitReview = () => {
-    console.log("Support Message:", supportMessage);
+    if (!rating) {
+      alert("Please select a star rating");
+      return;
+    }
+    setisSubmitted(true); // Disable button
+    const reviewData = {
+      user_id: selectedOrder.user_id, // your logged-in user
+      product_id: selectedOrder.product_id, // the product you are rating
+      rating: rating, // 1 to 5
+      review_text: reviewText, // textarea value
+    };
+    console.log("reviewData", reviewData);
+    try {
+      const response = await fetch(
+        "https://e-commerce-backend-production-6fa0.up.railway.app/api/review/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(reviewData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Review submitted successfully!");
+        setRating(0);
+        setReviewText("");
+      } else {
+        alert(data.message || "Failed to submit review");
+        setisSubmitted(false); // re-enable only if failed
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong");
+      setisSubmitted(false); // re-enable only if failed
+    }
   };
-  console.log("selectedOrder:", selectedOrder.order_id);
+
+  // console.log("selectedOrder:", selectedOrder.order_id);
   return (
     <>
       <div>
@@ -94,7 +136,9 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
                       My Orders
                     </span>
                     <span>›</span>
-                    <span className="text-gray-900">OD#{selectedOrder.order_id}</span>
+                    <span className="text-gray-900">
+                      OD#{selectedOrder.order_id}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -389,9 +433,15 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
 
                           <button
                             type="submit"
-                            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            disabled={isSubmitted}
+                            className={`mt-3 px-4 py-2 text-white rounded-lg 
+    ${
+      isSubmitted
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-blue-600 hover:bg-blue-700"
+    }`}
                           >
-                            Submit
+                            {isSubmitted ? "Submitted" : "Submit"}
                           </button>
                         </form>
                       </div>

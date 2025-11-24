@@ -125,7 +125,7 @@ export default function MyOrders() {
           <div className="flex gap-6">
             {/* Filters Sidebar */}
             <div className="w-64 flex-shrink-0">
-              <div className="bg-white rounded-lg shadow-sm border p-5 sticky top-6">
+              <div className="bg-white rounded-lg shadow-sm  p-5 sticky top-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">
                   Filters
                 </h2>
@@ -195,7 +195,7 @@ export default function MyOrders() {
             {/* Orders List */}
             <div className="flex-1">
               {/* Search Bar */}
-              <div className="bg-white rounded-lg shadow-sm border p-4 mb-4 flex gap-3">
+              <div className="bg-white rounded-lg shadow-sm  p-4 mb-4 flex gap-3">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
