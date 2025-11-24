@@ -18,12 +18,19 @@ import { useCart } from "../context/CartContext";
 import Toast from "../context/ToastAddToCart.jsx";
 import { addToWishlist } from "../utils/wishlistUtils.js";
 
-
 export default function Product() {
   const { addToCart } = useCart();
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { selectedProduct, setSelectedProduct } = useContext(ProductContext);
+
+  const {
+    selectedProduct,
+    setSelectedProduct,
+    checkoutInfo,
+    setCheckoutInfo,
+    currentProductId,
+    setCurrentProductId,
+  } = useContext(ProductContext);
 
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
@@ -59,7 +66,7 @@ export default function Product() {
       }
     : null;
 
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(checkoutInfo?.quantity || 1);
   const [currentImage, setCurrentImage] = useState(0);
 
   if (!product) {
@@ -83,28 +90,69 @@ export default function Product() {
     product.altImage3 || product.image,
   ];
 
-  const incrementQuantity = () => setQuantity((prev) => prev + 1);
-  const decrementQuantity = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const incrementQuantity = () => {
+    const newQty = quantity + 1;
+    setQuantity(newQty); // update local quantity
+    setCheckoutInfo({
+      quantity: newQty,
+      finalPrice,
+      totalPrice: Math.floor(finalPrice * newQty),
+    }); // update context separately
+  };
+
+  const decrementQuantity = () => {
+    const newQty = quantity > 1 ? quantity - 1 : 1;
+    setQuantity(newQty);
+    setCheckoutInfo({
+      quantity: newQty,
+      finalPrice,
+      totalPrice: Math.floor(finalPrice * newQty),
+    });
+  };
 
   const finalPrice = product.price - product.price * (product.discount / 100);
 
+ 
   useEffect(() => {
     if (state?.product) {
-      setSelectedProduct(state.product);
+      const newProductId = state.product.id;
+
+      // If different product, reset quantity & checkout info
+      if (currentProductId !== newProductId) {
+        setSelectedProduct(state.product);
+
+        const finalPrice =
+          state.product.price -
+          state.product.price * (state.product.discount / 100);
+
+        setCheckoutInfo({
+          quantity: 1,
+          totalPrice: Math.floor(finalPrice),
+          finalPrice: finalPrice,
+        });
+
+        setQuantity(1); 
+        setCurrentProductId(newProductId); 
+      } else {
+        
+        setSelectedProduct(state.product); 
+      }
     }
-  }, [state, setSelectedProduct,product]);
+  }, [
+    state,
+    currentProductId,
+    setSelectedProduct,
+    setCheckoutInfo,
+    setCurrentProductId,
+  ]);
 
   return (
     <div>
       <Header />
       <div className="max-w-7xl mx-auto p-6 bg-white">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Side - Product Images */}
           <div className="flex space-x-4 lg:sticky lg:top-0 self-start">
-            {/* (You can add thumbnails here if needed) */}
 
-            {/* Main Image */}
             <div className="flex-1 relative">
               <div className="absolute top-4 left-4 z-10">
                 <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -188,7 +236,7 @@ export default function Product() {
               </div>
 
               <button className="flex-1 bg-gray-800 text-white px-8 py-3 rounded font-medium hover:bg-gray-900 transition-colors">
-                CHECKOUT - ₹{Math.floor(finalPrice * quantity)}
+                Total - ₹ {Math.floor(finalPrice * quantity)}
               </button>
 
               <button
@@ -202,20 +250,19 @@ export default function Product() {
                 <Heart className="w-5 h-5 text-gray-600" />
               </button>
             </div>
-
-            {/* Buy Now */}
             <button
               className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6"
-              onClick={() =>
-                navigate(`/ProductPage/products/Checkout/${product.id}`, {
-                  state: {
-                    product,
-                    quantity,
-                    totalPrice: Math.floor(finalPrice * quantity),
-                    finalPrice,
-                  },
-                })
-              }
+              onClick={() => {
+                setSelectedProduct(product);
+
+                setCheckoutInfo({
+                  quantity,
+                  totalPrice: Math.floor(finalPrice * quantity),
+                  finalPrice,
+                });
+
+                navigate(`/ProductPage/products/Checkout/${product.id}`);
+              }}
             >
               BUY IT NOW
             </button>
@@ -262,7 +309,7 @@ export default function Product() {
               </p>
             </div>
 
-            <ProductReviews  />
+            <ProductReviews />
           </div>
         </div>
       </div>
