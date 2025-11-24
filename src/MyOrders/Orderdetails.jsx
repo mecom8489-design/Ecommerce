@@ -94,7 +94,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
                       My Orders
                     </span>
                     <span>›</span>
-                    <span className="text-gray-900">OD335850880580880100</span>
+                    <span className="text-gray-900">OD#{selectedOrder.order_id}</span>
                   </div>
                 </div>
               </div>
@@ -400,7 +400,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
                     {/* Order ID */}
                     <div className="bg-white rounded-lg shadow-sm p-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <span>Order #OD335850880580880100</span>
+                        <span>Order #{selectedOrder.order_id}</span>
                         <button className="text-blue-600 hover:text-blue-700">
                           <Copy className="w-4 h-4" />
                         </button>
