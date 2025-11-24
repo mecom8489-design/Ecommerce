@@ -9,6 +9,7 @@ import { AuthContext } from "../context/LoginAuth";
 import { Settings, LogOut, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getWishlist } from "../utils/wishlistUtils";
+import debounce from "lodash.debounce";
 
 export default function Header() {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -30,39 +31,93 @@ export default function Header() {
   const wish = getWishlist();
   const wishlist = wish?.length || 0;
 
-  const handleSearch = async (value) => {
-    setSearchText(value);
+  // const handleSearch = async (value) => {
+  //   setSearchText(value);
 
-    // If empty input → hide suggestions
-    if (!value.trim()) {
+  //   // If empty input → hide suggestions
+  //   if (!value.trim()) {
+  //     setSuggestions([]);
+  //     return;
+  //   }
+
+  //   setLoading(true);
+
+  //   try {
+  //     const response = await fetch(
+  //       `https://e-commerce-backend-production-6fa0.up.railway.app/api/search/live-search?query=${value}`
+  //     );
+
+  //     const data = await response.json();
+
+  //     // backend must return { products: [...] }
+  //     setSuggestions(data.products || []);
+  //   } catch (error) {
+  //     console.log("Search error:", error);
+  //   }
+
+  //   setLoading(false);
+  // };
+
+  const controller = useRef(null); // For aborting old requests
+  const cache = useRef({});
+
+  const fetchSuggestions = async (value) => {
+    if (value.length < 2) {
       setSuggestions([]);
+      return;
+    }
+
+    // Check cache first
+    if (cache.current[value]) {
+      setSuggestions(cache.current[value]);
       return;
     }
 
     setLoading(true);
 
+    // Cancel old request if exists
+    if (controller.current) controller.current.abort();
+    controller.current = new AbortController();
+
     try {
-      const response = await fetch(
-        `https://e-commerce-backend-production-6fa0.up.railway.app/api/search/live-search?query=${value}`
+      const res = await fetch(
+        `https://e-commerce-backend-production-6fa0.up.railway.app/api/search/live-search?query=${value}`,
+        { signal: controller.current.signal }
       );
 
-      const data = await response.json();
+      const data = await res.json();
 
-      // backend must return { products: [...] }
-      setSuggestions(data.products || []);
+      const products = data.products || [];
+
+      cache.current[value] = products; // Save to cache
+      setSuggestions(products);
     } catch (error) {
+      if (error.name === "AbortError") return; // Ignore aborted requests
       console.log("Search error:", error);
     }
 
     setLoading(false);
   };
-  const handleSelect = (name) => {
-    setSearchText(name); // Set input box
-    setSuggestions([]); // Hide dropdown
-    // ✅ Save search to local storage
+
+  const debouncedFetch = useRef(
+    debounce((value) => {
+      fetchSuggestions(value);
+    }, 400)
+  ).current;
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchText(value);
+    debouncedFetch(value);
+  };
+
+
+    const handleSelect = (name) => {
+    setSearchText(name);
+    setSuggestions([]);
+
     let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
-    // Avoid duplicate entries
     if (!history.includes(name)) {
       history.push(name);
     }
@@ -144,7 +199,8 @@ export default function Header() {
               <input
                 type="text"
                 value={searchText}
-                onChange={(e) => handleSearch(e.target.value)}
+                // onChange={(e) => handleSearch(e.target.value)}
+                onChange={handleInputChange}
                 placeholder="Search for products, brands and more..."
                 className="w-full py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
@@ -285,10 +341,10 @@ export default function Header() {
               Hot Deals
             </Link>
             <Link to="/support" className="hover-link">
-             About US
+              About US
             </Link>
             <Link to="/Contact-us" className="hover-link">
-             Contact Us
+              Contact Us
             </Link>
           </nav>
         </div>
