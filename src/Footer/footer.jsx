@@ -9,7 +9,7 @@ const Footer = () => {
     {
       title: "Customer Services",
       links: [
-        { name: "Contact us", url: "/contactUs" },
+        { name: "Contact us", url: "/Contact-us" },
         { name: "FAQs", url: "/faq" },
         { name: "Returns and refunds", url: "/returnpolicy" },
         { name: "Personal Shopping", url: "/personal-shopping" },
