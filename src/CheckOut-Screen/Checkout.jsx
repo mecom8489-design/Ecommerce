@@ -196,7 +196,7 @@ export default function Checkout() {
 
               <div className="px-0 pb-4 mt-4">
                 <button
-                  disabled={loading || isContinueDisabled}
+                  disabled={isContinueDisabled}
                   onClick={handleContinue}
                   className={`w-full font-medium py-3 rounded shadow-md flex justify-center
                     ${
