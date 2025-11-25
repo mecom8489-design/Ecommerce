@@ -19,3 +19,12 @@ export const orderplace = (data) => {
 
 export const getorderplace = (id) => axiosInstance.get(`/ordered/${id}`);
 
+
+
+export const addressUpdate = async (userData) => {
+    return axiosInstance.put(`/admin/updateUsers/${userData.id}`, userData, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+};//working fine

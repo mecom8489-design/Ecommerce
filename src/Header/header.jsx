@@ -313,7 +313,7 @@ export default function Header() {
             <Link to="/hot-deals" className="hover-link">
               Hot Deals
             </Link>
-            <Link to="/support" className="hover-link">
+            <Link to="/aboutUs" className="hover-link">
               About US
             </Link>
             <Link to="/Contact-us" className="hover-link">
