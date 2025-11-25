@@ -214,12 +214,12 @@ export default function Checkout() {
 
               <div className="px-0 pb-4 mt-4">
                 <button
-                  disabled={!isSaved || loading}
+                  disabled={loading}
                   onClick={handleContinue}
                   className={`w-full font-medium py-3 rounded shadow-md transition flex items-center justify-center ${
                     isSaved
                       ? "bg-orange-500 text-white"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-500 text-white "
                   }`}
                 >
                   {loading ? "Placing Order..." : "CONTINUE"}
