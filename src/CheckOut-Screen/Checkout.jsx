@@ -35,6 +35,9 @@ export default function Checkout() {
       alert("Please enter your address before saving.");
       return;
     }
+
+   
+
     setIsSaved(true);
   };
 
