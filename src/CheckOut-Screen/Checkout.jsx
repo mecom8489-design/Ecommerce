@@ -103,7 +103,9 @@ export default function Checkout() {
             <div className="bg-white shadow-sm">
               <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-4">
-                  <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">1</span>
+                  <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">
+                    1
+                  </span>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-700 font-medium">LOGIN</span>
                     <Check className="w-5 h-5 text-blue-600" />
@@ -111,7 +113,7 @@ export default function Checkout() {
                 </div>
               </div>
               <div className="px-4 py-3">
-                <p className="text-sm text-gray-700">{user.mobile}</p>
+                <p className="text-sm text-gray-700">{user?.mobile || ""}</p>
               </div>
             </div>
 
@@ -119,8 +121,12 @@ export default function Checkout() {
             <div className="bg-white shadow-sm">
               <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-4">
-                  <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">2</span>
-                  <span className="text-gray-700 font-medium">DELIVERY ADDRESS</span>
+                  <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">
+                    2
+                  </span>
+                  <span className="text-gray-700 font-medium">
+                    DELIVERY ADDRESS
+                  </span>
                 </div>
               </div>
 
@@ -128,7 +134,10 @@ export default function Checkout() {
                 {isSaved ? (
                   <div>
                     <p className="text-sm text-gray-700">
-                      <span className="font-medium">{user.firstname}</span> {address}
+                      <span className="font-medium">
+                        {user?.firstname || ""}
+                      </span>{" "}
+                      {address}
                     </p>
 
                     <button
@@ -165,7 +174,9 @@ export default function Checkout() {
             {/* ORDER SUMMARY */}
             <div className="bg-white shadow-sm">
               <div className="flex items-center gap-4 p-4 text-black">
-                <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">3</span>
+                <span className="flex items-center justify-center w-8 h-8 bg-yellow-600 text-white rounded-sm font-medium">
+                  3
+                </span>
                 <span className="font-medium">ORDER SUMMARY</span>
               </div>
 
@@ -185,7 +196,9 @@ export default function Checkout() {
                     </h3>
 
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xl font-medium text-gray-900">₹{totalPrice}</span>
+                      <span className="text-xl font-medium text-gray-900">
+                        ₹{totalPrice}
+                      </span>
                       <Info className="w-3 h-3 text-gray-400" />
                     </div>
                   </div>
@@ -194,7 +207,8 @@ export default function Checkout() {
 
               <div className="px-4 pb-4 border-t pt-4">
                 <p className="text-sm text-gray-700">
-                  Order confirmation email will be sent to <span className="font-medium">{user.email}</span>
+                  Order confirmation email will be sent to{" "}
+                  <span className="font-medium">{user?.email || ""}</span>
                 </p>
               </div>
 
@@ -203,7 +217,9 @@ export default function Checkout() {
                   disabled={!isSaved || loading}
                   onClick={handleContinue}
                   className={`w-full font-medium py-3 rounded shadow-md transition flex items-center justify-center ${
-                    isSaved ? "bg-orange-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    isSaved
+                      ? "bg-orange-500 text-white"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                 >
                   {loading ? "Placing Order..." : "CONTINUE"}
@@ -216,7 +232,9 @@ export default function Checkout() {
           <div className="w-80">
             <div className="bg-white shadow-sm sticky top-6">
               <div className="p-4 border-b">
-                <h3 className="text-gray-500 font-medium text-sm">PRICE DETAILS</h3>
+                <h3 className="text-gray-500 font-medium text-sm">
+                  PRICE DETAILS
+                </h3>
               </div>
 
               <div className="p-4 space-y-3 text-sm">
@@ -239,7 +257,8 @@ export default function Checkout() {
 
               <div className="px-4 pb-4 pt-2 text-xs text-gray-600 border-t">
                 <p>
-                  Safe and Secure Payments. Easy returns. 100% Authentic products.
+                  Safe and Secure Payments. Easy returns. 100% Authentic
+                  products.
                 </p>
               </div>
             </div>
@@ -284,9 +303,13 @@ export default function Checkout() {
             <span>© 2007-2025 E ShopEasy.com</span>
             <span>
               Need help? Visit the{" "}
-              <a href="#" className="text-blue-600 hover:underline">Help Center</a>{" "}
+              <a href="#" className="text-blue-600 hover:underline">
+                Help Center
+              </a>{" "}
               or{" "}
-              <a href="#" className="text-blue-600 hover:underline">Contact Us</a>
+              <a href="#" className="text-blue-600 hover:underline">
+                Contact Us
+              </a>
             </span>
           </div>
         </div>
@@ -294,4 +317,3 @@ export default function Checkout() {
     </div>
   );
 }
-

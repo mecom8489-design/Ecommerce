@@ -13,7 +13,12 @@ createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <ProductProvider>
         <CartProvider>
-          <ToastContainer />
+          <ToastContainer
+            toastStyle={{
+              width: "430px",
+              maxWidth: "90%",
+            }}
+          />
           <AuthProvider>
             <App />
           </AuthProvider>

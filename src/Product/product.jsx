@@ -17,6 +17,9 @@ import Footer from "../Footer/footer.jsx";
 import { useCart } from "../context/CartContext";
 import Toast from "../context/ToastAddToCart.jsx";
 import { addToWishlist } from "../utils/wishlistUtils.js";
+import { AuthContext } from "../context/LoginAuth.jsx";
+import SignIn from "../Sign-in/signin.jsx";
+import SignUp from "../Sign-in/signup.jsx";
 
 export default function Product() {
   const { addToCart } = useCart();
@@ -32,11 +35,15 @@ export default function Product() {
     setCurrentProductId,
   } = useContext(ProductContext);
 
+  const { user } = useContext(AuthContext);
+
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
 
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
@@ -110,9 +117,9 @@ export default function Product() {
     });
   };
 
-  const finalPrice = product.price - product.price * (product.discount / 100);
+  const finalPrice =
+    product?.price - product?.price * (product?.discount / 100);
 
- 
   useEffect(() => {
     if (state?.product) {
       const newProductId = state.product.id;
@@ -131,11 +138,10 @@ export default function Product() {
           finalPrice: finalPrice,
         });
 
-        setQuantity(1); 
-        setCurrentProductId(newProductId); 
+        setQuantity(1);
+        setCurrentProductId(newProductId);
       } else {
-        
-        setSelectedProduct(state.product); 
+        setSelectedProduct(state.product);
       }
     }
   }, [
@@ -152,7 +158,6 @@ export default function Product() {
       <div className="max-w-7xl mx-auto p-6 bg-white">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="flex space-x-4 lg:sticky lg:top-0 self-start">
-
             <div className="flex-1 relative">
               <div className="absolute top-4 left-4 z-10">
                 <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -253,8 +258,12 @@ export default function Product() {
             <button
               className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6"
               onClick={() => {
-                setSelectedProduct(product);
+                if (!user || !user.email) {
+                  setShowSignIn(true); 
+                  return;
+                }
 
+                setSelectedProduct(product);
                 setCheckoutInfo({
                   quantity,
                   totalPrice: Math.floor(finalPrice * quantity),
@@ -308,11 +317,21 @@ export default function Product() {
                   "This is a high-quality product designed for durability and comfort."}
               </p>
             </div>
-
             <ProductReviews />
           </div>
         </div>
       </div>
+      {/* SignIn / SignUp Popup */}
+      {showSignIn && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[999]">
+          <SignIn setShowSignIn={setShowSignIn} setShowSignUp={setShowSignUp} />
+        </div>
+      )}
+      {showSignUp && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[999]">
+          <SignUp setShowSignUp={setShowSignUp} setShowSignIn={setShowSignIn} />
+        </div>
+      )}
       <Toast message={toastMessage} show={showToast} />
       <Footer />
     </div>
