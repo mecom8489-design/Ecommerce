@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import Header from "../Header/header";
 import { profileData, profileUpdate } from "../apiroutes/userApi";
+import { toast } from "react-toastify";
 
 const MyProfile = () => {
   const [user, setUser] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     email: "",
     mobile: "",
     address: "",
@@ -14,6 +15,8 @@ const MyProfile = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [editUser, setEditUser] = useState({});
+  const [errors, setErrors] = useState({}); // <- VALIDATION ERRORS
+
   const effectRan = useRef(false);
 
   useEffect(() => {
@@ -56,18 +59,44 @@ const MyProfile = () => {
       ...prev,
       [name]: value,
     }));
+
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  // -------------------- VALIDATION --------------------
+  const validateForm = () => {
+    let tempErrors = {};
+
+    if (!editUser.firstname?.trim())
+      tempErrors.firstname = "First name is required";
+    if (!editUser.lastname?.trim())
+      tempErrors.lastname = "Last name is required";
+
+    if (!editUser.mobile?.trim()) {
+      tempErrors.mobile = "Mobile number is required";
+    } else if (!/^[0-9]{10}$/.test(editUser.mobile)) {
+      tempErrors.mobile = "Mobile must be 10 digits";
+    }
+
+    setErrors(tempErrors);
+
+    return Object.keys(tempErrors).length === 0;
   };
 
   const handleSave = async () => {
+    if (!validateForm()) return;
+
     try {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       const id = storedUser?.id;
 
       await profileUpdate(id, editUser);
       setUser(editUser);
+      toast.success("Profile Updated Successfully");
       setShowModal(false);
     } catch (error) {
       console.error("Error updating profile:", error);
+      toast.error("Profile Not Updated ");
     }
   };
 
@@ -80,11 +109,11 @@ const MyProfile = () => {
         <aside className="w-72 bg-white shadow-md border-r">
           <div className="p-6 flex items-center space-x-4 border-b">
             <div className="w-14 h-14 rounded-full bg-yellow-400 flex items-center justify-center text-xl font-semibold">
-              {user.firstName?.charAt(0) || "U"}
+              {user.firstname?.charAt(0) || "U"}
             </div>
             <div>
               <p className="text-sm text-gray-500">Hello,</p>
-              <p className="font-semibold text-gray-800">{user.firstName}</p>
+              <p className="font-semibold text-gray-800">{user.firstname}</p>
             </div>
           </div>
 
@@ -174,29 +203,37 @@ const MyProfile = () => {
               {/* First Name */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  First Name
+                  First Name *
                 </label>
                 <input
                   type="text"
-                  name="firstName"
+                  name="firstname"
                   value={editUser.firstname || ""}
                   onChange={handleInputChange}
                   className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
                 />
+                {errors.firstname && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.firstname}
+                  </p>
+                )}
               </div>
 
               {/* Last Name */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Last Name
+                  Last Name *
                 </label>
                 <input
                   type="text"
-                  name="lastName"
+                  name="lastname"
                   value={editUser.lastname || ""}
                   onChange={handleInputChange}
                   className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
                 />
+                {errors.lastname && (
+                  <p className="text-red-500 text-sm mt-1">{errors.lastname}</p>
+                )}
               </div>
 
               {/* Email */}
@@ -204,16 +241,17 @@ const MyProfile = () => {
                 <label className="block text-sm font-medium mb-1">Email</label>
                 <input
                   type="email"
-                  name="email"
                   value={editUser.email || ""}
                   disabled
-                  className="w-full border px-4 py-2 rounded bg-gray-100 text-gray-500 cursor-not-allowed"
+                  className="w-full border px-4 py-2 rounded bg-gray-100 text-gray-500"
                 />
               </div>
 
               {/* Mobile */}
               <div>
-                <label className="block text-sm font-medium mb-1">Mobile</label>
+                <label className="block text-sm font-medium mb-1">
+                  Mobile Number *
+                </label>
                 <input
                   type="text"
                   name="mobile"
@@ -221,6 +259,9 @@ const MyProfile = () => {
                   onChange={handleInputChange}
                   className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
                 />
+                {errors.mobile && (
+                  <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>
+                )}
               </div>
 
               {/* Address */}

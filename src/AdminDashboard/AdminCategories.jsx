@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { addCategories, getAllCategories, deleteCategories } from "../apiroutes/adminApi";
+import {
+  addCategories,
+  getAllCategories,
+  deleteCategories,
+} from "../apiroutes/adminApi";
 import { Trash2 } from "lucide-react";
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -90,7 +93,9 @@ const AdminCategories = () => {
       fetchCategories();
     } catch (error) {
       console.error("Delete Error:", error);
-      toast.error(error?.response?.data?.message || "Failed to delete category ");
+      toast.error(
+        error?.response?.data?.message || "Failed to delete category "
+      );
     }
   };
 
@@ -174,7 +179,9 @@ const AdminCategories = () => {
                 </div>
                 <div>
                   <strong>Last Updated:</strong>{" "}
-                  {new Date(category.lastUpdatedDate || category.lastUpdated).toLocaleString()}
+                  {new Date(
+                    category.lastUpdatedDate || category.lastUpdated
+                  ).toLocaleString()}
                 </div>
                 <div>
                   <strong>Status:</strong>{" "}
@@ -201,10 +208,18 @@ const AdminCategories = () => {
               <thead className="bg-indigo-500 text-white uppercase text-sm tracking-wider">
                 <tr>
                   <th className="px-4 py-3 text-center font-medium">Sl.no</th>
-                  <th className="px-4 py-3 text-center font-medium">Category ID</th>
-                  <th className="px-4 py-3 text-center font-medium">Product Category</th>
-                  <th className="px-4 py-3 text-center font-medium">Updated By</th>
-                  <th className="px-4 py-3 text-center font-medium">Last Updated</th>
+                  <th className="px-4 py-3 text-center font-medium">
+                    Category ID
+                  </th>
+                  <th className="px-4 py-3 text-center font-medium">
+                    Product Category
+                  </th>
+                  <th className="px-4 py-3 text-center font-medium">
+                    Updated By
+                  </th>
+                  <th className="px-4 py-3 text-center font-medium">
+                    Last Updated
+                  </th>
                   <th className="px-4 py-3 text-center font-medium">Action</th>
                 </tr>
               </thead>
@@ -212,18 +227,29 @@ const AdminCategories = () => {
                 {categories.map((category, index) => (
                   <tr
                     key={category.id || index}
-                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50 hover:bg-gray-200"}
+                    className={
+                      index % 2 === 0
+                        ? "bg-white"
+                        : "bg-gray-50 hover:bg-gray-200"
+                    }
                   >
                     <td className="px-4 py-3 text-center">{index + 1}</td>
                     <td className="px-4 py-3 text-center">{category.id}</td>
-                    <td className="px-4 py-3 text-center">{category.productCategory}</td>
-                    <td className="px-4 py-3 text-center capitalize">{category.updatedBy}</td>
                     <td className="px-4 py-3 text-center">
-                      {new Date(category.lastUpdatedDate ?? category.lastUpdated).toLocaleDateString(
-                        "en-US",
-                        { year: "numeric", month: "2-digit", day: "2-digit" }
+                      {category.productCategory}
+                    </td>
+                    <td className="px-4 py-3 text-center capitalize">
+                      {category.updatedBy}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {new Date(
+                        category.updatedAt ?? category.createdAt
+                      ).toLocaleDateString(
+                        "en-GB", 
+                        { day: "2-digit", month: "2-digit", year: "numeric" }
                       )}
                     </td>
+
                     <td className="px-4 py-3 text-center">
                       <button
                         className="flex justify-center items-center mx-auto text-red-500 hover:text-red-700 font-medium cursor-pointer"
