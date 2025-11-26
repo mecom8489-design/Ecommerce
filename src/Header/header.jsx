@@ -272,10 +272,10 @@ export default function Header() {
                         My Orders
                       </button>
 
-                      <button className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      {/* <button className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <Settings size={16} className="mr-2 text-yellow-600" />
                         Settings
-                      </button>
+                      </button> */}
 
                       <button
                         onClick={logout}
