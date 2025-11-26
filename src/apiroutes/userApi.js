@@ -42,6 +42,25 @@ export const addReview = (reviewData) => {
     });
 };
 
+export const liveSearchProducts = (query) => {
+  return axiosInstance.get(`/search/live-search`, {
+    params: { query },
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const getProductReviews = (productId) => {
+  return axiosInstance.get(`/review/reviews/${productId}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+
+
 
 
 

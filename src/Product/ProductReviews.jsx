@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { getProductReviews } from "../apiroutes/userApi";
 
 const ProductReviews = () => {
   const { state } = useLocation();
@@ -8,7 +9,6 @@ const ProductReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
-
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -17,12 +17,11 @@ const ProductReviews = () => {
     if (hasFetched.current) return;
     hasFetched.current = true;
 
-    fetch(
-      `https://e-commerce-backend-production-6fa0.up.railway.app/api/review/reviews/${productId}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        const mapped = (data.reviews || []).map((r) => ({
+    const fetchReviews = async () => {
+      try {
+        const response = await getProductReviews(productId);
+
+        const mapped = (response.data.reviews || []).map((r) => ({
           name: r.user_name,
           avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
             r.user_name
@@ -35,11 +34,13 @@ const ProductReviews = () => {
 
         setReviews(mapped);
         setLoading(false);
-      })
-      .catch((err) => {
-        console.log("Error fetching reviews:", err);
+      } catch (error) {
+        console.log("Error fetching reviews:", error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchReviews();
   }, [productId]);
 
   if (loading) {
@@ -111,16 +112,16 @@ const ProductReviews = () => {
                   style={{ width: `${percentage}%` }}
                 />
               </div>
-              <span className="text-gray-600 w-12 text-right">{percentage}%</span>
+              <span className="text-gray-600 w-12 text-right">
+                {percentage}%
+              </span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Reviews List */}
-      <div
-        className={`space-y-6 ${showAll ? "max-h-60 overflow-y-auto" : ""}`}
-      >
+      <div className={`space-y-6 ${showAll ? "max-h-60 overflow-y-auto" : ""}`}>
         {displayedReviews.map((r, idx) => (
           <div
             key={idx}
@@ -168,14 +169,15 @@ const ProductReviews = () => {
         ))}
       </div>
 
-      {reviews.length > 2 && !showAll && (  // <-- changed to 2 here
-        <button
-          onClick={() => setShowAll(true)}
-          className="mt-6 w-full py-2 px-4 border rounded-lg text-gray-700 hover:bg-gray-100 transition"
-        >
-          View all reviews
-        </button>
-      )}
+      {reviews.length > 2 &&
+        !showAll && ( // <-- changed to 2 here
+          <button
+            onClick={() => setShowAll(true)}
+            className="mt-6 w-full py-2 px-4 border rounded-lg text-gray-700 hover:bg-gray-100 transition"
+          >
+            View all reviews
+          </button>
+        )}
     </div>
   );
 };

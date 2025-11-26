@@ -2,10 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Heart, Star, ChevronDown, ChevronRight } from "lucide-react";
 import Header from "../Header/header";
-import image251 from "../assets/images/Best Seller/image-251.png";
-import image15 from "../assets/images/Best Seller/image15.png";
-import image17 from "../assets/images/Best Seller/image17.png";
-import image16 from "../assets/images/Best Seller/image__16.png";
+import { liveSearchProducts } from "../apiroutes/userApi";
+
 
 export default function ProductPage() {
   const [selectedRating, setSelectedRating] = useState([]);
@@ -18,18 +16,25 @@ export default function ProductPage() {
 
   const navigate = useNavigate(); // ← This is required
   const [products, setProducts] = useState([]);
-  useEffect(() => {
-    if (!query) return;
 
-    fetch(
-      `https://e-commerce-backend-production-6fa0.up.railway.app/api/search/live-search?query=${query}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data.products || []);
-      })
-      .catch((err) => console.log(err));
+  useEffect(() => {
+    if (!query) {
+      return;
+    }
+
+    const fetchLiveSearch = async () => {
+      try {
+        const response = await liveSearchProducts(query);
+        setProducts(response.data.products || []);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchLiveSearch();
   }, [query]);
+
+  
 
   const categories = [
     { name: "Kitchen Containers", count: 1542 },
