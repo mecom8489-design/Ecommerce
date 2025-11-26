@@ -9,7 +9,11 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { AuthContext } from "../context/LoginAuth";
-const Orderdetails = ({ selectedOrder, setIsOpen }) => {
+import { cancelUserOrder, addReview } from "../apiroutes/userApi";
+import { toast } from 'react-toastify';
+
+
+const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
   const { user } = useContext(AuthContext);
   const fullName = `${user.firstname} ${user.lastname}`;
   const [showCancelPopup, setShowCancelPopup] = useState(false);
@@ -19,39 +23,25 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
   const [cancelReason, setCancelReason] = useState("");
   const [isSubmitted, setisSubmitted] = useState(false);
 
+
   const handleCancelOrder = async () => {
-    // console.log("Review Submitted:", reviewText);
-
     try {
-      const response = await fetch(
-        `https://e-commerce-backend-production-6fa0.up.railway.app/api/ordered/cancel/${selectedOrder.order_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            reason: cancelReason,
-          }),
-        }
-      );
-
-      const data = await response.json();
-      console.log("API Response:", data);
-
-      if (response.ok) {
-        alert("Order Cancel successfully!");
-        setReviewText("");
-        setIsOpen(false);
-      } else {
-        alert("Failed to submit Order Cancel ");
-      }
+      const reason = {
+        reason: cancelReason,
+      };
+      await cancelUserOrder(selectedOrder.order_id, reason);
+      toast.success("Order Cancelled Successfully!");
+      setRefresh(prev => !prev);
+      setReviewText("");
+      setIsOpen(false);
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong");
+      toast.error(error.response?.data?.message || "Failed to cancel order");
+
     }
   };
-  // console.log(" selectedOrder:", selectedOrder.product_id);
+
+
   const handleSubmitReview = async (e) => {
     e.preventDefault();
 
@@ -59,44 +49,28 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
       alert("Please select a star rating");
       return;
     }
-    setisSubmitted(true); // Disable button
+
+    setisSubmitted(true);
     const reviewData = {
-      user_id: selectedOrder.user_id, // your logged-in user
-      product_id: selectedOrder.product_id, // the product you are rating
-      rating: rating, // 1 to 5
-      review_text: reviewText, // textarea value
+      user_id: selectedOrder.user_id,
+      product_id: selectedOrder.product_id,
+      rating: rating,
+      review_text: reviewText,
     };
-    console.log("reviewData", reviewData);
+
     try {
-      const response = await fetch(
-        "https://e-commerce-backend-production-6fa0.up.railway.app/api/review/add",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(reviewData),
-        }
-      );
+      await addReview(reviewData);
+      toast.success("Review submitted successfully!");
 
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Review submitted successfully!");
-        setRating(0);
-        setReviewText("");
-      } else {
-        alert(data.message || "Failed to submit review");
-        setisSubmitted(false); // re-enable only if failed
-      }
+      setRating(0);
+      setReviewText("");
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong");
-      setisSubmitted(false); // re-enable only if failed
+      toast.error(error.response?.data?.message || "Failed to submit review");
+      setisSubmitted(false);
     }
   };
 
-  // console.log("selectedOrder:", selectedOrder.order_id);
   return (
     <>
       <div>
@@ -110,7 +84,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
           >
             {/* Close Button */}
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => {setIsOpen(false),setRefresh(prev => !prev)}}
               className="absolute top-1 left-4 flex items-center gap-1 
              px-3 py-1.5 rounded-full bg-white shadow 
              text-gray-800 hover:bg-gray-100 transition-all"
@@ -288,10 +262,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen }) => {
 
                                 <button
                                   onClick={() => {
-                                    handleCancelOrder(
-                                      selectedOrder.order_id,
-                                      cancelReason
-                                    );
+                                    handleCancelOrder();
                                     setShowCancelPopup(false);
                                     setCancelReason("");
                                   }}

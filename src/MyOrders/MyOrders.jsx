@@ -32,31 +32,32 @@ export default function MyOrders() {
   const id = user?.id; // ✅ prevents error if user is null
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+
   // STATE HANDLERS
  
 
  
   useEffect(() => {
-    if (!id) return; // Wait until user is available
-    console.log(id);
+    if (!id) return; 
   }, [id]);
 
   useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const response = await getorderplace(id); // 👈 call API
-        console.log("Order response:", response);
-        const data = response.data;
-        setOrderData(Array.isArray(data) ? data : [data]); // ✅ Safe for both single/multiple
-      } catch (error) {
-        console.error("Error fetching order:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchOrder = async () => {
+    try {
+      const response = await getorderplace(id);
+      const data = response.data;
+      setOrderData(Array.isArray(data) ? data : [data]);
+    } catch (error) {
+      console.error("Error fetching order:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    if (id) fetchOrder(); // only call when id exists
-  }, [id]); // 👈 triggers again if id changes
+  if (id) fetchOrder();
+}, [id, refresh]);  // 👈 Added refresh
+
 
   if (loading) return <p>Loading order details...</p>;
 
@@ -66,41 +67,7 @@ export default function MyOrders() {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "delivered":
-        return "bg-green-50 text-green-700 border-green-200";
-      case "cancelled":
-        return "bg-red-50 text-red-700 border-red-200";
-      default:
-        return "bg-blue-50 text-blue-700 border-blue-200";
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "delivered":
-        return <Package className="w-4 h-4" />;
-      case "cancelled":
-        return <XCircle className="w-4 h-4" />;
-      default:
-        return <Clock className="w-4 h-4" />;
-    }
-  };
-  const openModal = (order) => {
-    setSelectedOrder(order);
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-    setSelectedOrder(null);
-  };
-
-  // const handleCancelOrder = (id) => {
-  //   console.log("Cancel order:", id);
-  //   // Call API here
-  // };
+ 
 
   return (
     <div>
@@ -302,7 +269,7 @@ export default function MyOrders() {
         </div>
       </div>
       {isOpen && selectedOrder && (
-        <Orderdetails selectedOrder={selectedOrder} setIsOpen={setIsOpen}  />
+        <Orderdetails selectedOrder={selectedOrder} setIsOpen={setIsOpen} setRefresh={setRefresh}  />
       )}
     </div>
   );
