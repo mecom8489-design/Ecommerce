@@ -26,7 +26,7 @@ export const addressUpdate = async (userData) => {
   });
 }; //working fine
 
-export const cancelUserOrder = async (orderId,reason) => {
+export const cancelUserOrder = async (orderId, reason) => {
   return axiosInstance.put(`/ordered/cancel/${orderId}`, reason, {
     headers: {
       "Content-Type": "application/json",
@@ -35,11 +35,11 @@ export const cancelUserOrder = async (orderId,reason) => {
 };
 
 export const addReview = (reviewData) => {
-  return axiosInstance.post("/review/add",reviewData,{
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  return axiosInstance.post("/review/add", reviewData, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };
 
 export const liveSearchProducts = (query) => {
@@ -59,8 +59,12 @@ export const getProductReviews = (productId) => {
   });
 };
 
+export const profileData = (id) => axiosInstance.get(`/admin/getUser/${id}`);
 
-
-
-
-
+export const profileUpdate = async (id, data) => {
+  return axiosInstance.put(`/admin/updateUsers/${id}`, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
