@@ -21,14 +21,14 @@ export default function Checkout() {
   const quantity = checkoutInfo.quantity;
   const totalPrice = checkoutInfo.totalPrice;
   const savedPrice = (product.price - product.finalPrice) * quantity;
-
   const isContinueDisabled = !address.trim() || !isSaved;
+  // Payment method state
 
-  
+  const [isCODSelected, setIsCODSelected] = useState(false); // default unchecked
+
   useEffect(() => {
     if (state?.product) setSelectedProduct(state.product);
   }, [state]);
-
 
   useEffect(() => {
     const savedAddress = localStorage.getItem("checkout_address");
@@ -68,7 +68,7 @@ export default function Checkout() {
         shipping_name: user.firstname,
         shipping_phone: user.mobile,
         shipping_address: address,
-        payment_method: "Online",
+        payment_method: isCODSelected ? "COD" : "",
         payment_status: "Pending",
         order_status: "Processing",
         user_email: user.email,
@@ -112,7 +112,9 @@ export default function Checkout() {
           <div className="flex-1 space-y-4">
             <div className="bg-white shadow-sm">
               <div className="flex items-center gap-4 p-4 border-b">
-                <span className="w-8 h-8 bg-yellow-600 text-white flex items-center justify-center rounded-sm font-medium">1</span>
+                <span className="w-8 h-8 bg-yellow-600 text-white flex items-center justify-center rounded-sm font-medium">
+                  1
+                </span>
                 <div className="flex items-center gap-2">
                   <span className="text-gray-700 font-medium">LOGIN</span>
                   <Check className="w-5 h-5 text-blue-600" />
@@ -126,15 +128,20 @@ export default function Checkout() {
             {/* ADDRESS BOX */}
             <div className="bg-white shadow-sm">
               <div className="flex items-center gap-4 p-4 border-b">
-                <span className="w-8 h-8 bg-yellow-600 text-white flex items-center justify-center rounded-sm font-medium">2</span>
-                <span className="text-gray-700 font-medium">DELIVERY ADDRESS</span>
+                <span className="w-8 h-8 bg-yellow-600 text-white flex items-center justify-center rounded-sm font-medium">
+                  2
+                </span>
+                <span className="text-gray-700 font-medium">
+                  DELIVERY ADDRESS
+                </span>
               </div>
 
               <div className="px-4 py-3">
                 {isSaved ? (
                   <div>
                     <p className="text-sm text-gray-700">
-                      <span className="font-medium">{user?.firstname}</span> {address}
+                      <span className="font-medium">{user?.firstname}</span>{" "}
+                      {address}
                     </p>
                     <button
                       onClick={() => setIsSaved(false)}
@@ -145,14 +152,19 @@ export default function Checkout() {
                   </div>
                 ) : (
                   <div>
-                    <label className="text-sm font-medium text-gray-700">Enter Address</label>
+                    <label className="text-sm font-medium text-gray-700">
+                      Enter Address
+                    </label>
                     <input
                       type="text"
                       value={address}
                       placeholder="Enter your address"
                       onChange={(e) => {
                         setAddress(e.target.value);
-                        localStorage.setItem("checkout_address", e.target.value);
+                        localStorage.setItem(
+                          "checkout_address",
+                          e.target.value
+                        );
                       }}
                       className="w-full border border-gray-300 rounded-md p-2 mt-1"
                     />
@@ -171,12 +183,18 @@ export default function Checkout() {
             {/* ORDER SUMMARY */}
             <div className="bg-white shadow-sm">
               <div className="flex items-center gap-4 p-4">
-                <span className="w-8 h-8 bg-yellow-600 text-white flex items-center justify-center rounded-sm font-medium">3</span>
+                <span className="w-8 h-8 bg-yellow-600 text-white flex items-center justify-center rounded-sm font-medium">
+                  3
+                </span>
                 <span className="font-medium">ORDER SUMMARY</span>
               </div>
 
               <div className="p-4 flex gap-4">
-                <img src={product.image} alt={product.name} className="w-28 h-28 object-cover border" />
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-28 h-28 object-cover border"
+                />
 
                 <div className="flex-1">
                   <h3 className="text-sm text-gray-800 mb-1">
@@ -192,6 +210,31 @@ export default function Checkout() {
 
               <div className="px-4 pb-4 border-t pt-4 text-sm text-gray-700">
                 Order confirmation email will be sent to <b>{user?.email}</b>
+              </div>
+
+              {/* COD Checkbox */}
+              <div className="bg-gray-50 px-4 py-4 border-t">
+                <h3 className="font-semibold text-gray-700 mb-2">
+                  Payment Method
+                </h3>
+
+                <label
+                  className="flex items-center gap-3 cursor-pointer text-sm"
+                  onClick={() => setIsCODSelected(!isCODSelected)} // toggle
+                >
+                  <span
+                    className={`w-5 h-5 rounded-full border flex items-center justify-center ${
+                      isCODSelected
+                        ? "bg-blue-500 border-black"
+                        : "border-black"
+                    }`}
+                  >
+                    {isCODSelected && (
+                      <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
+                    )}
+                  </span>
+                  <span>Cash on Delivery (COD)</span>
+                </label>
               </div>
 
               <div className="px-0 pb-4 mt-4">
@@ -215,7 +258,9 @@ export default function Checkout() {
           <div className="w-80">
             <div className="bg-white shadow-sm sticky top-6">
               <div className="p-4 border-b">
-                <h3 className="text-gray-500 font-medium text-sm">PRICE DETAILS</h3>
+                <h3 className="text-gray-500 font-medium text-sm">
+                  PRICE DETAILS
+                </h3>
               </div>
 
               <div className="p-4 space-y-3 text-sm">
@@ -249,7 +294,9 @@ export default function Checkout() {
             <h2 className="text-xl font-semibold text-green-600 mb-2">
               🎉 Order Placed Successfully!
             </h2>
-            <p className="text-gray-600 mb-4">Your order has been placed successfully.</p>
+            <p className="text-gray-600 mb-4">
+              Your order has been placed successfully.
+            </p>
             <button
               onClick={closePopup}
               className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-lg"
@@ -291,4 +338,3 @@ export default function Checkout() {
     </div>
   );
 }
-

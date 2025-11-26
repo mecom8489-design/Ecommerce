@@ -1,21 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
-
 const ProductReviews = () => {
-  
   const { state } = useLocation();
   const productId = state?.product.id;
 
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
-  const hasFetched = useRef(false); // 🔥 Fix double API call
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     if (!productId) return;
 
-    // ❗ Prevent double API triggering in React Strict Mode
     if (hasFetched.current) return;
     hasFetched.current = true;
 
@@ -44,7 +42,6 @@ const ProductReviews = () => {
       });
   }, [productId]);
 
-  // ---------------------- LOADING --------------------------
   if (loading) {
     return (
       <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-10 max-w-2xl text-center">
@@ -53,7 +50,6 @@ const ProductReviews = () => {
     );
   }
 
-  // ---------------------- NO REVIEWS -----------------------
   if (reviews.length === 0) {
     return (
       <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-10 max-w-2xl text-center">
@@ -62,7 +58,6 @@ const ProductReviews = () => {
     );
   }
 
-  // ---------------------- AVERAGES -------------------------
   const averageRating =
     reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
 
@@ -75,7 +70,8 @@ const ProductReviews = () => {
     };
   });
 
-  // ---------------------- MAIN UI --------------------------
+  const displayedReviews = showAll ? reviews : reviews.slice(0, 2); // <-- changed to 2 here
+
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-10 max-w-2xl">
       {/* Overall Rating */}
@@ -85,7 +81,6 @@ const ProductReviews = () => {
             {averageRating.toFixed(1)}/5
           </h2>
 
-          {/* Overall Stars */}
           <span className="flex relative justify-center md:justify-start mt-1">
             <div className="flex text-gray-300 text-xl">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -106,7 +101,6 @@ const ProductReviews = () => {
           <p className="text-gray-500 mt-1">{reviews.length} reviews</p>
         </div>
 
-        {/* Rating Breakdown */}
         <div className="flex-1">
           {ratingBreakdown.map(({ star, percentage }) => (
             <div key={star} className="flex items-center gap-3 mb-2">
@@ -117,17 +111,17 @@ const ProductReviews = () => {
                   style={{ width: `${percentage}%` }}
                 />
               </div>
-              <span className="text-gray-600 w-12 text-right">
-                {percentage}%
-              </span>
+              <span className="text-gray-600 w-12 text-right">{percentage}%</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Reviews List */}
-      <div className="space-y-6">
-        {reviews.slice(0, 3).map((r, idx) => (
+      <div
+        className={`space-y-6 ${showAll ? "max-h-60 overflow-y-auto" : ""}`}
+      >
+        {displayedReviews.map((r, idx) => (
           <div
             key={idx}
             className="border-b border-gray-200 pb-4 last:border-none"
@@ -144,19 +138,16 @@ const ProductReviews = () => {
               </div>
             </div>
 
-            {/* Star Rating */}
             <div className="text-sm flex items-center mt-1 mb-2">
               <span className="mr-2">Rating:</span>
 
               <span className="flex relative">
-                {/* Gray stars */}
                 <div className="flex text-gray-300">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <span key={i}>★</span>
                   ))}
                 </div>
 
-                {/* Yellow stars */}
                 <div
                   className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
                   style={{ width: `${(Number(r.rating) / 5) * 100}%` }}
@@ -177,9 +168,14 @@ const ProductReviews = () => {
         ))}
       </div>
 
-      <button className="mt-6 w-full py-2 px-4 border rounded-lg text-gray-700 hover:bg-gray-100 transition">
-        View all reviews
-      </button>
+      {reviews.length > 2 && !showAll && (  // <-- changed to 2 here
+        <button
+          onClick={() => setShowAll(true)}
+          className="mt-6 w-full py-2 px-4 border rounded-lg text-gray-700 hover:bg-gray-100 transition"
+        >
+          View all reviews
+        </button>
+      )}
     </div>
   );
 };
