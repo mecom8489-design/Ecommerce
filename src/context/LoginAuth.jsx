@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
+import { useCart } from "../context/CartContext";
+
 
 // Create the context
 export const AuthContext = createContext();
@@ -6,6 +8,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const { clearCart } = useCart();
 
   useEffect(() => {
     // ✅ Check token & user when app loads
@@ -32,8 +35,8 @@ export const AuthProvider = ({ children }) => {
 
   // ✅ Logout handler
   const logout = () => {
-    // localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
+    clearCart();
     setIsLoggedIn(false);
     setUser(null);
   };

@@ -10,19 +10,20 @@ import {
 } from "lucide-react";
 import { AuthContext } from "../context/LoginAuth";
 import { cancelUserOrder, addReview } from "../apiroutes/userApi";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
-
-const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
+const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
   const { user } = useContext(AuthContext);
   const fullName = `${user.firstname} ${user.lastname}`;
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const [rating, setRating] = useState(0);
+  const [reviewTextValue, setreviewTextValue] = useState(0);
+  const [ratingValue, setRatingValue] = useState(0);
+
   const [reviewText, setReviewText] = useState("");
   const [showTotalFees, setShowTotalFees] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [isSubmitted, setisSubmitted] = useState(false);
-
 
   const handleCancelOrder = async () => {
     try {
@@ -31,16 +32,14 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
       };
       await cancelUserOrder(selectedOrder.order_id, reason);
       toast.success("Order Cancelled Successfully!");
-      setRefresh(prev => !prev);
+      setRefresh((prev) => !prev);
       setReviewText("");
       setIsOpen(false);
     } catch (error) {
       console.error("Error:", error);
       toast.error(error.response?.data?.message || "Failed to cancel order");
-
     }
   };
-
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -61,9 +60,11 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
     try {
       await addReview(reviewData);
       toast.success("Review submitted successfully!");
-
-      setRating(0);
+      setRatingValue(reviewData.rating);
+      setreviewTextValue(reviewData.review_text);
       setReviewText("");
+      setRating(0);
+      setisSubmitted(false);
     } catch (error) {
       console.error("Error:", error);
       toast.error(error.response?.data?.message || "Failed to submit review");
@@ -84,7 +85,9 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
           >
             {/* Close Button */}
             <button
-              onClick={() => {setIsOpen(false),setRefresh(prev => !prev)}}
+              onClick={() => {
+                setIsOpen(false), setRefresh((prev) => !prev);
+              }}
               className="absolute top-1 left-4 flex items-center gap-1 
              px-3 py-1.5 rounded-full bg-white shadow 
              text-gray-800 hover:bg-gray-100 transition-all"
@@ -144,6 +147,87 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
                         </div>
                       </div>
                     </div>
+                    {/* <div className="bg-white rounded-lg shadow-sm p-6">
+                      <div className="flex gap-4">
+                        <div className="flex-1">
+                          <h1 className="text-base font-normal text-gray-900 mb-1">
+                            {reviewTextValue}
+                          </h1>
+                          <div className="text-sm flex items-center mt-1 ">
+                            Rating:
+                            <span className="ml-2 flex relative">
+                              <div className="flex text-gray-300">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <span key={i}>★</span>
+                                ))}
+                              </div>
+
+                              <div
+                                className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+                                style={{
+                                  width: `${
+                                    (Number(ratingValue) / 5) * 100
+                                  }%`,
+                                }}
+                              >
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <span key={i}>★</span>
+                                ))}
+                              </div>
+                            </span>
+                            <span className="ml-2 text-gray-700">
+                              (
+                              {ratingValue
+                                ? Number(ratingValue).toFixed(2)
+                                : "-"}
+                              )
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div> */}
+                    {reviewTextValue && ratingValue ? (
+                      <div className="bg-white rounded-lg shadow-sm p-6">
+                        <div className="flex gap-4">
+                          <div className="flex-1">
+                            <h1 className="text-base font-normal text-gray-900 mb-1">
+                              {reviewTextValue}
+                            </h1>
+
+                            <div className="text-sm flex items-center mt-1 ">
+                              Rating:
+                              <span className="ml-2 flex relative">
+                                <div className="flex text-gray-300">
+                                  {Array.from({ length: 5 }).map((_, i) => (
+                                    <span key={i}>★</span>
+                                  ))}
+                                </div>
+
+                                <div
+                                  className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+                                  style={{
+                                    width: `${
+                                      (Number(ratingValue) / 5) * 100
+                                    }%`,
+                                  }}
+                                >
+                                  {Array.from({ length: 5 }).map((_, i) => (
+                                    <span key={i}>★</span>
+                                  ))}
+                                </div>
+                              </span>
+                              <span className="ml-2 text-gray-700">
+                                (
+                                {ratingValue
+                                  ? Number(ratingValue).toFixed(2)
+                                  : "-"}
+                                )
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
 
                     {/* Order Status Timeline */}
                     <div className="bg-white rounded-lg shadow-sm p-6">
@@ -332,38 +416,12 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
                           </div>
                         )}
                       </div>
-
-                      {/* <button className="text-blue-600 text-sm font-normal mt-4 hover:text-blue-700 flex items-center gap-1">
-                          See All Updates
-                          <span className="text-xs">›</span>
-                        </button> */}
-
-                      {/* <p className="text-sm text-gray-500 mt-6">
-                          Return policy ended on Nov 11
-                        </p> */}
                     </div>
 
-                    {/* Chat Button */}
-                    {/* <button className="w-full bg-white rounded-lg shadow-sm p-4 flex items-center justify-center gap-2 text-gray-700 hover:bg-gray-50 border border-gray-200">
-                        <MessageCircle className="w-5 h-5" />
-                        Chat with us
-                      </button> */}
-
-                    {/* Rate Your Experience */}
                     <div className="bg-white rounded-lg shadow-sm p-6">
                       <h2 className="text-base font-normal text-gray-900 mb-4">
                         Rate your experience
                       </h2>
-
-                      {/* <div className="flex items-center gap-3 mb-4">
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-gray-300"
-                          />
-                          <span className="text-sm text-gray-700">
-                            Rate the product
-                          </span>
-                        </div> */}
 
                       <div className="flex gap-2">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -401,11 +459,14 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
                             value={reviewText}
                             onChange={(e) => setReviewText(e.target.value)}
                           ></textarea>
-
                           <button
                             type="submit"
                             disabled={isSubmitted}
-                            className={`mt-3 px-4 py-2 text-white rounded-lg ${isSubmitted ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+                            className={`mt-3 px-4 py-2 text-white rounded-lg ${
+                              isSubmitted
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-blue-600 hover:bg-blue-700"
+                            }`}
                           >
                             {isSubmitted ? "Submitted" : "Submit"}
                           </button>
@@ -473,16 +534,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
                           </span>
                         </div>
 
-                        {/* <div className="flex justify-between text-sm">
-                            <div className="flex items-center gap-1">
-                              <span className="text-gray-700">
-                                Special price
-                              </span>
-                              <span className="text-gray-400 text-xs">ⓘ</span>
-                            </div>
-                            <span className="text-gray-900">$449</span>
-                          </div> */}
-
                         <div className="flex justify-between text-sm">
                           <button
                             className="flex items-center gap-1 text-gray-700"
@@ -517,12 +568,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
                         </div>
                       </div>
                     </div>
-
-                    {/* Download Invoice Button */}
-                    {/* <button className="w-full bg-white rounded-lg shadow-sm p-4 flex items-center justify-center gap-2 text-gray-700 hover:bg-gray-50 border border-gray-200">
-                        <Download className="w-5 h-5" />
-                        Download Invoice
-                      </button> */}
                   </div>
                 </div>
               </div>

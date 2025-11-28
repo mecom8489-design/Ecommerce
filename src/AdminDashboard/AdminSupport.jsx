@@ -1,9 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { TrashIcon } from '@heroicons/react/24/solid';
+import React, { useState, useRef, useEffect } from "react";
+import { TrashIcon } from "@heroicons/react/24/solid";
 import { Ticket } from "lucide-react";
-import { getSupportDatas,deletesupportDatas } from "../apiroutes/adminApi";
-import { toast } from 'react-toastify';
-
+import { getSupportDatas, deletesupportDatas } from "../apiroutes/adminApi";
+import { toast } from "react-toastify";
 
 const SupportPage = () => {
   const [enquiries, setEnquiries] = useState([]);
@@ -11,21 +10,18 @@ const SupportPage = () => {
   const hasFetched = useRef(false);
 
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
-  const [modalStatus, setModalStatus] = useState('');
+  const [modalStatus, setModalStatus] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-   // Delete modal state
-   const [deleteEnquiryId, setDeleteEnquiryId] = useState(null);
-   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // Delete modal state
+  const [deleteEnquiryId, setDeleteEnquiryId] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Fetch data on mount
   useEffect(() => {
     if (!hasFetched.current) {
       hasFetched.current = true;
       fetchEnquiries();
-
-
     }
   }, []);
 
@@ -37,13 +33,14 @@ const SupportPage = () => {
         : response.data.supports || [];
       setEnquiries(usersArray);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch enquiries ");
+      toast.error(
+        error.response?.data?.message || "Failed to fetch enquiries "
+      );
     } finally {
       setLoading(false);
     }
   };
 
- 
   const handleDelete = (enquiryId) => {
     console.log(enquiryId);
     setDeleteEnquiryId(enquiryId);
@@ -67,13 +64,15 @@ const SupportPage = () => {
       setDeleteEnquiryId(null);
     } catch (error) {
       console.error("Delete Error:", error);
-      toast.error(error?.response?.data?.message || "Failed to delete Support Data ");
+      toast.error(
+        error?.response?.data?.message || "Failed to delete Support Data "
+      );
     }
   };
 
   const handleView = (enquiry) => {
     setSelectedEnquiry(enquiry);
-    setModalStatus(enquiry.status || 'Pending');
+    setModalStatus(enquiry.status || "Pending");
     setIsModalOpen(true);
   };
 
@@ -81,7 +80,9 @@ const SupportPage = () => {
   const handleSubmit = () => {
     if (selectedEnquiry) {
       const updated = enquiries.map((entry) =>
-        entry.id === selectedEnquiry.id ? { ...entry, status: modalStatus } : entry
+        entry.id === selectedEnquiry.id
+          ? { ...entry, status: modalStatus }
+          : entry
       );
       setEnquiries(updated);
       setSelectedEnquiry((prev) => ({ ...prev, status: modalStatus }));
@@ -96,7 +97,9 @@ const SupportPage = () => {
       {/* Page Header */}
       <div className="flex items-center gap-2 mb-6">
         <Ticket className="w-7 h-7 text-indigo-500" />
-        <h1 className="text-3xl font-bold text-indigo-700">Support Enquiries</h1>
+        <h1 className="text-3xl font-bold text-indigo-700">
+          Support Enquiries
+        </h1>
       </div>
 
       {/* Table */}
@@ -108,68 +111,84 @@ const SupportPage = () => {
             <thead className="bg-indigo-600 text-white text-sm uppercase">
               <tr>
                 <th className="px-6 py-4 text-center font-medium">Sl.no</th>
-                <th className="px-6 py-4 text-center font-medium">Customer Name</th>
+                <th className="px-6 py-4 text-center font-medium">
+                  Customer Name
+                </th>
                 <th className="px-6 py-4 text-center font-medium">Email</th>
                 <th className="px-6 py-4 text-center font-medium">Phone</th>
                 <th className="px-6 py-4 text-center font-medium">Message</th>
-                <th className="px-6 py-4 text-center font-medium">Status</th> {/* New status column */}
+                <th className="px-6 py-4 text-center font-medium">
+                  Status
+                </th>
+                {/* New status column */}
                 <th className="px-6 py-4 text-center font-medium">Action</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-100 text-sm text-gray-700">
-              {enquiries.length > 0 ? (
-                enquiries.map((entry, index) => (
-                  <tr
-                    key={entry.id || entry.enquiryId || index}
-                    className="hover:bg-gray-50 transition duration-150"
-                  >
-                    <td className="px-6 py-4 font-semibold text-center">{index + 1}</td>
-                    <td className="px-6 py-4 text-center">{entry.customerName}</td>
-                    <td className="px-6 py-4 text-center">{entry.email}</td>
-                    <td className="px-6 py-4 text-center">{entry.mobile}</td>
-                    <td className="px-6 py-4 line-clamp-2 text-center">{entry.message}</td>
-                    <td className="px-6 py-4 text-center">
-                      {/* Display status as badge */}
-                      <span
-                        className={`inline-block px-3 py-1 text-xs font-semibold rounded-full
+              <>
+                {enquiries.length > 0 ? (
+                  enquiries.map((entry, index) => (
+                    <tr
+                      key={entry.id || entry.enquiryId || index}
+                      className="hover:bg-gray-50 transition duration-150"
+                    >
+                      <td className="px-6 py-4 font-semibold text-center">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {entry.customerName}
+                      </td>
+                      <td className="px-6 py-4 text-center">{entry.email}</td>
+                      <td className="px-6 py-4 text-center">{entry.mobile}</td>
+                      <td className="px-6 py-4 line-clamp-2 text-center">
+                        {entry.message}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {/* Display status as badge */}
+                        <span
+                          className={`inline-block px-3 py-1 text-xs font-semibold rounded-full
                           ${
-                            entry.status === 'Resolved'
-                              ? 'bg-green-100 text-green-800'
-                              : entry.status === 'InProgress'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-gray-200 text-gray-800'
+                            entry.status === "Resolved"
+                              ? "bg-green-100 text-green-800"
+                              : entry.status === "InProgress"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-gray-200 text-gray-800"
                           }
                         `}
-                      >
-                        {entry.status || 'Pending'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center gap-3">
-                        <button
-                          onClick={() => handleView(entry)}
-                          className="text-blue-600 hover:text-blue-800 transition cursor-pointer"
                         >
-                          View
-                        </button>
-                        <button
-                          onClick={() => handleDelete(entry.enquiryId)}
-                          className="text-red-600 hover:text-red-800 flex items-center cursor-pointer gap-1 transition"
-                        >
-                          <TrashIcon className="w-4 h-4" />
-                          Delete
-                        </button>
-                      </div>
+                          {entry.status || "Pending"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex items-center justify-center gap-3">
+                          <button
+                            onClick={() => handleView(entry)}
+                            className="text-blue-600 hover:text-blue-800 transition cursor-pointer"
+                          >
+                            View
+                          </button>
+                          <button
+                            onClick={() => handleDelete(entry.enquiryId)}
+                            className="text-red-600 hover:text-red-800 flex items-center cursor-pointer gap-1 transition "
+                          >
+                            <TrashIcon className="w-4 h-4" />
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="7"
+                      className="px-6 py-6 text-center text-gray-400"
+                    >
+                      No enquiries found.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="px-6 py-6 text-center text-gray-400">
-                    No enquiries found.
-                  </td>
-                </tr>
-              )}
+                )}
+              </>
             </tbody>
           </table>
         )}
@@ -189,21 +208,29 @@ const SupportPage = () => {
             </button>
 
             {/* Modal Title */}
-            <h2 className="text-2xl font-semibold text-indigo-700 mb-6">Enquiry Details</h2>
+            <h2 className="text-2xl font-semibold text-indigo-700 mb-6">
+              Enquiry Details
+            </h2>
 
             {/* Enquiry Info */}
             <div className="space-y-4 text-sm text-gray-700">
               <div>
-                <span className="font-semibold text-gray-900">Enquiry ID:</span> {selectedEnquiry.enquiryId}
+                <span className="font-semibold text-gray-900">Enquiry ID:</span>{" "}
+                {selectedEnquiry.enquiryId}
               </div>
               <div>
-                <span className="font-semibold text-gray-900">Customer Name:</span> {selectedEnquiry.customerName}
+                <span className="font-semibold text-gray-900">
+                  Customer Name:
+                </span>{" "}
+                {selectedEnquiry.customerName}
               </div>
               <div>
-                <span className="font-semibold text-gray-900">Email:</span> {selectedEnquiry.email}
+                <span className="font-semibold text-gray-900">Email:</span>{" "}
+                {selectedEnquiry.email}
               </div>
               <div>
-                <span className="font-semibold text-gray-900">Phone:</span> {selectedEnquiry.mobile}
+                <span className="font-semibold text-gray-900">Phone:</span>{" "}
+                {selectedEnquiry.mobile}
               </div>
               <div>
                 <span className="font-semibold text-gray-900">Status:</span>
@@ -238,8 +265,8 @@ const SupportPage = () => {
         </div>
       )}
 
-       {/* Delete Confirmation Modal */}
-       {isDeleteModalOpen && (
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50  z-50">
           <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
             <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>

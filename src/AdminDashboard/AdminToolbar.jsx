@@ -81,7 +81,7 @@ export default function Toolbar() {
           {/* User details */}
           <div className="hidden md:flex flex-col">
             <span className="text-sm font-semibold text-gray-900">{userName}</span>
-            <span className="text-xs text-gray-500">{role}</span>
+            <span className="text-xs text-gray-500 capitalize">{role}</span>
           </div>
         </div>
       </div>
