@@ -182,7 +182,7 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
             </div>
 
             {/* Footer */}
-            <div className="border-t px-5 py-4">
+            {/* <div className="border-t px-5 py-4">
               <p className="flex justify-between text-lg font-semibold">
                 <span className="text-green-500">Grand total</span>
                 <span>₹{Math.floor(subtotal)}</span>
@@ -196,7 +196,7 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                   Check Out
                 </button>
               </div>
-            </div>
+            </div> */}
           </motion.div>
         </>
       )}

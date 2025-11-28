@@ -289,7 +289,7 @@ export default function Checkout() {
 
       {/* SUCCESS POPUP */}
       {showPopup && (
-        <div className="fixed inset-0 bg-yellow-400 bg-opacity-90 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-80 text-center">
             <h2 className="text-xl font-semibold text-green-600 mb-2">
               🎉 Order Placed Successfully!

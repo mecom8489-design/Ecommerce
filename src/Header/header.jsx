@@ -31,7 +31,6 @@ export default function Header() {
   const wish = getWishlist();
   const wishlist = wish?.length || 0;
 
-
   const controller = useRef(null); // For aborting old requests
   const cache = useRef({});
 
@@ -85,8 +84,7 @@ export default function Header() {
     debouncedFetch(value);
   };
 
-
-    const handleSelect = (name) => {
+  const handleSelect = (name) => {
     setSearchText(name);
     setSuggestions([]);
 
@@ -101,17 +99,6 @@ export default function Header() {
   };
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
-
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   return (
     <div className="w-full font-poppins">
@@ -233,21 +220,31 @@ export default function Header() {
             </button>
 
             {/* Login */}
-            <div className="relative" ref={menuRef}>
+            <div
+              className="relative"
+              ref={menuRef}
+              onMouseEnter={() => setIsOpen(true)}
+              onMouseLeave={() => {
+                setTimeout(() => {
+                  if (!menuRef.current.matches(":hover")) {
+                    setIsOpen(false);
+                  }
+                }, 150); 
+              }}
+            >
               {isLoggedIn ? (
                 <>
-                  {/* Circle Icon with First Letter */}
+                  {/* Circle Button */}
                   <button
                     onClick={toggleMenu}
-                    className="w-9 h-9 rounded-full bg-yellow-600 text-white font-semibold flex items-center justify-center hover:bg-yellow-700 transition"
+                    className="w-9 h-9 rounded-full bg-yellow-600 text-white font-semibold flex items-center justify-center hover:bg-yellow-700 transition cursor-pointer"
                   >
                     {user?.firstname?.charAt(0)?.toUpperCase()}
                   </button>
 
-                  {/* Dropdown Menu */}
+                  {/* Dropdown */}
                   {isOpen && (
-                    <div className="absolute right-0 mt-3 w-40 bg-white shadow-lg rounded-lg py-2 z-50 ">
-                      {/* Triangle Pointer */}
+                    <div className="absolute right-0 mt-3 w-40 bg-white shadow-lg rounded-lg py-2 z-50">
                       <div className="absolute -top-2 right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-yellow-100"></div>
 
                       <button
@@ -272,11 +269,6 @@ export default function Header() {
                         My Orders
                       </button>
 
-                      {/* <button className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <Settings size={16} className="mr-2 text-yellow-600" />
-                        Settings
-                      </button> */}
-
                       <button
                         onClick={logout}
                         className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -288,15 +280,12 @@ export default function Header() {
                   )}
                 </>
               ) : (
-                // Show Login button if not logged in
-                <>
-                  <button
-                    onClick={() => setShowSignIn(true)}
-                    className="bg-yellow-400 text-black px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors text-sm font-semibold cursor-pointer"
-                  >
-                    Login
-                  </button>
-                </>
+                <button
+                  onClick={() => setShowSignIn(true)}
+                  className="bg-yellow-400 text-black px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors text-sm font-semibold cursor-pointer"
+                >
+                  Login
+                </button>
               )}
             </div>
           </div>

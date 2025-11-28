@@ -35,29 +35,26 @@ export default function MyOrders() {
   const [refresh, setRefresh] = useState(false);
 
   // STATE HANDLERS
- 
 
- 
   useEffect(() => {
-    if (!id) return; 
+    if (!id) return;
   }, [id]);
 
   useEffect(() => {
-  const fetchOrder = async () => {
-    try {
-      const response = await getorderplace(id);
-      const data = response.data;
-      setOrderData(Array.isArray(data) ? data : [data]);
-    } catch (error) {
-      console.error("Error fetching order:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchOrder = async () => {
+      try {
+        const response = await getorderplace(id);
+        const data = response.data;
+        setOrderData(Array.isArray(data) ? data : [data]);
+      } catch (error) {
+        console.error("Error fetching order:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (id) fetchOrder();
-}, [id, refresh]);  // 👈 Added refresh
-
+    if (id) fetchOrder();
+  }, [id, refresh]); // 👈 Added refresh
 
   if (loading) return <p>Loading order details...</p>;
 
@@ -66,8 +63,6 @@ export default function MyOrders() {
   const toggleFilter = (key) => {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
-
- 
 
   return (
     <div>
@@ -183,7 +178,7 @@ export default function MyOrders() {
               <div className="max-w-6xl mx-auto p-4 bg-gray-50">
                 {orderData.map((order) => (
                   <div
-                    key={order.id}
+                    key={order.order_id }
                     className="bg-white rounded-lg shadow-sm mb-3 p-6 border border-gray-200"
                     onClick={() => {
                       setSelectedOrder(order);
@@ -223,11 +218,9 @@ export default function MyOrders() {
                       <div className="flex-shrink-0 text-right min-w-[200px]">
                         {order.cancelled == 1 ? (
                           <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-xl shadow-sm">
-                          <span className="text-red-600 text-sm">⚠️</span>
-                          <p className="font-medium">Order Cancelled</p>
-                        </div>
-                        
-                         
+                            <span className="text-red-600 text-sm">⚠️</span>
+                            <p className="font-medium">Order Cancelled</p>
+                          </div>
                         ) : (
                           <div className="flex items-center justify-end gap-2 mb-2">
                             <span
@@ -269,7 +262,11 @@ export default function MyOrders() {
         </div>
       </div>
       {isOpen && selectedOrder && (
-        <Orderdetails selectedOrder={selectedOrder} setIsOpen={setIsOpen} setRefresh={setRefresh}  />
+        <Orderdetails
+          selectedOrder={selectedOrder}
+          setIsOpen={setIsOpen}
+          setRefresh={setRefresh}
+        />
       )}
     </div>
   );

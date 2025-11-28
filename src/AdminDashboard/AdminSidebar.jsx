@@ -69,7 +69,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           <NavItem to="/admin/reviews" icon={<Star size={18} />} label="Reviews" />
           <NavItem to="/admin/reports" icon={<BarChart3 size={18} />} label="Reports" />
           <NavItem to="/admin/support" icon={<Headphones size={18} />} label="Support" />
-          <NavItem to="/admin/settings" icon={<Settings size={18} />} label="Settings" />
+          {/* <NavItem to="/admin/settings" icon={<Settings size={18} />} label="Settings" /> */}
 
           {/* Logout Button */}
           <button

@@ -392,10 +392,10 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
                           </button>
                         ))}
                       </div>
-                      <div class="p-4">
+                      <div className="p-4">
                         <form onSubmit={handleSubmitReview}>
                           <textarea
-                            className="w-full p-3 border rounded-lg focus:ring focus:ring-blue-300"
+                            className="w-full p-3 border rounded-lg focus:ring focus:ring-blue-300 resize-none"
                             rows="5"
                             placeholder="Enter your text here..."
                             value={reviewText}
@@ -405,12 +405,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
                           <button
                             type="submit"
                             disabled={isSubmitted}
-                            className={`mt-3 px-4 py-2 text-white rounded-lg 
-    ${
-      isSubmitted
-        ? "bg-gray-400 cursor-not-allowed"
-        : "bg-blue-600 hover:bg-blue-700"
-    }`}
+                            className={`mt-3 px-4 py-2 text-white rounded-lg ${isSubmitted ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
                           >
                             {isSubmitted ? "Submitted" : "Submit"}
                           </button>
@@ -445,8 +440,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen,setRefresh }) => {
                               Address
                             </p>
                             <p className="text-sm text-gray-600">
-                              No.2 kalangar nagar tc koolroad GKB Traders,
-                              Tindiva...
+                              {selectedOrder.shipping_address}
                             </p>
                           </div>
                         </div>
