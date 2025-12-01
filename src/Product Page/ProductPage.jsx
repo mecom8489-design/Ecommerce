@@ -16,6 +16,7 @@ export default function ProductPage() {
   const navigate = useNavigate(); // ← This is required
   const [products, setProducts] = useState([]);
   const [visibleCount, setVisibleCount] = useState(8);
+  const[total,settotal] = useState()
 
   useEffect(() => {
     if (!query) {
@@ -25,6 +26,7 @@ export default function ProductPage() {
     const fetchLiveSearch = async () => {
       try {
         const response = await liveSearchProducts(query);
+       settotal( response.data.total)
         setProducts(response.data.products || []);
       } catch (error) {
         console.log(error);
@@ -192,18 +194,18 @@ export default function ProductPage() {
           {/* Main Content */}
           <div className="flex-1 w-full">
             <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-2">
                 <h1 className="text-lg font-medium">
-                  Showing 1 – 40 results for "{query}"
+                  Showing 1 – {total} results for "{query}"
                 </h1>
               </div>
 
               {/* Sort options */}
-              <div className="flex items-center gap-1 flex-wrap">
-                <span className="text-sm font-medium text-gray-700">
+              {/* <div className="flex items-center gap-1 flex-wrap">
+                {/* <span className="text-sm font-medium text-gray-700">
                   Sort By
-                </span>
-                <button className="px-3 py-1 text-blue-600 border-b-2 border-blue-600 font-medium">
+                </span> */}
+                {/* <button className="px-3 py-1 text-blue-600 border-b-2 border-blue-600 font-medium">
                   Relevance
                 </button>
                 <button className="px-3 py-1 text-gray-600 hover:text-gray-900">
@@ -211,8 +213,8 @@ export default function ProductPage() {
                 </button>
                 <button className="px-3 py-1 text-gray-600 hover:text-gray-900">
                   Newest First
-                </button>
-              </div>
+                </button> */}
+              {/* </div> */}
             </div>
 
             {/* Product Grid */}
