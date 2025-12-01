@@ -332,7 +332,7 @@ export default function AdminProducts() {
         </h3>
 
         <div className="text-base font-medium text-gray-800 flex justify-center items-center">
-          Price: ₹ {parseInt(product.price)}
+          Price: ₹{parseInt(product.price)}
           {product.originalPrice && (
             <span className="text-sm text-gray-400 line-through ml-2">
               Rs.{product.originalPrice}
