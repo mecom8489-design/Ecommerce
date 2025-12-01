@@ -428,14 +428,14 @@ const Home = () => {
       {/* <ProductAD product={ProductADs} /> */}
 
       {/*  Recommended for you Products Carousel  */}
-      <div className="w-full max-w-8xl mx-auto px-4 sm:px-8 mt-20 pt-0 pb-0 rounded-xl">
+      <div className="w-full max-w-8xl mx-auto px-4 sm:px-8 ml-40 mt-20 pt-0 pb-0 rounded-xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-6 px-2 sm:px-0">
           <h2 className="text-3xl font-bold text-gray-900">
             Recommended for you
           </h2>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mr-78">
             <button
               onClick={handlePrevious}
               disabled={currentIndex === 0}
@@ -502,11 +502,10 @@ const Home = () => {
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
                   >
                     <Heart
-                      className={`w-5 h-5 ${
-                        favorites.has(product.id)
+                      className={`w-5 h-5 ${favorites.has(product.id)
                           ? "fill-red-500 text-red-500"
                           : "text-gray-400"
-                      }`}
+                        }`}
                       onClick={(e) => {
                         e.stopPropagation();
                         triggerToast("Added to Wishlist ✔️");
