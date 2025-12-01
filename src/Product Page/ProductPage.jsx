@@ -4,7 +4,6 @@ import { Heart, Star, ChevronDown, ChevronRight } from "lucide-react";
 import Header from "../Header/header";
 import { liveSearchProducts } from "../apiroutes/userApi";
 
-
 export default function ProductPage() {
   const [selectedRating, setSelectedRating] = useState([]);
   const [priceRange, setPriceRange] = useState([100, 800]);
@@ -16,6 +15,7 @@ export default function ProductPage() {
 
   const navigate = useNavigate(); // ← This is required
   const [products, setProducts] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(8);
 
   useEffect(() => {
     if (!query) {
@@ -34,15 +34,13 @@ export default function ProductPage() {
     fetchLiveSearch();
   }, [query]);
 
-  
-
-  const categories = [
-    { name: "Kitchen Containers", count: 1542 },
-    { name: "Oil Dispensers", count: 876 },
-    { name: "Condiment Sets", count: 654 },
-    { name: "Storage Drums", count: 432 },
-    { name: "Egg Holders", count: 298 },
-  ];
+  // const categories = [
+  //   { name: "Kitchen Containers", count: 1542 },
+  //   { name: "Oil Dispensers", count: 876 },
+  //   { name: "Condiment Sets", count: 654 },
+  //   { name: "Storage Drums", count: 432 },
+  //   { name: "Egg Holders", count: 298 },
+  // ];
 
   const toggleCategory = (category) => {
     setExpandedCategories((prev) => ({
@@ -71,10 +69,10 @@ export default function ProductPage() {
             </span>
             <ChevronRight className="w-4 h-4 mx-2" />
             <span className="text-blue-600 hover:underline cursor-pointer">
-              Kitchen, Coo...
+              {query}
             </span>
-            <ChevronRight className="w-4 h-4 mx-2" />
-            <span>Kitchen Stor...</span>
+            {/* <ChevronRight className="w-4 h-4 mx-2" />
+            <span>Kitchen Stor...</span> */}
           </div>
         </div>
 
@@ -88,7 +86,7 @@ export default function ProductPage() {
               <h3 className="font-medium text-gray-900 mb-4">CATEGORIES</h3>
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-blue-600 cursor-pointer">
-                  <span className="text-sm">← Kitchen, Cookware &...</span>
+                  <span className="text-sm">← {query}...</span>
                 </div>
 
                 <div>
@@ -96,9 +94,7 @@ export default function ProductPage() {
                     className="flex items-center justify-between cursor-pointer py-1"
                     onClick={() => toggleCategory("storage")}
                   >
-                    <span className="text-sm font-medium">
-                      Kitchen Storage & Co...
-                    </span>
+                    <span className="text-sm font-medium">{query}...</span>
                     <ChevronDown
                       className={`w-4 h-4 transition-transform ${
                         expandedCategories.storage ? "rotate-180" : ""
@@ -108,17 +104,26 @@ export default function ProductPage() {
 
                   {expandedCategories.storage && (
                     <div className="ml-4 mt-2 space-y-2">
-                      {categories.map((category, index) => (
-                        <div
-                          key={index}
-                          className="text-sm text-gray-700 py-1 cursor-pointer hover:text-blue-600"
+                      {products
+                        .slice(0, visibleCount)
+                        .map((category, index) => (
+                          <div
+                            key={index}
+                            className="text-sm text-gray-700 py-1 cursor-pointer hover:text-blue-600"
+                          >
+                            {category.name}
+                          </div>
+                        ))}
+
+                      {/* Show more button */}
+                      {visibleCount < products.length && (
+                        <button
+                          className="text-blue-600 text-sm font-medium"
+                          onClick={() => setVisibleCount((prev) => prev + 8)} // Show 8 more
                         >
-                          {category.name}
-                        </div>
-                      ))}
-                      <button className="text-blue-600 text-sm font-medium">
-                        Show 9 more
-                      </button>
+                          Show {products.length - visibleCount} more
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
@@ -147,7 +152,7 @@ export default function ProductPage() {
                   </select>
                   <span className="text-gray-500">to</span>
                   <select className="border rounded px-3 py-1 text-sm flex-1">
-                    <option>800+</option>
+                    <option>{priceRange}</option>
                   </select>
                 </div>
               </div>
@@ -195,7 +200,7 @@ export default function ProductPage() {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h1 className="text-lg font-medium">
-                    Showing 1 – 40 of 1,72,603 results for "kitchen accessories"
+                    Showing 1 – 40 of 1,72,603 results for "{query}"
                   </h1>
                 </div>
 
