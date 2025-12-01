@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Heart, Star, ChevronDown, ChevronRight } from "lucide-react";
+import { Heart, Star, ChevronDown, ChevronRight, Filter, X } from "lucide-react";
 import Header from "../Header/header";
 import { liveSearchProducts } from "../apiroutes/userApi";
 
@@ -16,7 +16,8 @@ export default function ProductPage() {
   const navigate = useNavigate(); // ← This is required
   const [products, setProducts] = useState([]);
   const [visibleCount, setVisibleCount] = useState(8);
-  const[total,settotal] = useState()
+  const [total, settotal] = useState();
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     if (!query) {
@@ -26,7 +27,7 @@ export default function ProductPage() {
     const fetchLiveSearch = async () => {
       try {
         const response = await liveSearchProducts(query);
-       settotal( response.data.total)
+        settotal(response.data.total)
         setProducts(response.data.products || []);
       } catch (error) {
         console.log(error);
@@ -77,9 +78,26 @@ export default function ProductPage() {
         </div>
 
         <div className="max-w-8xl mx-auto p-4 flex flex-col lg:flex-row gap-6">
+
           {/* Filters Sidebar */}
-          <div className="bg-white w-full sm:w-64 md:w-72 lg:w-80 rounded-lg shadow-sm p-4 h-fit">
-            <h2 className="text-xl font-semibold mb-6">Filters</h2>
+          <div className={`
+            bg-white rounded-lg shadow-sm p-4 h-fit
+            fixed lg:static top-0 left-0 bottom-0 z-50 lg:z-auto
+            w-80 sm:w-96 lg:w-64 xl:w-80
+            transform transition-transform duration-300 ease-in-out
+            ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+            overflow-y-auto
+          `}>
+            {/* Close button for mobile */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold">Filters</h2>
+              <button
+                onClick={() => setShowFilters(false)}
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             {/* Categories */}
             <div className="mb-8">
@@ -191,30 +209,50 @@ export default function ProductPage() {
             </div>
           </div>
 
+
           {/* Main Content */}
           <div className="flex-1 w-full">
-            <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <h1 className="text-lg font-medium">
+            
+            {/* Filter Button and Results Container */}
+            <div className="flex items-start gap-3 mb-6">
+              {/* Mobile Filter Button - Left of the box */}
+              <button
+                onClick={() => setShowFilters(true)}
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors border border-gray-300 flex items-center justify-center bg-white shadow-sm"
+                aria-label="Open Filters"
+              >
+                <svg
+                  className="w-5 h-5 text-gray-700"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+
+              {/* Results Box */}
+              <div className="bg-white rounded-lg shadow-sm p-4 flex-1">
+                <h1 className="text-base sm:text-lg font-medium">
                   Showing 1 – {total} results for "{query}"
                 </h1>
-              </div>
 
-              {/* Sort options */}
-              {/* <div className="flex items-center gap-1 flex-wrap">
-                {/* <span className="text-sm font-medium text-gray-700">
-                  Sort By
-                </span> */}
-                {/* <button className="px-3 py-1 text-blue-600 border-b-2 border-blue-600 font-medium">
-                  Relevance
-                </button>
-                <button className="px-3 py-1 text-gray-600 hover:text-gray-900">
-                  Popularity
-                </button>
-                <button className="px-3 py-1 text-gray-600 hover:text-gray-900">
-                  Newest First
-                </button> */}
-              {/* </div> */}
+                {/* Sort options */}
+                {/* <div className="flex items-center gap-1 flex-wrap mt-3">
+                  <span className="text-sm font-medium text-gray-700">
+                    Sort By
+                  </span>
+                  <button className="px-3 py-1 text-blue-600 border-b-2 border-blue-600 font-medium">
+                    Relevance
+                  </button>
+                  <button className="px-3 py-1 text-gray-600 hover:text-gray-900">
+                    Popularity
+                  </button>
+                  <button className="px-3 py-1 text-gray-600 hover:text-gray-900">
+                    Newest First
+                  </button>
+                </div> */}
+              </div>
             </div>
 
             {/* Product Grid */}
