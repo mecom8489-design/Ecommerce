@@ -1,14 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import {
-  Heart,
-  Share2,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Truck,
-  RotateCcw,
-  Info,
-} from "lucide-react";
+import { Heart, Share2, Truck, RotateCcw } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ProductContext } from "../context/ProductContext";
 import Header from "../Header/header";
@@ -55,13 +46,10 @@ export default function Product() {
     addToWishlist(product);
   };
 
-  // Update selected product from navigation state
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  // Normalize values from product (convert strings → numbers)
   const rawProduct = selectedProduct || state?.product;
 
   const product = rawProduct
@@ -97,14 +85,17 @@ export default function Product() {
     product.altImage3 || product.image,
   ];
 
+  const finalPrice =
+    product?.price - product?.price * (product?.discount / 100);
+
   const incrementQuantity = () => {
     const newQty = quantity + 1;
-    setQuantity(newQty); // update local quantity
+    setQuantity(newQty);
     setCheckoutInfo({
       quantity: newQty,
       finalPrice,
       totalPrice: Math.floor(finalPrice * newQty),
-    }); // update context separately
+    });
   };
 
   const decrementQuantity = () => {
@@ -117,27 +108,19 @@ export default function Product() {
     });
   };
 
-  const finalPrice =
-    product?.price - product?.price * (product?.discount / 100);
-
   useEffect(() => {
     if (state?.product) {
       const newProductId = state.product.id;
-
-      // If different product, reset quantity & checkout info
       if (currentProductId !== newProductId) {
         setSelectedProduct(state.product);
-
         const finalPrice =
           state.product.price -
           state.product.price * (state.product.discount / 100);
-
         setCheckoutInfo({
           quantity: 1,
           totalPrice: Math.floor(finalPrice),
           finalPrice: finalPrice,
         });
-
         setQuantity(1);
         setCurrentProductId(newProductId);
       } else {
@@ -157,20 +140,31 @@ export default function Product() {
       <Header />
       <div className="max-w-7xl mx-auto p-6 bg-white">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="flex space-x-4 lg:sticky lg:top-0 self-start">
+          {/* Left - Product Images */}
+          <div className="flex w-full lg:sticky lg:top-0 self-start">
             <div className="flex-1 relative">
-              <div className="absolute top-4 left-4 z-10">
-                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+              {/* Discount Badge */}
+              <div className="absolute top-3 left-3 z-10">
+                <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs sm:text-sm font-medium">
                   -{product.discount || "50"}%
                 </span>
               </div>
 
-              <button className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow">
-                <Share2 className="w-5 h-5 text-gray-600" />
+              {/* Share Button */}
+              <button className="absolute top-3 right-3 z-10 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow">
+                <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
               </button>
 
+              {/* Image Container */}
               <div
-                className="bg-white rounded-lg p-8 h-156 w-130 flex items-center justify-center relative overflow-hidden"
+                className="
+        bg-white rounded-lg 
+        p-4 sm:p-6 md:p-8 
+        w-full 
+        h-[280px] sm:h-[350px] md:h-[450px] lg:h-[520px]
+        flex items-center justify-center 
+        relative overflow-hidden
+      "
                 onMouseEnter={() => setIsZoomed(true)}
                 onMouseLeave={() => setIsZoomed(false)}
                 onMouseMove={(e) => {
@@ -196,7 +190,7 @@ export default function Product() {
             </div>
           </div>
 
-          {/* Right Side */}
+          {/* Right - Product Details */}
           <div className="space-y-6 pr-4">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900 mb-4">
@@ -220,32 +214,39 @@ export default function Product() {
               </div>
             </div>
 
-            {/* Quantity & Checkout */}
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="flex items-center border border-gray-300 rounded">
+            {/* Quantity & Checkout - Responsive */}
+            {/* Quantity & Checkout - Responsive */}
+            {/* Quantity + Total + Wishlist */}
+            <div className="flex items-center gap-3 mb-6 w-full overflow-hidden">
+              {/* Quantity Box */}
+              <div className="flex items-center border border-gray-300 rounded min-w-[110px] flex-shrink-0">
                 <button
                   onClick={decrementQuantity}
-                  className="px-4 py-3 text-gray-600 hover:bg-gray-50 transition-colors"
+                  className="px-3 py-2 text-gray-600 hover:bg-gray-50"
                 >
                   -
                 </button>
-                <span className="px-6 py-3 border-l border-r border-gray-300 bg-gray-50 min-w-[80px] text-center">
+
+                <span className="px-4 py-2 border-l border-r border-gray-300 bg-gray-50 text-center min-w-[40px]">
                   {quantity}
                 </span>
+
                 <button
                   onClick={incrementQuantity}
-                  className="px-4 py-3 text-gray-600 hover:bg-gray-50 transition-colors"
+                  className="px-3 py-2 text-gray-600 hover:bg-gray-50"
                 >
                   +
                 </button>
               </div>
 
-              <button className="flex-1 bg-gray-800 text-white px-8 py-3 rounded font-medium hover:bg-gray-900 transition-colors">
+              {/* Total Button */}
+              <button className="flex-1 bg-gray-800 text-white px-3 py-2 rounded font-medium text-base hover:bg-gray-900 whitespace-nowrap">
                 Total - ₹ {Math.floor(finalPrice * quantity)}
               </button>
 
+              {/* Wishlist */}
               <button
-                className="p-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                className="p-3 border border-gray-300 rounded hover:bg-gray-50 flex-shrink-0"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleWishlist(product);
@@ -255,11 +256,13 @@ export default function Product() {
                 <Heart className="w-5 h-5 text-gray-600" />
               </button>
             </div>
+
+            {/* Buy Now */}
             <button
               className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6"
               onClick={() => {
                 if (!user || !user.email) {
-                  setShowSignIn(true); 
+                  setShowSignIn(true);
                   return;
                 }
 
@@ -317,10 +320,12 @@ export default function Product() {
                   "This is a high-quality product designed for durability and comfort."}
               </p>
             </div>
+
             <ProductReviews />
           </div>
         </div>
       </div>
+
       {/* SignIn / SignUp Popup */}
       {showSignIn && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[999]">
@@ -332,6 +337,8 @@ export default function Product() {
           <SignUp setShowSignUp={setShowSignUp} setShowSignIn={setShowSignIn} />
         </div>
       )}
+
+      {/* Toast */}
       <Toast message={toastMessage} show={showToast} />
       <Footer />
     </div>

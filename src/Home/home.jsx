@@ -24,7 +24,6 @@ import { addToWishlist } from "../utils/wishlistUtils";
 import { getAddedProducts } from "../apiroutes/adminApi";
 import Toast from "../context/ToastAddToCart"; // adjust path as needed
 
-
 const Home = () => {
   const [current, setCurrent] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -50,7 +49,6 @@ const Home = () => {
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2000);
   };
-
 
   const hasFetched = useRef(false);
   useEffect(() => {
@@ -93,7 +91,7 @@ const Home = () => {
       order_count: product.order_count,
       description: product.description,
       stock: product.stock,
-      offer:product.offer,
+      offer: product.offer,
       category: product.category,
       created_at: product.created_at,
     }));
@@ -127,7 +125,6 @@ const Home = () => {
     });
   };
 
-  
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
@@ -431,24 +428,28 @@ const Home = () => {
       {/* <ProductAD product={ProductADs} /> */}
 
       {/*  Recommended for you Products Carousel  */}
-      <div className="w-full max-w-8xl mx-auto p-28 mt-20 pt-0 pb-0 rounded-xl">
+      <div className="w-full max-w-8xl mx-auto px-4 sm:px-8 mt-20 pt-0 pb-0 rounded-xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 px-2 sm:px-0">
           <h2 className="text-3xl font-bold text-gray-900">
             Recommended for you
           </h2>
+
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrevious}
               disabled={currentIndex === 0}
-              className="p-2 rounded-full bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="p-2 rounded-full bg-white shadow-md hover:shadow-xl 
+        transition-all duration-300 hover:scale-110 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
+
             <button
               onClick={handleNext}
               disabled={currentIndex + itemsPerView >= recommended.length}
-              className="p-2 rounded-full bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="p-2 rounded-full bg-white shadow-md hover:shadow-xl 
+        transition-all duration-300 hover:scale-110 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-5 h-5 text-gray-600" />
             </button>
@@ -456,27 +457,36 @@ const Home = () => {
         </div>
 
         {/* Product Carousel */}
-        <div className="relative overflow-hidden py-6">
+        <div className="relative overflow-hidden py-4">
           <div
             className="flex gap-4 sm:gap-6 transition-transform duration-700 ease-in-out"
             style={{
-              transform: `translateX(-${
-                (100 / recommended.length) * currentIndex
-              }%)`,
-              width: `${(recommended.length / itemsPerViews) * 100}%`,
+              transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
             }}
           >
             {recommended.map((product) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 w-[calc(100%/1.5)] sm:w-[calc(100%/2.5)] md:w-[calc(100%/3.5)] lg:w-[calc(100%/4.5)] xl:w-[calc(90%/7)] bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.03] cursor-pointer"
+                /* ✔ Responsive Card Width — same as your grid */
+                className="
+            flex-shrink-0
+            w-[85%]  
+            sm:w-[48%]
+            md:w-[31%]
+            lg:w-[23%]
+            xl:w-[19%]
+            2xl:w-[15%]
+            [@media(min-width:1800px)]:w-[13.5%]
+            bg-white border border-gray-200 rounded-2xl overflow-hidden 
+            transition-all duration-300 hover:scale-[1.03] cursor-pointer
+          "
                 onClick={() =>
                   navigate(`/ProductPage/products/${product.id}`, {
                     state: { product },
                   })
                 }
               >
-                {/* Image Section */}
+                {/* Image */}
                 <div className="relative h-48 bg-white flex items-center justify-center">
                   <img
                     src={product.image}
@@ -507,32 +517,31 @@ const Home = () => {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4 flex flex-col justify-between h-[calc(100%-12rem)] space-y-1">
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-800  line-clamp-2 group-hover:text-yellow-600 transition-colors">
-                      {product.name}
-                    </h3>
-                  </div>
+                <div className="p-4 flex flex-col space-y-1">
+                  <h3 className="text-xl font-bold text-slate-800 line-clamp-2">
+                    {product.name}
+                  </h3>
 
-                  <div className="flex items-center gap-2 ">
+                  <div className="flex items-center gap-2">
                     <span className="text-xl font-bold text-gray-900">
                       ₹{Math.floor(product.finalPrice)}
                     </span>
+
                     {product.originalPrice && (
                       <span className="text-sm text-gray-400 line-through">
                         ₹{product.originalPrice}
                       </span>
                     )}
+
                     {product.discount && (
                       <span className="text-sm font-medium text-green-600">
                         {Math.floor(product.discount)}% OFF
                       </span>
                     )}
                   </div>
-                  {/* Price & Cart */}
 
                   {/* Rating */}
-                  <div className="text-sm flex items-center mt-1 ">
+                  <div className="text-sm flex items-center mt-1">
                     Rating:
                     <span className="ml-2 flex relative">
                       <div className="flex text-gray-300">
@@ -558,13 +567,16 @@ const Home = () => {
                       )
                     </span>
                   </div>
-                  <div className="flex items-center justify-between">
+
+                  {/* Stock + Add to Cart */}
+                  <div className="flex items-center justify-between pt-2">
                     <div className="text-[14px] font-bold">
                       Available Stocks:
                       <span className="text-red-600"> {product.stock}</span>
                     </div>
+
                     <button
-                      className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 transition duration-200 hover:scale-105"
+                      className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 hover:scale-105 transition"
                       onClick={(e) => {
                         e.stopPropagation();
                         addToCart(product);
@@ -619,7 +631,7 @@ const Home = () => {
                       key={i}
                       className="text-sm ml-2 text-black font-medium hover:underline cursor-pointer"
                       onClick={() => navigate(`/ProductPage?search=${item}`)}
-                   >
+                    >
                       {item}
                     </li>
                   ))}
