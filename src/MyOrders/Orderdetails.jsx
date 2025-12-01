@@ -90,10 +90,10 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
               }}
               className="sticky top-2 left-2 sm:top-4 sm:left-4 z-10 flex items-center gap-1 
              px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white shadow-md
-             text-gray-800 hover:bg-gray-100 transition-all"
+             text-gray-800 hover:bg-gray-100 transition-all mb-5"
             >
               <ChevronLeft className="w-4 h-4" />
-              <span className="text-xs sm:text-sm font-medium">Back</span>
+              <span className="text-xs sm:text-sm  font-medium">Back</span>
             </button>
 
             <div className="min-h-screen bg-gray-50 rounded-lg">

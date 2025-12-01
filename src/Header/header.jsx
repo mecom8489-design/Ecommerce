@@ -299,9 +299,9 @@ export default function Header() {
             <Link to="/" className="hover-link">
               Home
             </Link>
-            <Link to="/hot-deals" className="hover-link">
+            {/* <Link to="/hot-deals" className="hover-link">
               Hot Deals
-            </Link>
+            </Link> */}
             <Link to="/aboutUs" className="hover-link">
               About US
             </Link>
