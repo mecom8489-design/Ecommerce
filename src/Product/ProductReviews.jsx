@@ -74,23 +74,23 @@ const ProductReviews = () => {
   const displayedReviews = showAll ? reviews : reviews.slice(0, 2); // <-- changed to 2 here
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-10 max-w-2xl">
+    <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 mt-10 max-w-2xl">
       {/* Overall Rating */}
-      <div className="flex flex-col md:flex-row md:items-center gap-6 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 mb-6 md:mb-8">
         <div className="text-center md:text-left">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-[24px] sm:text-3xl font-bold text-gray-900">
             {averageRating.toFixed(1)}/5
           </h2>
 
           <span className="flex relative justify-center md:justify-start mt-1">
-            <div className="flex text-gray-300 text-xl">
+            <div className="flex text-gray-300 text-[16px] sm:text-xl">
               {Array.from({ length: 5 }).map((_, i) => (
                 <span key={i}>★</span>
               ))}
             </div>
 
             <div
-              className="flex text-yellow-500 text-xl absolute left-0 top-0 overflow-hidden"
+              className="flex text-yellow-500 text-[16px] sm:text-xl absolute left-0 top-0 overflow-hidden"
               style={{ width: `${(averageRating / 5) * 100}%` }}
             >
               {Array.from({ length: 5 }).map((_, i) => (
@@ -99,20 +99,27 @@ const ProductReviews = () => {
             </div>
           </span>
 
-          <p className="text-gray-500 mt-1">{reviews.length} reviews</p>
+          <p className="text-gray-500 mt-1 text-[12px] sm:text-sm">
+            {reviews.length} reviews
+          </p>
         </div>
 
         <div className="flex-1">
           {ratingBreakdown.map(({ star, percentage }) => (
-            <div key={star} className="flex items-center gap-3 mb-2">
-              <span className="text-gray-600 w-10">{star}★</span>
-              <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              key={star}
+              className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2"
+            >
+              <span className="text-gray-600 w-8 sm:w-10 text-[12px] sm:text-sm">
+                {star}★
+              </span>
+              <div className="flex-1 h-[6px] sm:h-3 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className="bg-yellow-400 h-full"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
-              <span className="text-gray-600 w-12 text-right">
+              <span className="text-gray-600 w-10 sm:w-12 text-right text-[11px] sm:text-sm">
                 {percentage}%
               </span>
             </div>
@@ -121,36 +128,42 @@ const ProductReviews = () => {
       </div>
 
       {/* Reviews List */}
-      <div className={`space-y-6 ${showAll ? "max-h-60 overflow-y-auto" : ""}`}>
+      <div
+        className={`space-y-4 sm:space-y-6 ${
+          showAll ? "max-h-60 overflow-y-auto" : ""
+        }`}
+      >
         {displayedReviews.map((r, idx) => (
           <div
             key={idx}
-            className="border-b border-gray-200 pb-4 last:border-none"
+            className="border-b border-gray-200 pb-3 sm:pb-4 last:border-none"
           >
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
               <img
                 src={r.avatar}
                 alt={r.name}
-                className="w-10 h-10 rounded-full object-cover"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
               />
               <div>
-                <h4 className="font-semibold">{r.name}</h4>
-                <p className="text-xs text-gray-500">{r.date}</p>
+                <h4 className="font-semibold text-[13px] sm:text-sm">
+                  {r.name}
+                </h4>
+                <p className="text-[10px] sm:text-xs text-gray-500">{r.date}</p>
               </div>
             </div>
 
-            <div className="text-sm flex items-center mt-1 mb-2">
-              <span className="mr-2">Rating:</span>
+            <div className="text-[12px] sm:text-sm flex items-center mt-1 mb-2">
+              <span className="mr-1 sm:mr-2">Rating:</span>
 
               <span className="flex relative">
-                <div className="flex text-gray-300">
+                <div className="flex text-gray-300 text-[12px] sm:text-sm">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <span key={i}>★</span>
                   ))}
                 </div>
 
                 <div
-                  className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+                  className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden text-[12px] sm:text-sm"
                   style={{ width: `${(Number(r.rating) / 5) * 100}%` }}
                 >
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -159,25 +172,26 @@ const ProductReviews = () => {
                 </div>
               </span>
 
-              <span className="ml-2 text-gray-700">
+              <span className="ml-1 sm:ml-2 text-gray-700 text-[12px] sm:text-sm">
                 ({Number(r.rating).toFixed(2)})
               </span>
             </div>
 
-            <p className="text-gray-700 mb-3">{r.comment}</p>
+            <p className="text-gray-700 text-[12px] sm:text-sm mb-2 sm:mb-3">
+              {r.comment}
+            </p>
           </div>
         ))}
       </div>
 
-      {reviews.length > 2 &&
-        !showAll && ( // <-- changed to 2 here
-          <button
-            onClick={() => setShowAll(true)}
-            className="mt-6 w-full py-2 px-4 border rounded-lg text-gray-700 hover:bg-gray-100 transition"
-          >
-            View all reviews
-          </button>
-        )}
+      {reviews.length > 2 && !showAll && (
+        <button
+          onClick={() => setShowAll(true)}
+          className="mt-4 sm:mt-6 w-full py-2 px-3 sm:py-2 sm:px-4 border rounded-lg text-[12px] sm:text-sm text-gray-700 hover:bg-gray-100 transition"
+        >
+          View all reviews
+        </button>
+      )}
     </div>
   );
 };

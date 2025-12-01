@@ -157,14 +157,7 @@ export default function Product() {
 
               {/* Image Container */}
               <div
-                className="
-        bg-white rounded-lg 
-        p-4 sm:p-6 md:p-8 
-        w-full 
-        h-[280px] sm:h-[350px] md:h-[450px] lg:h-[520px]
-        flex items-center justify-center 
-        relative overflow-hidden
-      "
+                className="bg-white rounded-lg p-4 sm:p-6 md:p-8 w-full h-[280px] sm:h-[350px] md:h-[450px] lg:h-[520px] flex items-center justify-center relative overflow-hidden"
                 onMouseEnter={() => setIsZoomed(true)}
                 onMouseLeave={() => setIsZoomed(false)}
                 onMouseMove={(e) => {
@@ -193,86 +186,98 @@ export default function Product() {
           {/* Right - Product Details */}
           <div className="space-y-6 pr-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900 mb-4">
+              <h1 className="text-[20px] sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
                 {product.name}
               </h1>
 
               {/* Price */}
-              <div className="flex items-baseline space-x-3 mb-4">
-                <span className="text-xl text-gray-400 line-through">
+              <div className="flex items-baseline space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                <span className="text-[16px] sm:text-xl text-gray-400 line-through">
                   ₹{Math.floor(product.price)}
                 </span>
-                <span className="text-3xl font-bold text-red-500">
+                <span className="text-[22px] sm:text-3xl font-bold text-red-500">
                   ₹{Math.floor(finalPrice)}
                 </span>
               </div>
 
-              <div className="bg-red-50 border-l-4 border-red-400 p-3 mb-6">
-                <p className="text-red-700 text-sm font-medium">
+              <div className="bg-red-50 border-l-4 border-red-400 p-2 sm:p-3 mb-4 sm:mb-6">
+                <p className="text-red-700 text-[12px] sm:text-sm font-medium">
                   Hurry, only few left in stock!
                 </p>
               </div>
             </div>
 
             {/* Quantity & Checkout - Responsive */}
-            {/* Quantity & Checkout - Responsive */}
             {/* Quantity + Total + Wishlist */}
-            <div className="flex items-center gap-3 mb-6 w-full overflow-hidden">
+            <div className="flex items-center gap-2 sm:gap-3 mb-6 w-full overflow-hidden">
               {/* Quantity Box */}
-              <div className="flex items-center border border-gray-300 rounded min-w-[110px] flex-shrink-0">
+              <div
+                className="flex items-center border border-gray-300 rounded 
+                  min-w-[95px] sm:min-w-[110px] 
+                  flex-shrink-0"
+              >
                 <button
                   onClick={decrementQuantity}
-                  className="px-3 py-2 text-gray-600 hover:bg-gray-50"
+                  className="px-2 py-1 text-sm sm:px-3 sm:py-2 sm:text-base text-gray-600 hover:bg-gray-50"
                 >
                   -
                 </button>
 
-                <span className="px-4 py-2 border-l border-r border-gray-300 bg-gray-50 text-center min-w-[40px]">
+                <span
+                  className="px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base 
+                     border-l border-r border-gray-300 bg-gray-50
+                     min-w-[35px] sm:min-w-[40px] text-center"
+                >
                   {quantity}
                 </span>
 
                 <button
                   onClick={incrementQuantity}
-                  className="px-3 py-2 text-gray-600 hover:bg-gray-50"
+                  className="px-2 py-1 text-sm sm:px-3 sm:py-2 sm:text-base text-gray-600 hover:bg-gray-50"
                 >
                   +
                 </button>
               </div>
 
               {/* Total Button */}
-              <button className="flex-1 bg-gray-800 text-white px-3 py-2 rounded font-medium text-base hover:bg-gray-900 whitespace-nowrap">
+              <button
+                className="flex-1 bg-gray-800 text-white 
+               px-3 py-2 text-sm 
+               sm:px-4 sm:py-2 sm:text-base 
+               md:text-lg
+               rounded font-medium 
+               hover:bg-gray-900 whitespace-nowrap"
+              >
                 Total - ₹ {Math.floor(finalPrice * quantity)}
               </button>
 
               {/* Wishlist */}
               <button
-                className="p-3 border border-gray-300 rounded hover:bg-gray-50 flex-shrink-0"
+                className="p-2 sm:p-3 border border-gray-300 rounded hover:bg-gray-50 flex-shrink-0"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleWishlist(product);
                   triggerToast("Added to Wishlist ✔️");
                 }}
               >
-                <Heart className="w-5 h-5 text-gray-600" />
+                <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
               </button>
             </div>
 
             {/* Buy Now */}
             <button
-              className="w-full bg-yellow-500 text-white py-4 rounded font-bold text-lg hover:bg-yellow-600 transition-colors mb-6"
+              className="w-full bg-yellow-500 text-white rounded font-bold hover:bg-yellow-600 transition-colors mb-4 h-[44px] text-[14px] sm:h-[56px] sm:text-[18px]"
               onClick={() => {
                 if (!user || !user.email) {
                   setShowSignIn(true);
                   return;
                 }
-
                 setSelectedProduct(product);
                 setCheckoutInfo({
                   quantity,
                   totalPrice: Math.floor(finalPrice * quantity),
                   finalPrice,
                 });
-
                 navigate(`/ProductPage/products/Checkout/${product.id}`);
               }}
             >
@@ -281,7 +286,7 @@ export default function Product() {
 
             {/* Add to Cart */}
             <button
-              className="w-full bg-red-500 text-white py-4 rounded font-bold text-lg hover:bg-red-600 transition-colors mb-6"
+              className="w-full bg-red-500 text-white rounded font-bold hover:bg-red-600 transition-colors mb-6 h-[44px] text-[14px] sm:h-[56px] sm:text-[18px]"
               onClick={() => addToCart(product)}
             >
               ADD TO CART
@@ -289,21 +294,27 @@ export default function Product() {
 
             {/* Delivery Info */}
             <div className="space-y-4">
+              {/* Free Shipping */}
               <div className="flex items-start space-x-3">
-                <Truck className="w-5 h-5 text-gray-600 mt-0.5" />
+                <Truck className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-gray-600 mt-[2px]" />
                 <div>
-                  <p className="font-medium text-gray-800">Free Shipping</p>
-                  <p className="text-gray-600 text-sm">
+                  <p className="font-medium text-[14px] sm:text-gray-800 sm:text-base">
+                    Free Shipping
+                  </p>
+                  <p className="text-gray-600 text-[12px] sm:text-sm">
                     Free shipping on orders over ₹990.
                   </p>
                 </div>
               </div>
 
+              {/* Easy Returns */}
               <div className="flex items-start space-x-3">
-                <RotateCcw className="w-5 h-5 text-gray-600 mt-0.5" />
+                <RotateCcw className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-gray-600 mt-[2px]" />
                 <div>
-                  <p className="font-medium text-gray-800">Easy Returns</p>
-                  <p className="text-gray-600 text-sm">
+                  <p className="font-medium text-[14px] sm:text-gray-800 sm:text-base">
+                    Easy Returns
+                  </p>
+                  <p className="text-gray-600 text-[12px] sm:text-sm">
                     Return or exchange within 7 days.
                   </p>
                 </div>
@@ -311,11 +322,11 @@ export default function Product() {
             </div>
 
             {/* Description */}
-            <div className="border border-gray-200 p-5 mt-6 rounded-lg">
-              <h2 className="text-xl font-bold mb-3 text-gray-800">
+            <div className="border border-gray-200 p-[12px] sm:p-5 mt-6 rounded-lg">
+              <h2 className="font-bold mb-2 text-[16px] sm:text-xl text-gray-800">
                 Product Description
               </h2>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-700 leading-relaxed text-[13px] sm:text-base">
                 {product.description ||
                   "This is a high-quality product designed for durability and comfort."}
               </p>
