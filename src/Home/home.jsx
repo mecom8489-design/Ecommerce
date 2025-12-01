@@ -199,7 +199,7 @@ const Home = () => {
         "Home",
         "Technology",
         "Candles & home fragrance",
-        "Dining",
+        "Electronics",
         "Brands A-Z",
       ],
     },
@@ -618,7 +618,8 @@ const Home = () => {
                     <li
                       key={i}
                       className="text-sm ml-2 text-black font-medium hover:underline cursor-pointer"
-                    >
+                      onClick={() => navigate(`/ProductPage?search=${item}`)}
+                   >
                       {item}
                     </li>
                   ))}
