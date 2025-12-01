@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const axiosInstance = axios.create({
-  baseURL: "https://e-commerce-backend-production-6fa0.up.railway.app/api",
+  baseURL: "e-commerce-backend-rho-rouge.vercel.app/api",
 });
 
 // Optional: Add interceptors for token auth
