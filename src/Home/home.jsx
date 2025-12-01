@@ -41,6 +41,14 @@ const Home = () => {
   const scrollStep = 3; // Move 2 products on each scroll
   const maxIndex = Math.max(recommended.length - itemsPerViews, 0);
 
+  const [productAd, setProductAd] = useState([]);
+
+  const slides = productAd.map((prod, index) => ({
+    title: index === 0 ? "Hot Deals" : "Exclusive Offer",
+    buttonText: index === 0 ? "Shop Now" : "Explore",
+    product: prod,
+  }));
+ 
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
@@ -68,7 +76,7 @@ const Home = () => {
         bestSeller = [],
         recommended = [],
       } = response.data?.data || {};
-      setProductAds(productAd.slice(-1));
+      setProductAd(productAd.slice(-2));
       setViewMore(viewMore);
       setRecommended(recommended);
       const formatted = formatBestSellerData(bestSeller);
@@ -126,33 +134,6 @@ const Home = () => {
   };
 
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  const slides = [
-    {
-      title: "Summer, bottled",
-      description:
-        "Fresh and floral or zesty citrus? Find a scent to spritz all season.",
-      buttonText: "Shop now",
-      perfume: {
-        brand: "LOEWE",
-        name: "Paula's",
-        collection: "Ibiza",
-        image: image5, // replace with actual image path
-      },
-    },
-    {
-      title: "Autumn, captured",
-      description:
-        "Warm and woody or spicy amber? Discover fragrances for the season ahead.",
-      buttonText: "Explore now",
-      perfume: {
-        brand: "TOM FORD",
-        name: "Oud",
-        collection: "Wood",
-        image: image8, // replace with actual image path
-      },
-    },
-  ];
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -242,49 +223,50 @@ const Home = () => {
       <div className="relative w-full h-auto md:h-120 mt-1 overflow-hidden border border-gray-200">
         {/* Slider container */}
         <div
-          className="flex h-full w-[200%] transition-transform duration-700 ease-in-out"
-          style={{
-            transform: `translateX(-${currentSlide * 50}%)`,
-          }}
+      className="flex h-full"
+      style={{
+        width: `${slides.length * 100}%`,
+        transform: `translateX(-${currentSlide * (100 / slides.length)}%)`,
+        transition: "transform 0.7s ease-in-out",
+      }}
+    >
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className="w-full md:w-1/2 flex flex-col md:flex-row h-auto md:h-full"
+          style={{ width: `${100 / slides.length}%` }}
         >
-          {slides.map((slide, index) => (
-            <div
-              key={index}
-              className="w-full md:w-1/2 flex flex-col md:flex-row h-auto md:h-full"
-            >
-              {/* Left Section */}
-              <div className="w-full md:w-1/2 flex items-center bg-yellow-50">
-                <div className="ml-6 md:ml-40 max-w-md p-6 md:p-0">
-                  <h1 className="text-2xl md:text-4xl lg:text-5xl font-light text-black mb-4">
-                    {slide.title}
-                  </h1>
-                  <p className="text-black text-base md:text-lg mb-8 leading-relaxed">
-                    {slide.description}
-                  </p>
-
-                  {/* Button */}
-                  <button
-                    className="text-yellow-800 font-bold text-sm px-[65px] py-[14px] bg-no-repeat bg-cover bg-center cursor-pointer transition duration-300 ease-in-out transform hover:scale-130"
-                    style={{
-                      backgroundImage: `url(${buttonBg})`,
-                      backgroundColor: "transparent",
-                    }}
-                  >
-                    {slide.buttonText}
-                  </button>
-                </div>
-              </div>
-
-              {/* Right Section (Image) */}
-              <div
-                className="w-full md:w-1/2 h-64 md:h-full bg-cover bg-center"
+          {/* LEFT */}
+          <div className="w-full md:w-1/2 flex items-center bg-yellow-50">
+            <div className="ml-6 md:ml-40 max-w-md p-6 md:p-0">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-light text-red-600 mb-4 italic">
+                {slide.title}
+              </h1>
+              <p className="text-black text-base md:text-lg mb-8 font-bold leading-relaxed">
+                {slide.product?.description}
+              </p>
+              <button
+                className="text-yellow-800 font-bold text-sm px-[65px] py-[14px] bg-no-repeat bg-cover bg-center cursor-pointer transition duration-300 ease-in-out transform hover:scale-130"
                 style={{
-                  backgroundImage: `url(${slide.perfume.image})`,
+                  backgroundImage: `url(${buttonBg})`,
+                  backgroundColor: "transparent",
                 }}
-              />
+              >
+                {slide.buttonText}
+              </button>
             </div>
-          ))}
+          </div>
+
+          {/* RIGHT */}
+          <div
+            className="w-full md:w-1/2 h-64 md:h-full bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${slide.product?.image})`,
+            }}
+          ></div>
         </div>
+      ))}
+    </div>
 
         {/* Navigation Arrows */}
         <button
