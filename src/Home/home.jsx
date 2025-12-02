@@ -46,9 +46,9 @@ const Home = () => {
   const slides = productAd.map((prod, index) => ({
     title: index === 0 ? "Hot Deals" : "Exclusive Offer",
     buttonText: index === 0 ? "Shop Now" : "Explore",
-    product: prod,
+    products: prod,
   }));
- 
+
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
@@ -223,50 +223,63 @@ const Home = () => {
       <div className="relative w-full h-auto md:h-120 mt-1 overflow-hidden border border-gray-200">
         {/* Slider container */}
         <div
-      className="flex h-full"
-      style={{
-        width: `${slides.length * 100}%`,
-        transform: `translateX(-${currentSlide * (100 / slides.length)}%)`,
-        transition: "transform 0.7s ease-in-out",
-      }}
-    >
-      {slides.map((slide, index) => (
-        <div
-          key={index}
-          className="w-full md:w-1/2 flex flex-col md:flex-row h-auto md:h-full"
-          style={{ width: `${100 / slides.length}%` }}
+          className="flex h-full"
+          style={{
+            width: `${slides.length * 100}%`,
+            transform: `translateX(-${currentSlide * (100 / slides.length)}%)`,
+            transition: "transform 0.7s ease-in-out",
+          }}
         >
-          {/* LEFT */}
-          <div className="w-full md:w-1/2 flex items-center bg-yellow-50">
-            <div className="ml-6 md:ml-40 max-w-md p-6 md:p-0">
-              <h1 className="text-2xl md:text-4xl lg:text-5xl font-light text-red-600 mb-4 italic">
-                {slide.title}
-              </h1>
-              <p className="text-black text-base md:text-lg mb-8 font-bold leading-relaxed">
-                {slide.product?.description}
-              </p>
-              <button
-                className="text-yellow-800 font-bold text-sm px-[65px] py-[14px] bg-no-repeat bg-cover bg-center cursor-pointer transition duration-300 ease-in-out transform hover:scale-130"
-                style={{
-                  backgroundImage: `url(${buttonBg})`,
-                  backgroundColor: "transparent",
-                }}
-              >
-                {slide.buttonText}
-              </button>
-            </div>
-          </div>
+          {slides.map((product, index) => (
+            <div
+              key={product.id || index}
+              className="w-full md:w-1/2 flex flex-col md:flex-row h-auto md:h-full"
+              style={{ width: `${100 / slides.length}%` }}
+            >
+              {/* LEFT */}
+              <div className="w-full md:w-1/2 flex items-center bg-yellow-50">
+                <div className="ml-6 md:ml-40 max-w-md p-6 md:p-0">
+                  <h1 className="text-2xl md:text-4xl lg:text-5xl font-light text-red-600 mb-4 italic">
+                    {product.title}
+                  </h1>
 
-          {/* RIGHT */}
-          <div
-            className="w-full md:w-1/2 h-64 md:h-full bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${slide.product?.image})`,
-            }}
-          ></div>
+                  <p className="text-black text-base md:text-lg mb-8 font-bold leading-relaxed">
+                    {product.products?.description}
+                  </p>
+
+                  <button
+                    className="text-yellow-800 font-bold text-sm px-[65px] py-[14px] 
+                     bg-no-repeat bg-cover bg-center cursor-pointer 
+                     transition duration-300 ease-in-out transform 
+                     hover:scale-130"
+                    style={{
+                      backgroundImage: `url(${buttonBg})`,
+                      backgroundColor: "transparent",
+                    }}
+                    onClick={() =>
+                      navigate(
+                        `/ProductPage/products/${product.products?.id}`,
+                        {
+                          state: { product: product.products },
+                        }
+                      )
+                    }
+                  >
+                    {product.buttonText}
+                  </button>
+                </div>
+              </div>
+
+              {/* RIGHT */}
+              <div
+                className="w-full md:w-1/2 h-64 md:h-full bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(${product.products?.image})`,
+                }}
+              ></div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
 
         {/* Navigation Arrows */}
         <button
@@ -484,10 +497,11 @@ const Home = () => {
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
                   >
                     <Heart
-                      className={`w-5 h-5 ${favorites.has(product.id)
+                      className={`w-5 h-5 ${
+                        favorites.has(product.id)
                           ? "fill-red-500 text-red-500"
                           : "text-gray-400"
-                        }`}
+                      }`}
                       onClick={(e) => {
                         e.stopPropagation();
                         triggerToast("Added to Wishlist ✔️");
