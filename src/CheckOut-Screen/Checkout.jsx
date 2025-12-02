@@ -18,13 +18,26 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
 
   const product = selectedProduct || state?.product;
-  const quantity = checkoutInfo.quantity;
-  const totalPrice = checkoutInfo.totalPrice;
-  const savedPrice = (product.price - product.finalPrice) * quantity;
-  const isContinueDisabled = !address.trim() || !isSaved;
-  // Payment method state
+  const quantity =
+    checkoutInfo.quantity && checkoutInfo.quantity > 0
+      ? checkoutInfo.quantity
+      : 1;
+
+  // Safely calculate totalPrice
+  const totalPrice =
+    checkoutInfo.totalPrice && checkoutInfo.totalPrice > 0
+      ? checkoutInfo.totalPrice
+      : quantity * (product?.finalPrice || product?.price || 0);
+
+  // Calculate savings
+  const savedPrice =
+    product?.price && product?.finalPrice
+      ? (product.price - product.finalPrice) * quantity
+      : 0;
 
   const [isCODSelected, setIsCODSelected] = useState(false); // default unchecked
+  const isContinueDisabled = !address.trim() || !isSaved || !isCODSelected;
+  // Payment method state
 
   useEffect(() => {
     if (state?.product) setSelectedProduct(state.product);
@@ -117,7 +130,9 @@ export default function Checkout() {
                   1
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-700 font-medium text-sm sm:text-base">LOGIN</span>
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">
+                    LOGIN
+                  </span>
                   <Check className="w-5 h-5 text-blue-600" />
                 </div>
               </div>
@@ -187,30 +202,35 @@ export default function Checkout() {
                 <span className="w-8 h-8 bg-yellow-600 text-white flex items-center justify-center rounded-sm font-medium flex-shrink-0">
                   3
                 </span>
-                <span className="font-medium text-sm sm:text-base">ORDER SUMMARY</span>
+                <span className="font-medium text-sm sm:text-base">
+                  ORDER SUMMARY
+                </span>
               </div>
 
               <div className="p-3 sm:p-4 flex gap-3 sm:gap-4">
                 <img
-                  src={product.image}
-                  alt={product.name}
+                  src={product?.image}
+                  alt={product?.name}
                   className="w-20 h-20 sm:w-28 sm:h-28 object-cover border flex-shrink-0"
                 />
 
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm text-gray-800 mb-1 line-clamp-2">
-                    {product.name} ({quantity} item)
+                    {product?.name} ({quantity} item)
                   </h3>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-lg sm:text-xl font-medium">₹{totalPrice}</span>
+                    <span className="text-lg sm:text-xl font-medium">
+                      ₹{totalPrice}
+                    </span>
                     <Info className="w-3 h-3 text-gray-400" />
                   </div>
                 </div>
               </div>
 
               <div className="px-4 pb-4 border-t pt-4 text-sm text-gray-700">
-                Order confirmation email will be sent to <b className="break-all">{user?.email}</b>
+                Order confirmation email will be sent to{" "}
+                <b className="break-all">{user?.email}</b>
               </div>
 
               {/* COD Checkbox */}
@@ -224,10 +244,11 @@ export default function Checkout() {
                   onClick={() => setIsCODSelected(!isCODSelected)} // toggle
                 >
                   <span
-                    className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${isCODSelected
-                      ? "bg-blue-500 border-black"
-                      : "border-black"
-                      }`}
+                    className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
+                      isCODSelected
+                        ? "bg-blue-500 border-black"
+                        : "border-black"
+                    }`}
                   >
                     {isCODSelected && (
                       <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
@@ -242,9 +263,10 @@ export default function Checkout() {
                   disabled={isContinueDisabled}
                   onClick={handleContinue}
                   className={`w-full font-medium py-3 rounded shadow-md flex justify-center
-                    ${isContinueDisabled
-                      ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-orange-500 text-white"
+                    ${
+                      isContinueDisabled
+                        ? "bg-gray-300 cursor-not-allowed"
+                        : "bg-orange-500 text-white"
                     }`}
                 >
                   {loading ? "Placing Order..." : "CONTINUE"}
@@ -265,16 +287,16 @@ export default function Checkout() {
               <div className="p-4 space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span>Price ({quantity} item)</span>
-                  <span>₹{totalPrice}</span>
+                  <span>₹{Math.floor(totalPrice)}</span>
                 </div>
 
                 <div className="border-t pt-3 flex justify-between font-medium">
                   <span>Total Payable</span>
-                  <span>₹{totalPrice}</span>
+                  <span>₹{Math.floor(totalPrice)}</span>
                 </div>
 
                 <p className="pt-2 text-green-600 font-medium">
-                  Your Total Savings on this order ₹{savedPrice}
+                  Your Total Savings on this order ₹{Math.floor(savedPrice)}
                 </p>
               </div>
 
