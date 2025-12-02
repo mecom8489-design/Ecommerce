@@ -65,6 +65,48 @@ export default function MyOrders() {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const filteredOrders = orderData ? orderData.filter((order) => {
+    // 1. Search Filter
+    if (searchTerm && !order.product_name.toLowerCase().includes(searchTerm.toLowerCase())) {
+      return false;
+    }
+
+    // 2. Status Filters
+    const statusFiltersActive = filters.onTheWay || filters.delivered || filters.cancelled || filters.returned;
+    if (statusFiltersActive) {
+      let statusMatch = false;
+      if (filters.cancelled && order.cancelled == 1) statusMatch = true;
+      if (filters.delivered && order.order_status === 'delivered' && order.cancelled != 1) statusMatch = true;
+      if (filters.returned && order.order_status === 'returned') statusMatch = true;
+      // Assuming 'onTheWay' means not delivered, not returned, and not cancelled
+      if (filters.onTheWay && order.order_status !== 'delivered' && order.order_status !== 'returned' && order.cancelled != 1) statusMatch = true;
+
+      if (!statusMatch) return false;
+    }
+
+    // 3. Time Filters
+    const timeFiltersActive = filters.last30Days || filters.year2024 || filters.year2023 || filters.older;
+    if (timeFiltersActive) {
+      const orderDate = new Date(order.created_at);
+      const now = new Date();
+      let timeMatch = false;
+
+      if (filters.last30Days) {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+        if (orderDate >= thirtyDaysAgo) timeMatch = true;
+      }
+
+      if (filters.year2024 && orderDate.getFullYear() === 2024) timeMatch = true;
+      if (filters.year2023 && orderDate.getFullYear() === 2023) timeMatch = true;
+      if (filters.older && orderDate.getFullYear() < 2023) timeMatch = true;
+
+      if (!timeMatch) return false;
+    }
+
+    return true;
+  }) : [];
+
   return (
     <div>
       <Header />
@@ -212,7 +254,7 @@ export default function MyOrders() {
 
               {/* Order Cards */}
               <div className="space-y-3 sm:space-y-4">
-                {orderData.map((order) => (
+                {filteredOrders.map((order) => (
                   <div
                     key={order.order_id}
                     className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"

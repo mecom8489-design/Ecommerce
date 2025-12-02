@@ -60,6 +60,26 @@ export default function ProductPage() {
     );
   };
 
+  const filteredProducts = products.filter((product) => {
+    // Price Filter
+    const productPrice = parseFloat(product.price) || 0;
+    const [minPrice, maxPrice] = priceRange;
+    const isPriceInRange = productPrice >= minPrice && productPrice <= maxPrice;
+
+    // Rating Filter
+    // If no rating is selected, include all.
+    // If ratings are selected, check if product rating is >= any of the selected thresholds.
+    // Since thresholds are "X & above", we essentially need productRating >= min(selectedRating).
+    let isRatingMatch = true;
+    if (selectedRating.length > 0) {
+      const productRating = parseFloat(product.rating) || 0;
+      const minSelectedRating = Math.min(...selectedRating);
+      isRatingMatch = productRating >= minSelectedRating;
+    }
+
+    return isPriceInRange && isRatingMatch;
+  });
+
   return (
     <div>
       <Header />
@@ -154,7 +174,7 @@ export default function ProductPage() {
                   <input
                     type="range"
                     min="0"
-                    max="1000"
+                    max="10000"
                     value={priceRange[1]}
                     onChange={(e) =>
                       setPriceRange([priceRange[0], parseInt(e.target.value)])
@@ -168,7 +188,7 @@ export default function ProductPage() {
                   </select>
                   <span className="text-gray-500">to</span>
                   <select className="border rounded px-3 py-1 text-sm flex-1">
-                    <option>{priceRange}</option>
+                    <option>{priceRange[1]}</option>
                   </select>
                 </div>
               </div>
@@ -212,7 +232,7 @@ export default function ProductPage() {
 
           {/* Main Content */}
           <div className="flex-1 w-full">
-            
+
             {/* Filter Button and Results Container */}
             <div className="flex items-start gap-3 mb-6">
               {/* Mobile Filter Button - Left of the box */}
@@ -234,7 +254,7 @@ export default function ProductPage() {
               {/* Results Box */}
               <div className="bg-white rounded-lg shadow-sm p-4 flex-1">
                 <h1 className="text-base sm:text-lg font-medium">
-                  Showing 1 – {total} results for "{query}"
+                  Showing {filteredProducts.length} results for "{query}"
                 </h1>
 
                 {/* Sort options */}
@@ -257,7 +277,7 @@ export default function ProductPage() {
 
             {/* Product Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <div
                   key={product.id}
                   className="bg-white hover:shadow-xl transition-all duration-300 rounded-lg relative group cursor-pointer overflow-hidden border border-gray-100
