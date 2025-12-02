@@ -50,6 +50,8 @@ export default function Product() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+ 
+
   const rawProduct = selectedProduct || state?.product;
 
   const product = rawProduct
@@ -278,7 +280,12 @@ export default function Product() {
                   totalPrice: Math.floor(finalPrice * quantity),
                   finalPrice,
                 });
-                navigate(`/ProductPage/products/Checkout/${product.id}`);
+
+                navigate(`/ProductPage/products/Checkout/${product?.id}`, {
+                  state: { product: product },
+                });
+
+                // hello
               }}
             >
               BUY IT NOW
