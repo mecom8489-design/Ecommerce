@@ -6,7 +6,8 @@ import { liveSearchProducts } from "../apiroutes/userApi";
 
 export default function ProductPage() {
   const [selectedRating, setSelectedRating] = useState([]);
-  const [priceRange, setPriceRange] = useState([100, 800]);
+  const [selectedDiscount, setSelectedDiscount] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
   const [expandedCategories, setExpandedCategories] = useState({
     storage: true,
   });
@@ -60,6 +61,20 @@ export default function ProductPage() {
     );
   };
 
+  const handleDiscountChange = (discount) => {
+    setSelectedDiscount((prev) =>
+      prev.includes(discount)
+        ? prev.filter((d) => d !== discount)
+        : [...prev, discount]
+    );
+  };
+
+  const clearFilters = () => {
+    setSelectedRating([]);
+    setSelectedDiscount([]);
+    setPriceRange([0, 10000]);
+  };
+
   const filteredProducts = products.filter((product) => {
     // Price Filter
     const productPrice = parseFloat(product.price) || 0;
@@ -77,7 +92,15 @@ export default function ProductPage() {
       isRatingMatch = productRating >= minSelectedRating;
     }
 
-    return isPriceInRange && isRatingMatch;
+    // Discount Filter
+    let isDiscountMatch = true;
+    if (selectedDiscount.length > 0) {
+      const productDiscount = parseFloat(product.discount) || 0;
+      const minSelectedDiscount = Math.min(...selectedDiscount);
+      isDiscountMatch = productDiscount >= minSelectedDiscount;
+    }
+
+    return isPriceInRange && isRatingMatch && isDiscountMatch;
   });
 
   return (
@@ -110,7 +133,15 @@ export default function ProductPage() {
           `}>
             {/* Close button for mobile */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Filters</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-semibold">Filters</h2>
+                <button
+                  onClick={clearFilters}
+                  className="text-xs font-medium text-blue-600 hover:text-blue-800 uppercase tracking-wide"
+                >
+                  Clear All
+                </button>
+              </div>
               <button
                 onClick={() => setShowFilters(false)}
                 className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -168,7 +199,17 @@ export default function ProductPage() {
 
             {/* Price Range */}
             <div className="mb-8">
-              <h3 className="font-medium text-gray-900 mb-4">PRICE</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-medium text-gray-900">PRICE</h3>
+                {priceRange[1] !== 10000 && (
+                  <button
+                    onClick={() => setPriceRange([0, 10000])}
+                    className="text-xs font-medium text-blue-600 hover:text-blue-800"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
               <div className="space-y-4">
                 <div className="px-2">
                   <input
@@ -196,9 +237,19 @@ export default function ProductPage() {
 
             {/* Ratings */}
             <div className="mb-8">
-              <h3 className="font-medium text-gray-900 mb-4">
-                CUSTOMER RATINGS
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-medium text-gray-900">
+                  CUSTOMER RATINGS
+                </h3>
+                {selectedRating.length > 0 && (
+                  <button
+                    onClick={() => setSelectedRating([])}
+                    className="text-xs font-medium text-blue-600 hover:text-blue-800"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
               <div className="space-y-2">
                 {[4, 3, 2, 1].map((rating) => (
                   <label
@@ -222,10 +273,39 @@ export default function ProductPage() {
 
             {/* Discount */}
             <div className="mb-8">
-              <h3 className="font-medium text-gray-900 mb-4 flex items-center justify-between">
-                DISCOUNT
-                <ChevronDown className="w-4 h-4" />
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                  DISCOUNT
+                  <ChevronDown className="w-4 h-4" />
+                </h3>
+                {selectedDiscount.length > 0 && (
+                  <button
+                    onClick={() => setSelectedDiscount([])}
+                    className="text-xs font-medium text-blue-600 hover:text-blue-800"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              <div className="space-y-2">
+                {[50, 40, 30, 20, 10].map((discount) => (
+                  <label
+                    key={discount}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedDiscount.includes(discount)}
+                      onChange={() => handleDiscountChange(discount)}
+                      className="w-4 h-4"
+                    />
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm">{discount}%</span>
+                      <span className="text-sm text-gray-600">or more</span>
+                    </div>
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
 
