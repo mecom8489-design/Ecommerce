@@ -64,10 +64,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           <NavItem to="/admin/categories" icon={<Layers size={18} />} label="Categories" />
           <NavItem to="/admin/users" icon={<Users size={18} />} label="Users" />
           {/* <NavItem to="/admin/coupons" icon={<Tag size={18} />} label="Coupons" /> */}
-          <NavItem to="/admin/shipping" icon={<Truck size={18} />} label="Shipping" />
-          <NavItem to="/admin/payments" icon={<CreditCard size={18} />} label="Payments" />
-          <NavItem to="/admin/reviews" icon={<Star size={18} />} label="Reviews" />
-          <NavItem to="/admin/reports" icon={<BarChart3 size={18} />} label="Reports" />
+          <NavItem disabled icon={<Truck size={18} />} label="Shipping" />
+          <NavItem disabled icon={<CreditCard size={18} />} label="Payments" />
+          <NavItem disabled icon={<Star size={18} />} label="Reviews" />
+          <NavItem disabled icon={<BarChart3 size={18} />} label="Reports" />
           <NavItem to="/admin/support" icon={<Headphones size={18} />} label="Support" />
           {/* <NavItem to="/admin/settings" icon={<Settings size={18} />} label="Settings" /> */}
 
@@ -86,18 +86,22 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 }
 
 // NavItem Component
-function NavItem({ to, icon, label, end }) {
+function NavItem({ to, icon, label, end, disabled }) {
   return (
     <NavLink
-      to={to}
+      to={disabled ? "#" : to}
       end={end}
       className={({ isActive }) =>
-        `flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-          isActive
+        `flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
+        ${
+          disabled
+            ? "bg-red-50 text-black cursor-not-allowed"
+            : isActive
             ? "text-blue-600 bg-blue-50"
             : "text-gray-700 hover:text-blue-600 hover:bg-gray-100"
         }`
       }
+      onClick={disabled ? (e) => e.preventDefault() : undefined}
     >
       {icon}
       <span>{label}</span>
