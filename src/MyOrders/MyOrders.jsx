@@ -65,47 +65,74 @@ export default function MyOrders() {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const filteredOrders = orderData ? orderData.filter((order) => {
-    // 1. Search Filter
-    if (searchTerm && !order.product_name.toLowerCase().includes(searchTerm.toLowerCase())) {
-      return false;
-    }
+  const filteredOrders = orderData
+    ? orderData.filter((order) => {
+        // 1. Search Filter
+        if (
+          searchTerm &&
+          !order.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
+          return false;
+        }
 
-    // 2. Status Filters
-    const statusFiltersActive = filters.onTheWay || filters.delivered || filters.cancelled || filters.returned;
-    if (statusFiltersActive) {
-      let statusMatch = false;
-      if (filters.cancelled && order.cancelled == 1) statusMatch = true;
-      if (filters.delivered && order.order_status === 'delivered' && order.cancelled != 1) statusMatch = true;
-      if (filters.returned && order.order_status === 'returned') statusMatch = true;
-      // Assuming 'onTheWay' means not delivered, not returned, and not cancelled
-      if (filters.onTheWay && order.order_status !== 'delivered' && order.order_status !== 'returned' && order.cancelled != 1) statusMatch = true;
+        // 2. Status Filters
+        const statusFiltersActive =
+          filters.onTheWay ||
+          filters.delivered ||
+          filters.cancelled ||
+          filters.returned;
+        if (statusFiltersActive) {
+          let statusMatch = false;
+          if (filters.cancelled && order.cancelled == 1) statusMatch = true;
+          if (
+            filters.delivered &&
+            order.order_status === "delivered" &&
+            order.cancelled != 1
+          )
+            statusMatch = true;
+          if (filters.returned && order.order_status === "returned")
+            statusMatch = true;
+          // Assuming 'onTheWay' means not delivered, not returned, and not cancelled
+          if (
+            filters.onTheWay &&
+            order.order_status !== "delivered" &&
+            order.order_status !== "returned" &&
+            order.cancelled != 1
+          )
+            statusMatch = true;
 
-      if (!statusMatch) return false;
-    }
+          if (!statusMatch) return false;
+        }
 
-    // 3. Time Filters
-    const timeFiltersActive = filters.last30Days || filters.year2024 || filters.year2023 || filters.older;
-    if (timeFiltersActive) {
-      const orderDate = new Date(order.created_at);
-      const now = new Date();
-      let timeMatch = false;
+        // 3. Time Filters
+        const timeFiltersActive =
+          filters.last30Days ||
+          filters.year2024 ||
+          filters.year2023 ||
+          filters.older;
+        if (timeFiltersActive) {
+          const orderDate = new Date(order.created_at);
+          const now = new Date();
+          let timeMatch = false;
 
-      if (filters.last30Days) {
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(now.getDate() - 30);
-        if (orderDate >= thirtyDaysAgo) timeMatch = true;
-      }
+          if (filters.last30Days) {
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(now.getDate() - 30);
+            if (orderDate >= thirtyDaysAgo) timeMatch = true;
+          }
 
-      if (filters.year2024 && orderDate.getFullYear() === 2024) timeMatch = true;
-      if (filters.year2023 && orderDate.getFullYear() === 2023) timeMatch = true;
-      if (filters.older && orderDate.getFullYear() < 2023) timeMatch = true;
+          if (filters.year2024 && orderDate.getFullYear() === 2024)
+            timeMatch = true;
+          if (filters.year2023 && orderDate.getFullYear() === 2023)
+            timeMatch = true;
+          if (filters.older && orderDate.getFullYear() < 2023) timeMatch = true;
 
-      if (!timeMatch) return false;
-    }
+          if (!timeMatch) return false;
+        }
 
-    return true;
-  }) : [];
+        return true;
+      })
+    : [];
 
   return (
     <div>
@@ -123,21 +150,24 @@ export default function MyOrders() {
 
         <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-
             {/* Filters Sidebar */}
-            <div className={`
+            <div
+              className={`
               bg-white rounded-lg shadow-sm p-4 sm:p-5
               fixed lg:static top-0 left-0 bottom-0 z-50 lg:z-auto
               w-80 sm:w-96 lg:w-64 xl:w-72
               transform transition-transform duration-300 ease-in-out
-              ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+              ${
+                showFilters
+                  ? "translate-x-0"
+                  : "-translate-x-full lg:translate-x-0"
+              }
               overflow-y-auto lg:sticky lg:top-6 lg:h-fit
-            `}>
+            `}
+            >
               {/* Filter Header with Close Button */}
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Filters
-                </h2>
+                <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
                 <button
                   onClick={() => setShowFilters(false)}
                   className="lg:hidden p-2 hover:bg-gray-100 rounded-full"
@@ -210,8 +240,8 @@ export default function MyOrders() {
             {/* Orders List */}
             <div className="flex-1 min-w-0">
               {/* Filter Button and Search Bar Container */}
-              <div className="flex items-start gap-3 mb-4">
-                {/* Mobile Filter Button - Outside the white box */}
+              <div className="flex flex-col lg:flex-row items-start lg:items-center gap-3 mb-4">
+                {/* Mobile Filter Button - visible only on mobile */}
                 <button
                   onClick={() => setShowFilters(true)}
                   className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors border border-gray-300 flex items-center justify-center bg-white shadow-sm"
@@ -223,16 +253,21 @@ export default function MyOrders() {
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   </svg>
                 </button>
 
                 {/* Search Bar */}
-                <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 flex-1">
-                  <div className="flex flex-col sm:flex-row gap-3">
+                <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 flex-1 w-full ">
+                  <div className="flex flex-col sm:flex-row gap-3 w-full ">
                     {/* Search Input */}
-                    <div className="flex-1 relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <div className="flex-1 relative w-full">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-5 h-5" />
                       <input
                         type="text"
                         placeholder="Search your orders here"
@@ -243,11 +278,6 @@ export default function MyOrders() {
                     </div>
 
                     {/* Search Button */}
-                    <button className="px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 font-medium whitespace-nowrap">
-                      <Search className="w-4 h-4" />
-                      <span className="hidden sm:inline">Search Orders</span>
-                      <span className="sm:hidden">Search</span>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -309,20 +339,20 @@ export default function MyOrders() {
                               <div className="space-y-1">
                                 <div className="flex items-center gap-2">
                                   <span
-                                    className={`w-2 h-2 rounded-full ${order.order_status === "delivered"
-                                      ? "bg-green-500"
-                                      : "bg-orange-500"
-                                      }`}
+                                    className={`w-2 h-2 rounded-full ${
+                                      order.order_status === "delivered"
+                                        ? "bg-green-500"
+                                        : "bg-orange-500"
+                                    }`}
                                   ></span>
                                   <span className="text-xs sm:text-sm font-medium text-gray-900">
-                                    {new Date(order.created_at).toLocaleDateString(
-                                      "en-GB",
-                                      {
-                                        day: "2-digit",
-                                        month: "short",
-                                        year: "numeric",
-                                      }
-                                    )}
+                                    {new Date(
+                                      order.created_at
+                                    ).toLocaleDateString("en-GB", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                    })}
                                   </span>
                                 </div>
                                 <p className="text-xs sm:text-sm text-gray-600">

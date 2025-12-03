@@ -50,8 +50,6 @@ export default function Product() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
- 
-
   const rawProduct = selectedProduct || state?.product;
 
   const product = rawProduct
@@ -126,6 +124,7 @@ export default function Product() {
         setQuantity(1);
         setCurrentProductId(newProductId);
       } else {
+        console.log(state.product);
         setSelectedProduct(state.product);
       }
     }
@@ -201,12 +200,13 @@ export default function Product() {
                   ₹{Math.floor(finalPrice)}
                 </span>
               </div>
-
-              <div className="bg-red-50 border-l-4 border-red-400 p-2 sm:p-3 mb-4 sm:mb-6">
-                <p className="text-red-700 text-[12px] sm:text-sm font-medium">
-                  Hurry, only few left in stock!
-                </p>
-              </div>
+              {product?.message && (
+                <div className="bg-red-50 border-l-4 border-red-400 p-2 sm:p-3 mb-4 sm:mb-6">
+                  <p className="text-red-700 text-[12px] sm:text-sm font-medium">
+                    Hurry, only few left in stock!
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Quantity & Checkout - Responsive */}

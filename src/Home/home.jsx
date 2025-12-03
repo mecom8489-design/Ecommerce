@@ -80,7 +80,7 @@ const Home = () => {
       setViewMore(viewMore);
       setRecommended(recommended);
       const formatted = formatBestSellerData(bestSeller);
-      setBestSeller(formatted.slice(-14));
+      setBestSeller(formatted.slice(-12));
     } catch (err) {
       console.error(err);
       setError(err?.response?.data?.message || "Failed to fetch products.");
@@ -102,6 +102,7 @@ const Home = () => {
       offer: product.offer,
       category: product.category,
       created_at: product.created_at,
+      message:product.message
     }));
   };
 
@@ -347,43 +348,47 @@ const Home = () => {
 
       {/* Best Sellers */}
       <section className="py-6 mt-4">
-        <div className="container px-20">
+        <div className="w-full px-20">
           {/* Title */}
           <h2 className="text-[20px] sm:text-[26px] lg:text-[32px] xl:text-[38px] font-bold text-gray-900 mb-6">
             Best Sellers
           </h2>
 
+          {/* PRODUCT GRID */}
           <div
             className="
-      grid grid-cols-1 
-      sm:grid-cols-2 
-      md:grid-cols-3 
-      lg:grid-cols-4 
-      xl:grid-cols-5 
-      2xl:grid-cols-6 
-      [@media(min-width:1800px)]:grid-cols-7 
-      gap-4 w-full
-    "
+        grid gap-6 w-full
+        grid-cols-1
+        sm:grid-cols-2
+        md:grid-cols-3
+        lg:grid-cols-4
+        xl:grid-cols-5
+        2xl:grid-cols-6
+        [@media(min-width:1800px)]:grid-cols-7
+      "
+            style={{
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            }}
           >
             {bestSeller.map((product) => (
               <div
                 key={product.id}
-                className="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer"
+                className="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer w-full"
                 onClick={() =>
                   navigate(`/ProductPage/products/${product.id}`, {
                     state: { product },
                   })
                 }
               >
-                {/* Image */}
+                {/* Product Image */}
                 <div className="relative overflow-hidden">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-64 object-cover"
+                    className="w-full h-72 object-cover"
                   />
 
-                  {/* Buttons on image */}
+                  {/* Wishlist + Cart buttons */}
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
                     <button
                       className="text-gray-600 hover:text-indigo-600"
@@ -425,7 +430,7 @@ const Home = () => {
                     {product.name}
                   </Link>
 
-                  {/* Price Section */}
+                  {/* Price */}
                   <div className="flex items-center mt-2">
                     <span className="text-indigo-600 font-bold text-[16px] sm:text-[18px] lg:text-[20px]">
                       ₹{parseFloat(product.finalPrice)}
@@ -483,7 +488,7 @@ const Home = () => {
         </div>
 
         {/* Product Carousel */}
-        <div className="relative overflow-x-auto overflow-y-hidden py-4">
+        <div className="relative overflow-x-auto overflow-y-hidden py-4 custom-scroll">
           <div className="flex gap-4 sm:gap-6">
             {recommended.map((product) => (
               <div

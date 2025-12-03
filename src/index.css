@@ -69,3 +69,29 @@ input[type=number] {
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }
+
+
+/* Hide scrollbar by default */
+.custom-scroll::-webkit-scrollbar {
+  height: 0px;
+  transition: height 0.2s ease;
+}
+
+/* Show when interacting (hover, click, drag) */
+.custom-scroll:hover::-webkit-scrollbar,
+.custom-scroll:active::-webkit-scrollbar,
+.custom-scroll:focus-within::-webkit-scrollbar {
+  height: 8px;
+}
+
+/* Firefox support */
+.custom-scroll {
+  scrollbar-width: none; /* hidden */
+}
+
+.custom-scroll:hover,
+.custom-scroll:active,
+.custom-scroll:focus-within {
+  scrollbar-width: thin; /* show */
+}
+
