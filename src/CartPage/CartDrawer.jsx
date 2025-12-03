@@ -21,7 +21,7 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
   const amountToCOD = Math.max(COD_THRESHOLD - subtotal, 0);
   const amountToFree = Math.max(FREE_SHIP_THRESHOLD - subtotal, 0);
 
-  // Prevent background scroll
+  // Prevent background scroll when drawer open
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "auto";
     return () => {
@@ -44,22 +44,22 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
 
           {/* Drawer */}
           <motion.div
-            className="fixed top-0 right-0 h-full w-96 bg-white shadow-2xl z-50 flex flex-col"
+            className="fixed top-0 right-0 h-full bg-white shadow-2xl z-50 flex flex-col w-full sm:w-[384px]"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 80 }}
           >
             {/* Header */}
-            <div className="flex justify-between items-center border-b px-5 py-3">
-              <h2 className="text-lg font-bold">Shopping Cart</h2>
+            <div className="flex justify-between items-center border-b px-[20px] py-[16px]">
+              <h2 className="text-[18px] font-bold">Shopping Cart</h2>
               <button onClick={() => setIsOpen(false)}>
-                <X className="w-6 h-6 cursor-pointer" />
+                <X className="w-[24px] h-[24px] cursor-pointer" />
               </button>
             </div>
 
             {/* Progress Section */}
-            <div className="px-5 py-3 text-sm border-b mb-4">
+            <div className="px-[20px] py-[16px] text-[14px] border-b mb-[16px]">
               {amountToCOD > 0 ? (
                 <p className="text-gray-700">
                   Spend <span className="font-semibold">₹{amountToCOD}</span>{" "}
@@ -76,14 +76,14 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                 </p>
               )}
 
-              <div className="mt-2">
-                <div className="w-full h-2 bg-gray-200 rounded-full">
+              <div className="mt-[8px]">
+                <div className="w-full h-[8px] bg-gray-200 rounded-full">
                   <div
-                    className="h-2 bg-yellow-400 rounded-full"
+                    className="h-[8px] bg-yellow-400 rounded-full"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
-                <div className="flex justify-between text-xs mt-1 text-gray-500">
+                <div className="flex justify-between text-[12px] mt-[4px] text-gray-500">
                   <span>₹{COD_THRESHOLD}</span>
                   <span>₹{FREE_SHIP_THRESHOLD}</span>
                 </div>
@@ -91,16 +91,16 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
             </div>
 
             {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto px-5">
+            <div className="flex-1 overflow-y-auto px-[20px]">
               {cart.length === 0 ? (
-                <p className="text-center text-gray-500 py-10">
+                <p className="text-center text-gray-500 py-[40px]">
                   Your cart is empty
                 </p>
               ) : (
                 cart.map((product) => (
                   <div
                     key={product.id}
-                    className="flex items-center gap-4 border-b py-4 cursor-pointer"
+                    className="flex items-center gap-[16px] border-b py-[16px] cursor-pointer"
                     onClick={() =>
                       navigate(`/ProductPage/products/${product.id}`, {
                         state: { product },
@@ -110,7 +110,7 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-16 h-16 object-cover rounded"
+                      className="w-[64px] h-[64px] object-cover rounded"
                       onError={(e) =>
                         (e.currentTarget.src =
                           "https://via.placeholder.com/80?text=No+Image")
@@ -118,49 +118,51 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                     />
 
                     <div className="flex-1">
-                      <h3 className="font-medium text-sm">{product.name}</h3>
+                      <h3 className="font-medium text-[14px]">
+                        {product.name}
+                      </h3>
 
                       {/* Prices */}
                       <div className="flex items-center">
-                        <p className="text-sm font-semibold text-red-600">
+                        <p className="text-[14px] font-semibold text-red-600">
                           ₹{Math.floor(product.finalPrice)}
                         </p>
-                        <p className="text-gray-500 text-sm line-through ml-2">
+                        <p className="text-gray-500 text-[12px] line-through ml-[8px]">
                           ₹{Math.floor(product.price)}
                         </p>
                       </div>
 
-                      {/* Qty Buttons */}
-                      <div className="flex items-center gap-2 mt-1 ">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center gap-[8px] mt-[4px]">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                             updateQty(product.id, -1)
+                            updateQty(product.id, -1);
                           }}
-                          className="px-2 py-1 border rounded cursor-pointer"
-                          disabled={(product.qty || 1) <= 1} // Prevent qty < 1
+                          className="px-[8px] py-[4px] border rounded cursor-pointer"
+                          disabled={(product.qty || 1) <= 1}
                         >
                           -
                         </button>
 
-                        <span>{product.qty || 1}</span>
+                        <span className="text-[14px]">{product.qty || 1}</span>
 
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                             updateQty(product.id, 1)
+                            updateQty(product.id, 1);
                           }}
-                          className="px-2 py-1 border rounded cursor-pointer"
+                          className="px-[8px] py-[4px] border rounded cursor-pointer"
                         >
                           +
                         </button>
 
                         <button
-                        onClick={(e) => {
+                          onClick={(e) => {
                             e.stopPropagation();
-                             removeFromCart(product.id, 1)
+                            removeFromCart(product.id, 1);
                           }}
-                          className="text-sm text-gray-500 ml-3 hover:text-red-600 cursor-pointer"
+                          className="text-[12px] text-gray-500 ml-[12px] hover:text-red-600 cursor-pointer"
                         >
                           Remove
                         </button>
@@ -169,10 +171,10 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
 
                     {/* Item Total */}
                     <div className="text-right">
-                      <h4 className="text-sm text-amber-700 font-bold">
+                      <h4 className="text-[12px] text-amber-700 font-bold">
                         Total
                       </h4>
-                      <p className="font-semibold text-sm">
+                      <p className="font-semibold text-[14px]">
                         ₹{Math.floor(product.finalPrice * (product.qty || 1))}
                       </p>
                     </div>
@@ -180,23 +182,6 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                 ))
               )}
             </div>
-
-            {/* Footer */}
-            {/* <div className="border-t px-5 py-4">
-              <p className="flex justify-between text-lg font-semibold">
-                <span className="text-green-500">Grand total</span>
-                <span>₹{Math.floor(subtotal)}</span>
-              </p>
-
-              <div className="flex gap-3 mt-4">
-                <button className="flex-1 border py-3 rounded-md">
-                  View Cart
-                </button>
-                <button className="flex-1 bg-black text-white py-3 rounded-md hover:bg-gray-800">
-                  Check Out
-                </button>
-              </div>
-            </div> */}
           </motion.div>
         </>
       )}

@@ -96,7 +96,7 @@ const Footer = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
             {footerSections.map((section, index) => (
               <div key={index} className="space-y-4">
-                <h3 className="font-semibold text-gray-900 text-sm">
+                <h3 className="font-semibold text-gray-900 text-[12px] sm:text-[14px] md:text-[16px]">
                   {section.title}
                 </h3>
                 <ul className="space-y-2">
@@ -104,7 +104,7 @@ const Footer = () => {
                     <li key={linkIndex}>
                       <Link
                         to={link.url}
-                        className="text-gray-700 text-sm hover:text-gray-900 transition-colors duration-200"
+                        className="text-gray-700 text-[10px] sm:text-[12px] md:text-[14px] hover:text-gray-900 transition-colors duration-200"
                         onClick={() =>
                           window.scrollTo({ top: 0, behavior: "smooth" })
                         }
@@ -123,9 +123,8 @@ const Footer = () => {
         <div className="border-t border-gray-200 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-
               {/* Left Side - Copyright */}
-              <div className="text-gray-600 text-sm text-center md:text-left">
+              <div className="text-gray-600 text-[10px] sm:text-[12px] md:text-[14px] text-center md:text-left">
                 © ShopEasy
               </div>
 
@@ -135,7 +134,7 @@ const Footer = () => {
                   <Link
                     key={index}
                     to={link.url}
-                    className="text-gray-600 text-sm hover:text-gray-900 transition-colors duration-200"
+                    className="text-gray-600 text-[10px] sm:text-[12px] md:text-[14px] hover:text-gray-900 transition-colors duration-200"
                     onClick={() =>
                       window.scrollTo({ top: 0, behavior: "smooth" })
                     }
@@ -154,7 +153,7 @@ const Footer = () => {
         <div className="fixed bottom-6 right-6 z-50 animate-bounce">
           <button
             onClick={scrollToTop}
-            className="bg-yellow-400 hover:bg-yellow-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110"
+            className="bg-yellow-400 hover:bg-yellow-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 text-[14px]"
             aria-label="Scroll to top"
           >
             ↑

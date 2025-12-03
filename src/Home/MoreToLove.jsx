@@ -30,9 +30,10 @@ export default function MoreToLove({ products }) {
   const visibleProducts = (products || []).slice(0, visibleCount);
 
   return (
-    <div className=" min-h-screen py-8 mt-10">
+    <div className="min-h-screen py-8 mt-10">
       <div className="max-w-8xl mx-auto px-20">
-        <h1 className="text-3xl font-bold text-center mb-8 text-red-600">
+        {/* Section Title */}
+        <h1 className="text-[24px] sm:text-[28px] md:text-[32px] font-bold text-center mb-8 text-red-600">
           More to love
         </h1>
 
@@ -47,8 +48,9 @@ export default function MoreToLove({ products }) {
                 })
               }
             >
+              {/* SALE Badge */}
               {product.sale && (
-                <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-md">
+                <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] sm:text-[12px] font-semibold px-2 py-1 rounded-md shadow-md">
                   SALE
                 </div>
               )}
@@ -76,6 +78,7 @@ export default function MoreToLove({ products }) {
                 <ShoppingCart className="w-5 h-5 text-gray-700 hover:text-yellow-600 transition-colors" />
               </button>
 
+              {/* Product Image */}
               <div className="aspect-square overflow-hidden bg-gray-50">
                 <img
                   src={product.image}
@@ -84,28 +87,31 @@ export default function MoreToLove({ products }) {
                 />
               </div>
 
+              {/* Product Details */}
               <div className="p-4">
-                <h3 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2 group-hover:text-yellow-600 transition-colors">
+                <h3 className="text-[16px] sm:text-[18px] md:text-[20px] font-bold text-slate-800 mb-3 line-clamp-2 group-hover:text-yellow-600 transition-colors">
                   {product.name}
                 </h3>
 
+                {/* Price & Discount */}
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl font-bold text-gray-900">
+                  <span className="text-[16px] sm:text-[18px] md:text-[20px] font-bold text-gray-900">
                     ₹{Math.floor(product.finalPrice)}
                   </span>
                   {product.originalPrice && (
-                    <span className="text-sm text-gray-400 line-through">
+                    <span className="text-[12px] sm:text-[13px] md:text-[14px] text-gray-400 line-through">
                       ₹{product.originalPrice}
                     </span>
                   )}
                   {product.discount && (
-                    <span className="text-sm font-medium text-green-600">
+                    <span className="text-[12px] sm:text-[13px] md:text-[14px] font-medium text-green-600">
                       {Math.floor(product.discount)}% OFF
                     </span>
                   )}
                 </div>
 
-                <div className="text-sm flex items-center mt-1 ">
+                {/* Rating */}
+                <div className="text-[12px] sm:text-[13px] md:text-[14px] flex items-center mt-1">
                   Rating:
                   <span className="ml-2 flex relative">
                     <div className="flex text-gray-300">
@@ -113,7 +119,6 @@ export default function MoreToLove({ products }) {
                         <span key={i}>★</span>
                       ))}
                     </div>
-
                     <div
                       className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
                       style={{
@@ -130,7 +135,8 @@ export default function MoreToLove({ products }) {
                   </span>
                 </div>
 
-                <div className="flex flex-wrap gap-2 text-xs">
+                {/* Product Tags */}
+                <div className="flex flex-wrap gap-2 text-[10px] sm:text-[11px] md:text-[12px]">
                   {product.saved && (
                     <span className="bg-red-50 text-red-600 px-2 py-1 rounded-full font-medium">
                       💰 Save {product.saved}
@@ -152,17 +158,19 @@ export default function MoreToLove({ products }) {
           ))}
         </div>
 
+        {/* View More Button */}
         {Array.isArray(products) && visibleCount < products.length && (
           <div className="flex justify-center mt-8">
             <button
               onClick={handleViewMore}
-              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-full shadow transition-all duration-300"
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-full shadow transition-all duration-300 text-[14px] sm:text-[15px] md:text-[16px]"
             >
               View More
             </button>
           </div>
         )}
       </div>
+
       <Toast message={toastMessage} show={showToast} />
     </div>
   );

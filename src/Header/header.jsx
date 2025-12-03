@@ -102,8 +102,8 @@ export default function Header() {
 
   return (
     <div className="w-full font-poppins">
-      {/* Top Banner */}
-      <div className="my-element text-white py-2 sm:py-3 md:py-4 px-2 text-xs sm:text-sm md:text-base font-bold overflow-hidden">
+      {/* ---------------------- TOP BANNER ---------------------- */}
+      <div className="my-element text-white py-2 sm:py-3 md:py-4 px-2 text-[10px] sm:text-[12px] md:text-[14px] font-bold overflow-hidden">
         <div className="relative w-full overflow-hidden whitespace-nowrap">
           <div className="flex animate-marquee space-x-8 sm:space-x-12">
             {Array(2)
@@ -113,22 +113,29 @@ export default function Header() {
                   key={index}
                   className="flex space-x-4 sm:space-x-8 items-center"
                 >
+                  {/* FREE SHIPPING */}
                   <div className="flex items-center space-x-2">
-                    <span className="text-orange-400 text-base sm:text-xl">
+                    <span className="text-orange-400 text-[16px] sm:text-[20px]">
                       🚚
                     </span>
-                    <span className="font-extrabold tracking-wide text-black text-[10px] sm:text-sm md:text-base">
+
+                    <span className="font-extrabold tracking-wide text-black text-[10px] sm:text-[12px] md:text-[14px]">
                       FREE SHIPPING FOR ORDERS OVER ₹990/-
                     </span>
                   </div>
+
+                  {/* ONLY IN JAMSHEDPUR */}
                   <div className="hidden sm:flex items-center space-x-2">
-                    <span className="font-extrabold uppercase text-black text-xs sm:text-sm md:text-base">
+                    <span className="font-extrabold uppercase text-black text-[12px] sm:text-[13px] md:text-[14px]">
                       AVAILABLE ONLY IN JAMSHEDPUR
                     </span>
                   </div>
+
+                  {/* FAST DELIVERY */}
                   <div className="flex items-center space-x-2">
-                    <span className="text-base sm:text-xl">⚡</span>
-                    <span className="font-extrabold tracking-wide text-black text-[10px] sm:text-sm md:text-base">
+                    <span className="text-[16px] sm:text-[20px]">⚡</span>
+
+                    <span className="font-extrabold tracking-wide text-black text-[10px] sm:text-[12px] md:text-[14px]">
                       FAST DELIVERY
                     </span>
                   </div>
@@ -138,23 +145,24 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Main Header */}
+      {/* ---------------------- MAIN HEADER ---------------------- */}
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Logo */}
+          {/* LOGO */}
           <Link
             to="/"
             className="flex items-center space-x-2 ml-0 sm:ml-6 lg:ml-12 xl:ml-40"
           >
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-400 rounded-lg flex items-center justify-center text-black font-bold text-lg sm:text-xl">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-400 rounded-lg flex items-center justify-center text-black font-bold text-[16px] sm:text-[20px]">
               E
             </div>
-            <span className="text-lg sm:text-2xl font-bold text-gray-900">
+
+            <span className="text-[18px] sm:text-[24px] font-bold text-gray-900">
               ShopEasy
             </span>
           </Link>
 
-          {/* Search */}
+          {/* SEARCH BAR */}
           <div className="w-full sm:flex-1 sm:max-w-xl md:max-w-2xl sm:mx-6">
             <div className="relative">
               <input
@@ -162,16 +170,17 @@ export default function Header() {
                 value={searchText}
                 onChange={handleInputChange}
                 placeholder="Search for products, brands and more..."
-                className="w-full py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                className="w-full py-2 sm:py-3 px-3 sm:px-4 text-[12px] sm:text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
-              {/* Suggestions */}
+
+              {/* SEARCH SUGGESTIONS */}
               {searchText && suggestions.length > 0 && (
                 <div className="absolute left-0 right-0 bg-white shadow-lg rounded-lg mt-1 max-h-60 overflow-y-auto z-50">
                   {suggestions.map((item) => (
                     <div
                       key={item.id || item._id}
                       onClick={() => handleSelect(item.name)}
-                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                      className="p-2 hover:bg-gray-100 cursor-pointer text-[12px] sm:text-[14px]"
                     >
                       {item.name}
                     </div>
@@ -179,18 +188,19 @@ export default function Header() {
                 </div>
               )}
 
+              {/* SEARCH BUTTON */}
               <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-yellow-400 text-black p-1 sm:p-2 rounded-lg hover:bg-yellow-500 transition-colors">
                 <Search size={18} />
               </button>
             </div>
           </div>
 
-          {/* Right Icons */}
+          {/* RIGHT ICONS */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Wishlist */}
+            {/* WISHLIST */}
             <Link
               to="/wishlist"
-              className="flex items-center space-x-1 hover:text-red-500 text-xs sm:text-sm cursor-pointer"
+              className="flex items-center space-x-1 hover:text-red-500 text-[10px] sm:text-[12px] cursor-pointer"
             >
               <Heart
                 size={20}
@@ -198,20 +208,19 @@ export default function Header() {
                   wishlist > 0 ? "text-red-600 fill-red-600" : "text-black"
                 }`}
               />
-
               <span className="hidden sm:inline">Wishlist</span>
             </Link>
 
-            {/* Cart */}
+            {/* CART */}
             <button
-              className="relative flex items-center space-x-1 bg-yellow-400 text-black px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg hover:bg-yellow-500 transition-colors text-xs sm:text-sm cursor-pointer"
+              className="relative flex items-center space-x-1 bg-yellow-400 text-black px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg hover:bg-yellow-500 transition-colors text-[10px] sm:text-[12px] cursor-pointer"
               onClick={() => setIsCartOpen(true)}
             >
               <ShoppingCart size={18} />
 
-              {/* Badge */}
+              {/* CART COUNT BADGE */}
               {cartLength > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs sm:text-sm w-5 h-5 flex items-center justify-center rounded-full font-semibold">
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] sm:text-[12px] w-5 h-5 flex items-center justify-center rounded-full font-semibold">
                   {cart.length}
                 </span>
               )}
@@ -219,36 +228,32 @@ export default function Header() {
               <span className="hidden xs:inline">Cart</span>
             </button>
 
-            {/* Login */}
+            {/* LOGIN / USER MENU */}
             <div
               className="relative"
               ref={menuRef}
               onMouseEnter={() => setIsOpen(true)}
-              onMouseLeave={() => {
+              onMouseLeave={() =>
                 setTimeout(() => {
                   if (!menuRef.current.matches(":hover")) {
                     setIsOpen(false);
                   }
-                }, 150); 
-              }}
+                }, 150)
+              }
             >
               {isLoggedIn ? (
                 <>
-                  {/* Circle Button */}
                   <button
                     onClick={toggleMenu}
-                    className="w-9 h-9 rounded-full bg-yellow-600 text-white font-semibold flex items-center justify-center hover:bg-yellow-700 transition cursor-pointer"
+                    className="w-9 h-9 rounded-full bg-yellow-600 text-white font-semibold flex items-center justify-center hover:bg-yellow-700 transition cursor-pointer text-[14px]"
                   >
                     {user?.firstname?.charAt(0)?.toUpperCase()}
                   </button>
 
-                  {/* Dropdown */}
                   {isOpen && (
                     <div className="absolute right-0 mt-3 w-40 bg-white shadow-lg rounded-lg py-2 z-50">
-                      <div className="absolute -top-2 right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-yellow-100"></div>
-
                       <button
-                        className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="w-full flex items-center px-3 py-2 text-[12px] sm:text-[14px] text-gray-700 hover:bg-gray-100"
                         onClick={() => navigate("/my-Profile")}
                       >
                         <ShoppingBag
@@ -259,7 +264,7 @@ export default function Header() {
                       </button>
 
                       <button
-                        className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="w-full flex items-center px-3 py-2 text-[12px] sm:text-[14px] text-gray-700 hover:bg-gray-100"
                         onClick={() => navigate("/my-orders")}
                       >
                         <ShoppingBag
@@ -271,7 +276,7 @@ export default function Header() {
 
                       <button
                         onClick={logout}
-                        className="w-full flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="w-full flex items-center px-3 py-2 text-[12px] sm:text-[14px] text-gray-700 hover:bg-gray-100"
                       >
                         <LogOut size={16} className="mr-2 text-red-500" />
                         Logout
@@ -282,7 +287,7 @@ export default function Header() {
               ) : (
                 <button
                   onClick={() => setShowSignIn(true)}
-                  className="bg-yellow-400 text-black px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors text-sm font-semibold cursor-pointer"
+                  className="bg-yellow-400 text-black px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors text-[12px] sm:text-[14px] font-semibold cursor-pointer"
                 >
                   Login
                 </button>
@@ -292,18 +297,29 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* ---------------------- NAVIGATION BAR ---------------------- */}
       <div className="bg-yellow-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <nav className="flex overflow-x-auto md:overflow-visible items-center justify-start md:justify-center space-x-3 sm:space-x-6 py-2 sm:py-4 font-semibold font-sans text-gray-700 whitespace-nowrap scrollbar-hide text-sm sm:text-base">
+          <nav
+            className="
+        flex 
+        overflow-x-auto md:overflow-visible
+        items-center 
+        justify-start md:justify-center 
+        space-x-3 sm:space-x-6 
+        py-2 sm:py-4 
+        font-semibold 
+        text-gray-700 
+        whitespace-nowrap 
+        scrollbar-hide 
+        text-[12px] sm:text-[14px] md:text-[16px]
+      "
+          >
             <Link to="/" className="hover-link">
               Home
             </Link>
-            {/* <Link to="/hot-deals" className="hover-link">
-              Hot Deals
-            </Link> */}
             <Link to="/aboutUs" className="hover-link">
-              About US
+              About Us
             </Link>
             <Link to="/Contact-us" className="hover-link">
               Contact Us
@@ -312,17 +328,15 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Cart Drawer */}
+      {/* MODALS */}
       <CartDrawer isOpen={isCartOpen} setIsOpen={setIsCartOpen} cart={cart} />
 
-      {/* SignIn Popup */}
       {showSignIn && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[999]">
           <SignIn setShowSignIn={setShowSignIn} setShowSignUp={setShowSignUp} />
         </div>
       )}
 
-      {/* SignUp Popup */}
       {showSignUp && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[999]">
           <SignUp setShowSignUp={setShowSignUp} setShowSignIn={setShowSignIn} />

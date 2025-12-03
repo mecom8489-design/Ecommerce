@@ -239,19 +239,43 @@ const Home = () => {
               {/* LEFT */}
               <div className="w-full md:w-1/2 flex items-center bg-yellow-50">
                 <div className="ml-6 md:ml-40 max-w-md p-6 md:p-0">
-                  <h1 className="text-2xl md:text-4xl lg:text-5xl font-light text-red-600 mb-4 italic">
+                  {/* Title */}
+                  <h1
+                    className="
+            text-[22px] 
+            sm:text-[30px] 
+            md:text-[38px] 
+            lg:text-[48px] 
+            font-light text-red-600 mb-4 italic
+          "
+                  >
                     {product.title}
                   </h1>
 
-                  <p className="text-black text-base md:text-lg mb-8 font-bold leading-relaxed">
+                  {/* Description */}
+                  <p
+                    className="
+            text-black 
+            text-[14px] 
+            sm:text-[16px] 
+            md:text-[18px] 
+            lg:text-[20px] 
+            mb-8 font-bold leading-relaxed
+          "
+                  >
                     {product.products?.description}
                   </p>
 
+                  {/* Button */}
                   <button
-                    className="text-yellow-800 font-bold text-sm px-[65px] py-[14px] 
-                     bg-no-repeat bg-cover bg-center cursor-pointer 
-                     transition duration-300 ease-in-out transform 
-                     hover:scale-130"
+                    className="
+              text-yellow-800 font-bold 
+              text-[12px] sm:text-[14px] md:text-[16px]
+              px-[65px] py-[14px]
+              bg-no-repeat bg-cover bg-center cursor-pointer 
+              transition duration-300 ease-in-out transform 
+              hover:scale-130
+            "
                     style={{
                       backgroundImage: `url(${buttonBg})`,
                       backgroundColor: "transparent",
@@ -270,7 +294,7 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* RIGHT */}
+              {/* RIGHT IMAGE */}
               <div
                 className="w-full md:w-1/2 h-64 md:h-full bg-cover bg-center"
                 style={{
@@ -322,12 +346,25 @@ const Home = () => {
       </div>
 
       {/* Best Sellers */}
-      <section className="py-5  mt-4">
-        <div className="container  mx-auto px-4">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+      <section className="py-6 mt-4">
+        <div className="container px-20">
+          {/* Title */}
+          <h2 className="text-[20px] sm:text-[26px] lg:text-[32px] xl:text-[38px] font-bold text-gray-900 mb-6">
             Best Sellers
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 [@media(min-width:1800px)]:grid-cols-7 gap-4 w-full">
+
+          <div
+            className="
+      grid grid-cols-1 
+      sm:grid-cols-2 
+      md:grid-cols-3 
+      lg:grid-cols-4 
+      xl:grid-cols-5 
+      2xl:grid-cols-6 
+      [@media(min-width:1800px)]:grid-cols-7 
+      gap-4 w-full
+    "
+          >
             {bestSeller.map((product) => (
               <div
                 key={product.id}
@@ -338,12 +375,15 @@ const Home = () => {
                   })
                 }
               >
+                {/* Image */}
                 <div className="relative overflow-hidden">
                   <img
                     src={product.image}
                     alt={product.name}
                     className="w-full h-64 object-cover"
                   />
+
+                  {/* Buttons on image */}
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
                     <button
                       className="text-gray-600 hover:text-indigo-600"
@@ -366,27 +406,38 @@ const Home = () => {
                       <i className="fas fa-shopping-cart"></i>
                     </button>
                   </div>
+
+                  {/* Discount Tag */}
                   {parseFloat(product.discount) > 0 && (
-                    <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                    <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] sm:text-[12px] lg:text-[13px] font-bold px-2 py-1 rounded">
                       {Math.round(parseFloat(product.discount))}%
                     </span>
                   )}
                 </div>
 
+                {/* Product Info */}
                 <div className="p-4">
-                  <Link to="#" className="font-medium hover:text-indigo-600">
+                  {/* Name */}
+                  <Link
+                    to="#"
+                    className="font-medium hover:text-indigo-600 text-[14px] sm:text-[16px] lg:text-[18px]"
+                  >
                     {product.name}
                   </Link>
 
+                  {/* Price Section */}
                   <div className="flex items-center mt-2">
-                    <span className="text-indigo-600 font-bold">
+                    <span className="text-indigo-600 font-bold text-[16px] sm:text-[18px] lg:text-[20px]">
                       ₹{parseFloat(product.finalPrice)}
                     </span>
-                    <span className="text-gray-500 text-sm line-through ml-2">
+
+                    <span className="text-gray-500 text-[12px] sm:text-[13px] lg:text-[14px] line-through ml-2">
                       ₹{parseFloat(product.price)}
                     </span>
                   </div>
-                  <div className="text-sm flex items-center mt-1 ">
+
+                  {/* Rating */}
+                  <div className="text-[12px] sm:text-[13px] lg:text-[14px] flex items-center mt-1">
                     Rating:
                     <span className="ml-2 flex relative">
                       <div className="flex text-gray-300">
@@ -422,47 +473,21 @@ const Home = () => {
       {/* Products AD */}
       {/* <ProductAD product={ProductADs} /> */}
 
-      {/*  Recommended for you Products Carousel  */}
-      <div className="w-full max-w-8xl mx-auto px-4 sm:px-8 mt-20 pt-0 pb-0 rounded-xl">
+      {/* Recommended for you Products Carousel */}
+      <div className="w-full max-w-8xl mx-auto px-20 mt-10 pt-0 pb-0 rounded-xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 px-2 sm:px-0">
-          <h2 className="text-3xl font-bold text-gray-900">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-[20px] sm:text-[26px] lg:text-[32px] xl:text-[38px] font-bold text-gray-900">
             Recommended for you
           </h2>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handlePrevious}
-              disabled={currentIndex === 0}
-              className="p-2 rounded-full bg-white shadow-md hover:shadow-xl 
-        transition-all duration-300 hover:scale-110 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-5 h-5 text-gray-600" />
-            </button>
-
-            <button
-              onClick={handleNext}
-              disabled={currentIndex + itemsPerView >= recommended.length}
-              className="p-2 rounded-full bg-white shadow-md hover:shadow-xl 
-        transition-all duration-300 hover:scale-110 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <ChevronRight className="w-5 h-5 text-gray-600" />
-            </button>
-          </div>
         </div>
 
         {/* Product Carousel */}
-        <div className="relative overflow-hidden py-4">
-          <div
-            className="flex gap-4 sm:gap-6 transition-transform duration-700 ease-in-out"
-            style={{
-              transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
-            }}
-          >
+        <div className="relative overflow-x-auto overflow-y-hidden py-4">
+          <div className="flex gap-4 sm:gap-6">
             {recommended.map((product) => (
               <div
                 key={product.id}
-                /* ✔ Responsive Card Width — same as your grid */
                 className="
             flex-shrink-0
             w-[85%]  
@@ -482,7 +507,7 @@ const Home = () => {
                 }
               >
                 {/* Image */}
-                <div className="relative h-48 bg-white flex items-center justify-center">
+                <div className="relative h-40 sm:h-48 lg:h-56 bg-white flex items-center justify-center">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -512,31 +537,33 @@ const Home = () => {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4 flex flex-col space-y-1">
-                  <h3 className="text-xl font-bold text-slate-800 line-clamp-2">
+                <div className="p-3 sm:p-4 flex flex-col space-y-1">
+                  {/* Product Name */}
+                  <h3 className="text-[14px] sm:text-[16px] lg:text-[18px] xl:text-[20px] font-bold text-slate-800 line-clamp-2">
                     {product.name}
                   </h3>
 
+                  {/* Price Section */}
                   <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-gray-900">
+                    <span className="text-[18px] sm:text-[20px] lg:text-[22px] font-bold text-gray-900">
                       ₹{Math.floor(product.finalPrice)}
                     </span>
 
                     {product.originalPrice && (
-                      <span className="text-sm text-gray-400 line-through">
+                      <span className="text-[12px] sm:text-[13px] lg:text-[14px] text-gray-400 line-through">
                         ₹{product.originalPrice}
                       </span>
                     )}
 
                     {product.discount && (
-                      <span className="text-sm font-medium text-green-600">
+                      <span className="text-[12px] sm:text-[13px] lg:text-[14px] font-medium text-green-600">
                         {Math.floor(product.discount)}% OFF
                       </span>
                     )}
                   </div>
 
                   {/* Rating */}
-                  <div className="text-sm flex items-center mt-1">
+                  <div className="text-[12px] sm:text-[13px] lg:text-[14px] flex items-center mt-1">
                     Rating:
                     <span className="ml-2 flex relative">
                       <div className="flex text-gray-300">
@@ -565,7 +592,7 @@ const Home = () => {
 
                   {/* Stock + Add to Cart */}
                   <div className="flex items-center justify-between pt-2">
-                    <div className="text-[14px] font-bold">
+                    <div className="text-[12px] sm:text-[13px] lg:text-[14px] font-bold">
                       Available Stocks:
                       <span className="text-red-600"> {product.stock}</span>
                     </div>
@@ -577,7 +604,7 @@ const Home = () => {
                         addToCart(product);
                       }}
                     >
-                      <ShoppingCart className="w-5 h-5" />
+                      <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                   </div>
                 </div>
@@ -609,22 +636,27 @@ const Home = () => {
       <MoreToLove products={viewMore} />
 
       {/* Shop more */}
-      <div className="bg-white py-12 px-6 md:px-20">
-        <h2 className="text-2xl font-semibold mb-10">Shop more</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8">
+      <div className="bg-white py-[48px] px-[24px] md:px-[80px]">
+        <h2 className="text-[24px] md:text-[28px] font-semibold mb-[40px]">
+          Shop more
+        </h2>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-[32px]">
           {categories.map((category, idx) => {
             const Icon = icons[idx]; // Get matching icon
             return (
               <div key={idx}>
-                <div className="flex items-center gap-2 mb-3">
-                  <Icon className="text-yellow-500 text-5xl" />
-                  <h3 className="text-lg font-semibold">{category.title}</h3>
+                <div className="flex items-center gap-[8px] mb-[12px]">
+                  <Icon className="text-yellow-500 text-[40px] md:text-[48px]" />
+                  <h3 className="text-[16px] md:text-[18px] font-semibold">
+                    {category.title}
+                  </h3>
                 </div>
-                <ul className="space-y-2">
+                <ul className="space-y-[8px]">
                   {category.items.map((item, i) => (
                     <li
                       key={i}
-                      className="text-sm ml-2 text-black font-medium hover:underline cursor-pointer"
+                      className="text-[12px] md:text-[14px] ml-[8px] text-black font-medium hover:underline cursor-pointer"
                       onClick={() => navigate(`/ProductPage?search=${item}`)}
                     >
                       {item}
@@ -636,6 +668,7 @@ const Home = () => {
           })}
         </div>
       </div>
+
       {/* <Landing /> */}
 
       {/* Footer */}
