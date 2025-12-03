@@ -15,7 +15,7 @@ const MyProfile = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [editUser, setEditUser] = useState({});
-  const [errors, setErrors] = useState({}); // <- VALIDATION ERRORS
+  const [errors, setErrors] = useState({});
 
   const effectRan = useRef(false);
 
@@ -63,7 +63,6 @@ const MyProfile = () => {
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // -------------------- VALIDATION --------------------
   const validateForm = () => {
     let tempErrors = {};
 
@@ -104,9 +103,11 @@ const MyProfile = () => {
     <div>
       <Header />
 
-      <div className="min-h-screen-300 border bg-gray-100 flex">
+      {/* --- Main Layout --- */}
+      <div className="min-h-screen-300 border bg-gray-100 flex flex-col md:flex-row">
+        
         {/* Sidebar */}
-        <aside className="w-72 bg-white shadow-md border-r">
+        <aside className="w-full md:w-72 bg-white shadow-md border-r">
           <div className="p-6 flex items-center space-x-4 border-b">
             <div className="w-14 h-14 rounded-full bg-yellow-400 flex items-center justify-center text-xl font-semibold">
               {user.firstname?.charAt(0) || "U"}
@@ -128,12 +129,12 @@ const MyProfile = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-8">
           <h2 className="text-lg font-semibold mb-6 text-gray-800">
             Personal Information
           </h2>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border mb-8">
+          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <input
                 type="text"
@@ -161,13 +162,13 @@ const MyProfile = () => {
 
             <button
               onClick={openEditModal}
-              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full md:w-auto"
             >
               Edit Profile
             </button>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border">
             <div className="mb-6">
               <p className="text-gray-700 font-semibold mb-2">Email Address</p>
               <input
@@ -191,73 +192,67 @@ const MyProfile = () => {
         </main>
       </div>
 
-      {/* ---------- EDIT POPUP MODAL ---------- */}
+      {/* --- EDIT MODAL (Mobile Responsive Only) --- */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2">
+          <div className="bg-white rounded-lg p-4 md:p-6 w-full max-w-md shadow-xl">
+
             <h2 className="text-xl font-semibold mb-4 text-center">
               Edit Profile
             </h2>
 
             <div className="space-y-4">
+
               {/* First Name */}
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  First Name *
-                </label>
+                <label className="block text-sm font-medium mb-1">First Name *</label>
                 <input
                   type="text"
                   name="firstname"
                   value={editUser.firstname || ""}
                   onChange={handleInputChange}
-                  className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-indigo-500"
                 />
                 {errors.firstname && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.firstname}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{errors.firstname}</p>
                 )}
               </div>
 
               {/* Last Name */}
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Last Name *
-                </label>
+                <label className="block text-sm font-medium mb-1">Last Name *</label>
                 <input
                   type="text"
                   name="lastname"
                   value={editUser.lastname || ""}
                   onChange={handleInputChange}
-                  className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-indigo-500"
                 />
                 {errors.lastname && (
                   <p className="text-red-500 text-sm mt-1">{errors.lastname}</p>
                 )}
               </div>
 
-              {/* Email */}
+              {/* Email (Disabled) */}
               <div>
                 <label className="block text-sm font-medium mb-1">Email</label>
                 <input
                   type="email"
                   value={editUser.email || ""}
                   disabled
-                  className="w-full border px-4 py-2 rounded bg-gray-100 text-gray-500"
+                  className="w-full border px-3 py-2 rounded bg-gray-100 text-gray-500"
                 />
               </div>
 
               {/* Mobile */}
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Mobile Number *
-                </label>
+                <label className="block text-sm font-medium mb-1">Mobile Number *</label>
                 <input
                   type="text"
                   name="mobile"
                   value={editUser.mobile || ""}
                   onChange={handleInputChange}
-                  className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-indigo-500"
                 />
                 {errors.mobile && (
                   <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>
@@ -266,37 +261,37 @@ const MyProfile = () => {
 
               {/* Address */}
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Address
-                </label>
+                <label className="block text-sm font-medium mb-1">Address</label>
                 <input
                   type="text"
                   name="address"
                   value={editUser.address || ""}
                   onChange={handleInputChange}
-                  className="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             </div>
 
             {/* Buttons */}
-            <div className="flex justify-end mt-6">
+            <div className="flex flex-col md:flex-row justify-end mt-6 space-y-2 md:space-y-0 md:space-x-3">
               <button
                 onClick={() => setShowModal(false)}
-                className="mr-3 px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 w-full md:w-auto"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
-                className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+                className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 w-full md:w-auto"
               >
                 Save
               </button>
             </div>
+
           </div>
         </div>
       )}
+
     </div>
   );
 };
