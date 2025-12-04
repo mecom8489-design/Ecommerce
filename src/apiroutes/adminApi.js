@@ -107,3 +107,12 @@ export const deletesupportDatas = (enquiryId) => {
     return axiosInstance.delete(`/admin/removeSupportDatas/${enquiryId}`);
 };//working fine
 
+
+
+
+export const updateOrderDeliveryDate = (orderId, deliveryDate) => {
+  return axiosInstance.put(`/ordered/update-delivery-date/${orderId}`, {delivery_date: deliveryDate,
+  });
+};
+
+
