@@ -3,14 +3,11 @@ import { Search, XCircle } from "lucide-react";
 import Header from "../Header/header";
 import { getorderplace } from "../apiroutes/userApi";
 import { AuthContext } from "../context/LoginAuth";
-
 import Orderdetails from "./Orderdetails";
-
 export default function MyOrders() {
   const { user } = useContext(AuthContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-
   const [filters, setFilters] = useState({
     onTheWay: false,
     delivered: false,
@@ -22,20 +19,23 @@ export default function MyOrders() {
     older: false,
   });
 
-  const [orderData, setOrderData] = useState(null);
+  const [orderData, setOrderData] = useState(null); 
   const [loading, setLoading] = useState(true);
-  const id = user?.id;
-
+  const id = user?.id; 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
+
+
+  useEffect(() => {
+    if (!id) return;
+  }, [id]);
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
         const response = await getorderplace(id);
         const data = response.data;
-
         setOrderData(Array.isArray(data) ? data : [data]);
       } catch (error) {
         console.error("Error fetching order:", error);
@@ -45,7 +45,7 @@ export default function MyOrders() {
     };
 
     if (id) fetchOrder();
-  }, [id, refresh]);
+  }, [id, refresh]); 
 
   if (loading) return <p>Loading order details...</p>;
 
@@ -67,22 +67,17 @@ export default function MyOrders() {
           filters.delivered ||
           filters.cancelled ||
           filters.returned;
-
         if (statusFiltersActive) {
           let statusMatch = false;
-
           if (filters.cancelled && order.cancelled == 1) statusMatch = true;
-
           if (
             filters.delivered &&
             order.order_status === "delivered" &&
             order.cancelled != 1
           )
             statusMatch = true;
-
           if (filters.returned && order.order_status === "returned")
             statusMatch = true;
-
           if (
             filters.onTheWay &&
             order.order_status !== "delivered" &&
@@ -99,7 +94,6 @@ export default function MyOrders() {
           filters.year2024 ||
           filters.year2023 ||
           filters.older;
-
         if (timeFiltersActive) {
           const orderDate = new Date(order.created_at);
           const now = new Date();
@@ -113,10 +107,8 @@ export default function MyOrders() {
 
           if (filters.year2024 && orderDate.getFullYear() === 2024)
             timeMatch = true;
-
           if (filters.year2023 && orderDate.getFullYear() === 2023)
             timeMatch = true;
-
           if (filters.older && orderDate.getFullYear() < 2023) timeMatch = true;
 
           if (!timeMatch) return false;
@@ -130,7 +122,6 @@ export default function MyOrders() {
     <div>
       <Header />
       <div className="min-h-screen bg-gray-50">
-        {/* Breadcrumb */}
         <div className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -142,20 +133,19 @@ export default function MyOrders() {
 
         <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-            {/* FILTER SIDEBAR */}
             <div
               className={`
-                bg-white rounded-lg shadow-sm p-4 sm:p-5
-                fixed lg:static top-0 left-0 bottom-0 z-50 lg:z-auto
-                w-80 sm:w-96 lg:w-64 xl:w-72
-                transform transition-transform duration-300 ease-in-out
-                ${
-                  showFilters
-                    ? "translate-x-0"
-                    : "-translate-x-full lg:translate-x-0"
-                }
-                overflow-y-auto lg:sticky lg:top-6 lg:h-fit
-              `}
+              bg-white rounded-lg shadow-sm p-4 sm:p-5
+              fixed lg:static top-0 left-0 bottom-0 z-50 lg:z-auto
+              w-80 sm:w-96 lg:w-64 xl:w-72
+              transform transition-transform duration-300 ease-in-out
+              ${
+                showFilters
+                  ? "translate-x-0"
+                  : "-translate-x-full lg:translate-x-0"
+              }
+              overflow-y-auto lg:sticky lg:top-6 lg:h-fit
+            `}
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
@@ -167,7 +157,6 @@ export default function MyOrders() {
                 </button>
               </div>
 
-              {/* ORDER STATUS */}
               <div className="mb-6">
                 <h3 className="text-sm font-medium text-gray-700 mb-3 uppercase tracking-wide">
                   Order Status
@@ -197,7 +186,6 @@ export default function MyOrders() {
                 </div>
               </div>
 
-              {/* ORDER TIME */}
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-3 uppercase tracking-wide">
                   Order Time
@@ -228,12 +216,12 @@ export default function MyOrders() {
               </div>
             </div>
 
-            {/* ORDERS LIST */}
             <div className="flex-1 min-w-0">
               <div className="flex flex-col lg:flex-row items-start lg:items-center gap-3 mb-4">
                 <button
                   onClick={() => setShowFilters(true)}
                   className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors border border-gray-300 flex items-center justify-center bg-white shadow-sm"
+                  aria-label="Open Filters"
                 >
                   <svg
                     className="w-5 h-5 text-gray-700"
@@ -250,9 +238,8 @@ export default function MyOrders() {
                   </svg>
                 </button>
 
-                {/* Search Bar */}
                 <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 flex-1 w-full ">
-                  <div className="flex flex-col sm:flex-row gap-3 w-full">
+                  <div className="flex flex-col sm:flex-row gap-3 w-full ">
                     <div className="flex-1 relative w-full">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-5 h-5" />
                       <input
@@ -263,11 +250,11 @@ export default function MyOrders() {
                         className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
+
                   </div>
                 </div>
               </div>
 
-              {/* ORDERS */}
               <div className="space-y-3 sm:space-y-4">
                 {filteredOrders.map((order) => (
                   <div
@@ -334,7 +321,6 @@ export default function MyOrders() {
                                     })}
                                   </span>
                                 </div>
-
                                 <p className="text-xs sm:text-sm text-gray-600">
                                   {order.status === "delivered"
                                     ? "Your item has been delivered"
@@ -360,12 +346,10 @@ export default function MyOrders() {
                   </div>
                 ))}
               </div>
-
             </div>
           </div>
         </div>
       </div>
-
       {isOpen && selectedOrder && (
         <Orderdetails
           selectedOrder={selectedOrder}
