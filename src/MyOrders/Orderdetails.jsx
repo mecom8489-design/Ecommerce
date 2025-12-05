@@ -3,8 +3,6 @@ import {
   Home,
   User,
   ChevronDown,
-  MessageCircle,
-  Download,
   Copy,
   ChevronLeft,
 } from "lucide-react";
@@ -15,8 +13,11 @@ import { toast } from "react-toastify";
 const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
   const { user } = useContext(AuthContext);
   const fullName = `${user.firstname} ${user.lastname}`;
+
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const [rating, setRating] = useState(0);
+
+  // Keeping these because THEY ARE USED later when review displays
   const [reviewTextValue, setreviewTextValue] = useState(0);
   const [ratingValue, setRatingValue] = useState(0);
 
@@ -77,13 +78,12 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
       <div>
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2 sm:p-4"
-          onClick={() => setIsOpen(false)} // Close on outside click
+          onClick={() => setIsOpen(false)} 
         >
           <div
             className="bg-white w-full max-w-7xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto rounded-lg shadow-xl relative"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
             <button
               onClick={() => {
                 setIsOpen(false), setRefresh((prev) => !prev);
@@ -97,7 +97,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
             </button>
 
             <div className="min-h-screen bg-gray-50 rounded-lg">
-              {/* Breadcrumb */}
               <div className="bg-white border-b border-gray-200 rounded-t-lg">
                 <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-3">
                   <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 overflow-x-auto">
@@ -120,12 +119,14 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                 </div>
               </div>
 
-              {/* Main Content */}
+              {/* MAIN CONTENT */}
               <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-4 sm:gap-6">
-                  {/* Left Column - Order Details */}
+
+                  {/* LEFT COLUMN */}
                   <div className="space-y-3 sm:space-y-4">
-                    {/* Product Info Card */}
+
+                    {/* PRODUCT CARD */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <div className="flex gap-3 sm:gap-4">
                         <img
@@ -147,7 +148,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     </div>
 
-                    {/* Review Display */}
+                    {/* REVIEW DISPLAY */}
                     {reviewTextValue && ratingValue ? (
                       <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                         <div className="flex gap-3 sm:gap-4">
@@ -161,39 +162,23 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                               <span className="flex relative">
                                 <div className="flex text-gray-300">
                                   {Array.from({ length: 5 }).map((_, i) => (
-                                    <span
-                                      key={i}
-                                      className="text-base sm:text-lg"
-                                    >
-                                      ★
-                                    </span>
+                                    <span key={i} className="text-base sm:text-lg">★</span>
                                   ))}
                                 </div>
 
                                 <div
                                   className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
                                   style={{
-                                    width: `${
-                                      (Number(ratingValue) / 5) * 100
-                                    }%`,
+                                    width: `${(Number(ratingValue) / 5) * 100}%`,
                                   }}
                                 >
                                   {Array.from({ length: 5 }).map((_, i) => (
-                                    <span
-                                      key={i}
-                                      className="text-base sm:text-lg"
-                                    >
-                                      ★
-                                    </span>
+                                    <span key={i} className="text-base sm:text-lg">★</span>
                                   ))}
                                 </div>
                               </span>
                               <span className="text-gray-700">
-                                (
-                                {ratingValue
-                                  ? Number(ratingValue).toFixed(2)
-                                  : "-"}
-                                )
+                                ({ratingValue ? Number(ratingValue).toFixed(2) : "-"})
                               </span>
                             </div>
                           </div>
@@ -201,38 +186,24 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     ) : null}
 
-                    {/* Order Status Timeline */}
+                    {/* ORDER STATUS TIMELINE */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <div className="space-y-4">
-                        {/* Order Confirmed */}
+
+                        {/* Confirmed */}
                         <div className="flex items-start justify-between gap-3 flex-wrap">
-                          {/* Left Section */}
 
                           {selectedOrder.cancelled == 1 ? (
                             <div className="flex items-start gap-3">
                               <div className="flex flex-col items-center">
-                                <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
-                                  <svg
-                                    className="w-3 h-3 text-white"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
-                                </div>
+                                <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center"></div>
                                 <div className="w-0.5 h-10 bg-red-500"></div>
                               </div>
 
                               <div className="pt-0.5">
                                 <p className="text-xs sm:text-sm text-gray-900">
                                   Order Confirmed,&nbsp;
-                                  {new Date(
-                                    selectedOrder.created_at
-                                  ).toLocaleDateString("en-GB", {
+                                  {new Date(selectedOrder.created_at).toLocaleDateString("en-GB", {
                                     day: "2-digit",
                                     month: "short",
                                     year: "numeric",
@@ -243,28 +214,14 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                           ) : (
                             <div className="flex items-start gap-3">
                               <div className="flex flex-col items-center">
-                                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-                                  <svg
-                                    className="w-3 h-3 text-white"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
-                                </div>
+                                <div className="w-5 h-5 rounded-full bg-green-500"></div>
                                 <div className="w-0.5 h-8 bg-green-500"></div>
                               </div>
 
                               <div className="pt-0.5">
                                 <p className="text-xs sm:text-sm text-gray-900">
                                   Order Confirmed,&nbsp;
-                                  {new Date(
-                                    selectedOrder.created_at
-                                  ).toLocaleDateString("en-GB", {
+                                  {new Date(selectedOrder.created_at).toLocaleDateString("en-GB", {
                                     day: "2-digit",
                                     month: "short",
                                     year: "numeric",
@@ -274,14 +231,10 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                             </div>
                           )}
 
-                          {/* Right Side: Cancel Button */}
-
+                          {/* Cancel Button */}
                           {selectedOrder.cancelled == 1 ? (
                             <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 px-3 py-1.5 rounded-lg shadow-sm text-xs sm:text-sm">
-                              <span className="text-red-600">⚠️</span>
-                              <p className="font-medium whitespace-nowrap">
-                                Order Cancelled
-                              </p>
+                              Order Cancelled
                             </div>
                           ) : (
                             <button
@@ -292,6 +245,8 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                             </button>
                           )}
                         </div>
+
+                        {/* Cancel Popup */}
                         {showCancelPopup && (
                           <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 p-4">
                             <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-lg shadow-lg">
@@ -304,12 +259,9 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                                 rows="4"
                                 placeholder="Enter reason…"
                                 value={cancelReason}
-                                onChange={(e) =>
-                                  setCancelReason(e.target.value)
-                                }
-                              ></textarea>
+                                onChange={(e) => setCancelReason(e.target.value)}
+                              />
 
-                              {/* Buttons */}
                               <div className="flex justify-end gap-3 mt-4">
                                 <button
                                   onClick={() => setShowCancelPopup(false)}
@@ -333,31 +285,16 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                           </div>
                         )}
 
-                        {/* Delivered */}
-
+                        {/* Delivery */}
                         {selectedOrder.cancelled == 1 ? (
                           <div className="flex items-start gap-3">
                             <div className="flex flex-col items-center">
-                              <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
-                                <svg
-                                  className="w-3 h-3 text-white"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              </div>
+                              <div className="w-5 h-5 rounded-full bg-red-500"></div>
                             </div>
                             <div className="pt-0.5">
                               <p className="text-xs sm:text-sm text-gray-900">
-                                Cancelled on,{" "}
-                                {new Date(
-                                  selectedOrder.updated_at
-                                ).toLocaleDateString("en-GB", {
+                                Cancelled on{" "}
+                                {new Date(selectedOrder.updated_at).toLocaleDateString("en-GB", {
                                   day: "2-digit",
                                   month: "short",
                                   year: "numeric",
@@ -368,26 +305,12 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                         ) : (
                           <div className="flex items-start gap-3">
                             <div className="flex flex-col items-center">
-                              <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-                                <svg
-                                  className="w-3 h-3 text-white"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              </div>
+                              <div className="w-5 h-5 rounded-full bg-green-500"></div>
                             </div>
                             <div className="pt-0">
                               <p className="text-xs sm:text-sm text-gray-900">
                                 Expected Delivery{" "}
-                                {new Date(
-                                  selectedOrder.delivery_date
-                                ).toLocaleDateString("en-GB", {
+                                {new Date(selectedOrder.delivery_date).toLocaleDateString("en-GB", {
                                   day: "2-digit",
                                   month: "short",
                                   year: "numeric",
@@ -399,7 +322,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     </div>
 
-                    {/* Rate Experience */}
+                    {/* RATE EXPERIENCE */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <h2 className="text-sm sm:text-base font-medium text-gray-900 mb-4">
                         Rate your experience
@@ -432,6 +355,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                           </button>
                         ))}
                       </div>
+
                       <div className="mt-4">
                         <form onSubmit={handleSubmitReview}>
                           <textarea
@@ -441,6 +365,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                             value={reviewText}
                             onChange={(e) => setReviewText(e.target.value)}
                           ></textarea>
+
                           <button
                             type="submit"
                             disabled={isSubmitted}
@@ -456,7 +381,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     </div>
 
-                    {/* Order ID */}
+                    {/* ORDER ID */}
                     <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4">
                       <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                         <span>Order #{selectedOrder.order_id}</span>
@@ -467,9 +392,10 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                     </div>
                   </div>
 
-                  {/* Right Column - Delivery & Price Details */}
+                  {/* RIGHT COLUMN */}
                   <div className="space-y-3 sm:space-y-4">
-                    {/* Delivery Details Card */}
+
+                    {/* DELIVERY DETAILS */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <h2 className="text-sm sm:text-base font-medium text-gray-900 mb-4">
                         Delivery details
@@ -502,7 +428,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     </div>
 
-                    {/* Price Details Card */}
+                    {/* PRICE DETAILS */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <h2 className="text-sm sm:text-base font-medium text-gray-900 mb-4">
                         Price details
@@ -551,10 +477,12 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                         </div>
                       </div>
                     </div>
+
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
