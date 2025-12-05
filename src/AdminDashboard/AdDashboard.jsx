@@ -17,8 +17,7 @@ import {
 } from "recharts";
 import { getAdminDashboard, getAdminRecentOrders } from "../apiroutes/adminApi";
 import { Link } from "react-router-dom";
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
 
 export default function AdDashboard() {
   const hasFetched = useRef(false);
@@ -108,25 +107,31 @@ export default function AdDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-4xl font-bold mb-10 text-gray-900">Admin Dashboard</h1>
+      <h1 className="text-4xl font-bold mb-10 text-gray-900">
+        Admin Dashboard
+      </h1>
 
       {/* Stats Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map(({ id, title, value, icon: Icon, color, iconColor, route }) => (
-          <Link
-            to={route}
-            key={id}
-            className={`flex items-center space-x-4 p-6 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer ${color}`}
-          >
-            <div className={`p-3 rounded-full bg-white ${iconColor} shadow-md`}>
-              <Icon size={28} />
-            </div>
-            <div>
-              <p className="text-lg font-semibold">{title}</p>
-              <p className="text-2xl font-bold">{value}</p>
-            </div>
-          </Link>
-        ))}
+        {stats.map(
+          ({ id, title, value, icon: Icon, color, iconColor, route }) => (
+            <Link
+              to={route}
+              key={id}
+              className={`flex items-center space-x-4 p-6 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer ${color}`}
+            >
+              <div
+                className={`p-3 rounded-full bg-white ${iconColor} shadow-md`}
+              >
+                <Icon size={28} />
+              </div>
+              <div>
+                <p className="text-lg font-semibold">{title}</p>
+                <p className="text-2xl font-bold">{value}</p>
+              </div>
+            </Link>
+          )
+        )}
       </div>
 
       {/* Sales Chart Section */}
@@ -168,51 +173,61 @@ export default function AdDashboard() {
 
       {/* Recent Orders Section */}
       <div className="bg-white mt-12 rounded-lg shadow p-6">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-900">Recent Orders</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-900">
+          Recent Orders
+        </h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 text-gray-700">
+          <table className="min-w-full divide-y divide-gray-200 ">
             <thead>
-              <tr className="bg-gray-100">
-                <th className="px-6 py-3 text-left text-sm font-medium uppercase">
+              <tr className="bg-blue-500 border-[1px] border-black">
+                <th className="px-6 py-3 text-center text-sm font-medium uppercase ">
                   ID
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium uppercase">
+                <th className="px-6 py-3 text-center text-sm font-medium uppercase">
                   Customer
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium uppercase">
+                <th className="px-6 py-3 text-center text-sm font-medium uppercase">
                   Product
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium uppercase">
+                <th className="px-6 py-3 text-center text-sm font-medium uppercase">
                   Amount
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium uppercase">
+                <th className="px-6 py-3 text-center text-sm font-medium uppercase">
                   Status
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {recentOrders.length > 0 ? (
-                recentOrders.map(({ id, customername, productname, totalamount, status }) => (
-                  <tr key={id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">{id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap font-semibold">{customername}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{productname}</td>
-                    <td className="px-6 py-4 whitespace-nowrap font-semibold">${totalamount}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                          status === "Completed"
-                            ? "bg-green-100 text-green-800"
-                            : status === "Pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {status}
-                      </span>
-                    </td>
-                  </tr>
-                ))
+                recentOrders.map(
+                  ({ id, customername, productname, totalamount, status }) => (
+                    <tr key={id} className="hover:bg-gray-200 cursor-pointer">
+                      <td className="px-6 py-4 whitespace-nowrap text-center">{id}</td>
+                      <td className="px-6 py-4 whitespace-nowrap font-semibold text-center">
+                        {customername}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        {productname}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap font-semibold text-center">
+                        ₹{totalamount}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            status === "Completed"
+                              ? "bg-green-100 text-green-700"
+                              : status === "Processing"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
+                        >
+                          {status}
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                )
               ) : (
                 <tr>
                   <td colSpan={5} className="text-center py-10 text-gray-500">
