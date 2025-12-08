@@ -1,17 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Search, Package, Clock, XCircle, RotateCcw } from "lucide-react";
+import { Search, XCircle } from "lucide-react";
 import Header from "../Header/header";
 import { getorderplace } from "../apiroutes/userApi";
 import { AuthContext } from "../context/LoginAuth";
-import {
-  Home,
-  User,
-  ChevronDown,
-  MessageCircle,
-  Download,
-  Copy,
-  ChevronLeft,
-} from "lucide-react";
 import Orderdetails from "./Orderdetails";
 export default function MyOrders() {
   const { user } = useContext(AuthContext);
@@ -28,14 +19,13 @@ export default function MyOrders() {
     older: false,
   });
 
-  const [orderData, setOrderData] = useState(null); // to store the fetched order
+  const [orderData, setOrderData] = useState(null); 
   const [loading, setLoading] = useState(true);
-  const id = user?.id; // ✅ prevents error if user is null
+  const id = user?.id; 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
-  // STATE HANDLERS
 
   useEffect(() => {
     if (!id) return;
@@ -55,11 +45,9 @@ export default function MyOrders() {
     };
 
     if (id) fetchOrder();
-  }, [id, refresh]); // 👈 Added refresh
+  }, [id, refresh]); 
 
   if (loading) return <p>Loading order details...</p>;
-
-  // if (!orderData) return <p>No order found.</p>;
 
   const toggleFilter = (key) => {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -67,7 +55,6 @@ export default function MyOrders() {
 
   const filteredOrders = orderData
     ? orderData.filter((order) => {
-        // 1. Search Filter
         if (
           searchTerm &&
           !order.product_name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -75,7 +62,6 @@ export default function MyOrders() {
           return false;
         }
 
-        // 2. Status Filters
         const statusFiltersActive =
           filters.onTheWay ||
           filters.delivered ||
@@ -92,7 +78,6 @@ export default function MyOrders() {
             statusMatch = true;
           if (filters.returned && order.order_status === "returned")
             statusMatch = true;
-          // Assuming 'onTheWay' means not delivered, not returned, and not cancelled
           if (
             filters.onTheWay &&
             order.order_status !== "delivered" &&
@@ -104,7 +89,6 @@ export default function MyOrders() {
           if (!statusMatch) return false;
         }
 
-        // 3. Time Filters
         const timeFiltersActive =
           filters.last30Days ||
           filters.year2024 ||
@@ -138,7 +122,6 @@ export default function MyOrders() {
     <div>
       <Header />
       <div className="min-h-screen bg-gray-50">
-        {/* Breadcrumb */}
         <div className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -150,7 +133,6 @@ export default function MyOrders() {
 
         <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-            {/* Filters Sidebar */}
             <div
               className={`
               bg-white rounded-lg shadow-sm p-4 sm:p-5
@@ -165,7 +147,6 @@ export default function MyOrders() {
               overflow-y-auto lg:sticky lg:top-6 lg:h-fit
             `}
             >
-              {/* Filter Header with Close Button */}
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
                 <button
@@ -176,7 +157,6 @@ export default function MyOrders() {
                 </button>
               </div>
 
-              {/* Order Status */}
               <div className="mb-6">
                 <h3 className="text-sm font-medium text-gray-700 mb-3 uppercase tracking-wide">
                   Order Status
@@ -206,7 +186,6 @@ export default function MyOrders() {
                 </div>
               </div>
 
-              {/* Order Time */}
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-3 uppercase tracking-wide">
                   Order Time
@@ -237,11 +216,8 @@ export default function MyOrders() {
               </div>
             </div>
 
-            {/* Orders List */}
             <div className="flex-1 min-w-0">
-              {/* Filter Button and Search Bar Container */}
               <div className="flex flex-col lg:flex-row items-start lg:items-center gap-3 mb-4">
-                {/* Mobile Filter Button - visible only on mobile */}
                 <button
                   onClick={() => setShowFilters(true)}
                   className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors border border-gray-300 flex items-center justify-center bg-white shadow-sm"
@@ -262,10 +238,8 @@ export default function MyOrders() {
                   </svg>
                 </button>
 
-                {/* Search Bar */}
                 <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 flex-1 w-full ">
                   <div className="flex flex-col sm:flex-row gap-3 w-full ">
-                    {/* Search Input */}
                     <div className="flex-1 relative w-full">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-5 h-5" />
                       <input
@@ -277,12 +251,10 @@ export default function MyOrders() {
                       />
                     </div>
 
-                    {/* Search Button */}
                   </div>
                 </div>
               </div>
 
-              {/* Order Cards */}
               <div className="space-y-3 sm:space-y-4">
                 {filteredOrders.map((order) => (
                   <div
@@ -294,7 +266,6 @@ export default function MyOrders() {
                     }}
                   >
                     <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-                      {/* Product Image */}
                       <div className="flex-shrink-0 mx-auto sm:mx-0">
                         <img
                           src={order.product_image}
@@ -303,10 +274,8 @@ export default function MyOrders() {
                         />
                       </div>
 
-                      {/* Product Details - Mobile & Desktop */}
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                          {/* Product Info */}
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm sm:text-base font-medium text-gray-900 mb-1 line-clamp-2">
                               {order.product_name}
@@ -318,7 +287,6 @@ export default function MyOrders() {
                             )}
                           </div>
 
-                          {/* Price - Desktop */}
                           <div className="hidden sm:block flex-shrink-0 text-right">
                             <p className="text-base font-semibold text-gray-900">
                               ₹{order.total_price}
@@ -326,9 +294,7 @@ export default function MyOrders() {
                           </div>
                         </div>
 
-                        {/* Status and Actions */}
                         <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                          {/* Status */}
                           <div className="flex-1">
                             {order.cancelled == 1 ? (
                               <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 px-3 py-1.5 rounded-lg text-sm">
@@ -364,14 +330,11 @@ export default function MyOrders() {
                             )}
                           </div>
 
-                          {/* Price - Mobile & Actions */}
                           <div className="flex items-center justify-between sm:flex-col sm:items-end gap-2">
-                            {/* Price - Mobile Only */}
                             <p className="sm:hidden text-lg font-bold text-gray-900">
                               ₹{order.total_price}
                             </p>
 
-                            {/* Rate Button */}
                             <button className="text-blue-600 text-xs sm:text-sm font-medium hover:text-blue-700 flex items-center gap-1 whitespace-nowrap">
                               <span className="text-blue-600">★</span>
                               Rate & Review

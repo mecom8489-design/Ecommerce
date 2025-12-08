@@ -3,8 +3,6 @@ import {
   Home,
   User,
   ChevronDown,
-  MessageCircle,
-  Download,
   Copy,
   ChevronLeft,
 } from "lucide-react";
@@ -77,13 +75,12 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
       <div>
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2 sm:p-4"
-          onClick={() => setIsOpen(false)} // Close on outside click
+          onClick={() => setIsOpen(false)} 
         >
           <div
             className="bg-white w-full max-w-7xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto rounded-lg shadow-xl relative"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+            onClick={(e) => e.stopPropagation()} 
           >
-            {/* Close Button */}
             <button
               onClick={() => {
                 setIsOpen(false), setRefresh((prev) => !prev);
@@ -97,7 +94,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
             </button>
 
             <div className="min-h-screen bg-gray-50 rounded-lg">
-              {/* Breadcrumb */}
               <div className="bg-white border-b border-gray-200 rounded-t-lg">
                 <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-3">
                   <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 overflow-x-auto">
@@ -120,12 +116,9 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                 </div>
               </div>
 
-              {/* Main Content */}
               <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-4 sm:gap-6">
-                  {/* Left Column - Order Details */}
                   <div className="space-y-3 sm:space-y-4">
-                    {/* Product Info Card */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <div className="flex gap-3 sm:gap-4">
                         <img
@@ -147,7 +140,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     </div>
 
-                    {/* Review Display */}
                     {reviewTextValue && ratingValue ? (
                       <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                         <div className="flex gap-3 sm:gap-4">
@@ -201,12 +193,9 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     ) : null}
 
-                    {/* Order Status Timeline */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <div className="space-y-4">
-                        {/* Order Confirmed */}
                         <div className="flex items-start justify-between gap-3 flex-wrap">
-                          {/* Left Section */}
 
                           {selectedOrder.cancelled == 1 ? (
                             <div className="flex items-start gap-3">
@@ -273,9 +262,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                               </div>
                             </div>
                           )}
-
-                          {/* Right Side: Cancel Button */}
-
                           {selectedOrder.cancelled == 1 ? (
                             <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 px-3 py-1.5 rounded-lg shadow-sm text-xs sm:text-sm">
                               <span className="text-red-600">⚠️</span>
@@ -309,7 +295,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                                 }
                               ></textarea>
 
-                              {/* Buttons */}
                               <div className="flex justify-end gap-3 mt-4">
                                 <button
                                   onClick={() => setShowCancelPopup(false)}
@@ -333,7 +318,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                           </div>
                         )}
 
-                        {/* Delivered */}
 
                         {selectedOrder.cancelled == 1 ? (
                           <div className="flex items-start gap-3">
@@ -399,7 +383,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     </div>
 
-                    {/* Rate Experience */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <h2 className="text-sm sm:text-base font-medium text-gray-900 mb-4">
                         Rate your experience
@@ -456,7 +439,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     </div>
 
-                    {/* Order ID */}
                     <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4">
                       <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                         <span>Order #{selectedOrder.order_id}</span>
@@ -467,9 +449,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                     </div>
                   </div>
 
-                  {/* Right Column - Delivery & Price Details */}
                   <div className="space-y-3 sm:space-y-4">
-                    {/* Delivery Details Card */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <h2 className="text-sm sm:text-base font-medium text-gray-900 mb-4">
                         Delivery details
@@ -502,7 +482,6 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                       </div>
                     </div>
 
-                    {/* Price Details Card */}
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                       <h2 className="text-sm sm:text-base font-medium text-gray-900 mb-4">
                         Price details
