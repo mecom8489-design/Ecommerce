@@ -243,7 +243,7 @@ const AdminCategories = () => {
                     </td>
                     <td className="px-4 py-3 text-center">
                       {new Date(
-                        category.updatedAt ?? category.createdAt
+                        category.updatedAt ?? category.created_at
                       ).toLocaleDateString(
                         "en-GB", 
                         { day: "2-digit", month: "2-digit", year: "numeric" }
