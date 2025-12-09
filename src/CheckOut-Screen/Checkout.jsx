@@ -1,9 +1,13 @@
 import { useState, useEffect, useContext } from "react";
-import { Check, Info, ArrowLeft } from "lucide-react";
+import { Check, Info, ArrowLeft, X } from "lucide-react";
 import { ProductContext } from "../context/ProductContext";
 import { AuthContext } from "../context/LoginAuth";
 import { orderplace, addressUpdate } from "../apiroutes/userApi";
 import { useLocation, useNavigate } from "react-router-dom";
+import { QRCodeCanvas } from "qrcode.react";
+
+// --- Removed Node QRCode import ---
+// import QRCode from "qrcode";
 
 export default function Checkout() {
   const { selectedProduct, setSelectedProduct, checkoutInfo } =
@@ -23,25 +27,32 @@ export default function Checkout() {
       ? checkoutInfo.quantity
       : 1;
 
-  // Safely calculate totalPrice
   const totalPrice =
     checkoutInfo.totalPrice && checkoutInfo.totalPrice > 0
       ? checkoutInfo.totalPrice
       : quantity * (product?.finalPrice || product?.price || 0);
 
-  // Calculate savings
   const savedPrice =
     product?.price && product?.finalPrice
       ? (product.price - product.finalPrice) * quantity
       : 0;
 
-  const [isCODSelected, setIsCODSelected] = useState(false); // default unchecked
-  const isContinueDisabled = !address.trim() || !isSaved || !isCODSelected;
-  // Payment method state
+  const [paymentMethod, setPaymentMethod] = useState("");
+
+  // --- NEW UPI STATES ---
+  const [upiId, setUpiId] = useState("");
+  const [upiError, setUpiError] = useState("");
+  const [showQRModal, setShowQRModal] = useState(false);
+
+  const isContinueDisabled =
+    !address.trim() ||
+    !isSaved ||
+    !paymentMethod ||
+    (paymentMethod === "UPI" && !upiId.trim());
 
   useEffect(() => {
     if (state?.product) setSelectedProduct(state.product);
-  }, [state]);
+  }, [state, setSelectedProduct]);
 
   useEffect(() => {
     const savedAddress = localStorage.getItem("checkout_address");
@@ -56,7 +67,6 @@ export default function Checkout() {
       alert("Please enter your address before saving.");
       return;
     }
-
     try {
       const updatedUser = { ...user, address: address.trim() };
       await addressUpdate(updatedUser);
@@ -69,9 +79,26 @@ export default function Checkout() {
     }
   };
 
-  const handleContinue = async () => {
-    setLoading(true);
+  // --- UPI VALIDATION ---
+  const validateUpi = (value) => {
+    const regex = /^[\w.-]+@[\w.-]+$/;
+    if (!regex.test(value)) {
+      setUpiError("Invalid UPI ID format (example: name@upi)");
+    } else {
+      setUpiError("");
+    }
+  };
+
+  // --- CREATE UPI DEEP LINK ---
+  const createUpiUrl = (amount, upi) => {
+    return `upi://pay?pa=${upi}&pn=E%20ShopEasy&am=${amount}&cu=INR&tn=Order%20Payment`;
+  };
+
+  // --- UPI PAYMENT ORDER COMPLETION ---
+  const handleUPIOrderSuccess = async () => {
     try {
+      setLoading(true);
+
       const orderData = {
         user_id: user.id,
         product_id: product.id,
@@ -81,20 +108,66 @@ export default function Checkout() {
         shipping_name: user.firstname,
         shipping_phone: user.mobile,
         shipping_address: address,
-        payment_method: isCODSelected ? "COD" : "",
-        payment_status: "Pending",
+        payment_method: "UPI",
+        payment_status: "Paid",
         order_status: "Processing",
         user_email: user.email,
         productname: product.name,
       };
 
       await orderplace(orderData);
+      setShowQRModal(false);
       setShowPopup(true);
     } catch (err) {
-      console.error("Error placing order:", err);
-      alert("Failed to place order. Please try again.");
+      console.error(err);
+      alert("Failed to place order.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // --- MAIN CONTINUE LOGIC ---
+  const handleContinue = async () => {
+    if (paymentMethod === "COD") {
+      setLoading(true);
+      try {
+        const orderData = {
+          user_id: user.id,
+          product_id: product.id,
+          quantity,
+          price_per_unit: product.price,
+          total_price: totalPrice,
+          shipping_name: user.firstname,
+          shipping_phone: user.mobile,
+          shipping_address: address,
+          payment_method: "COD",
+          payment_status: "Pending",
+          order_status: "Processing",
+          user_email: user.email,
+          productname: product.name,
+        };
+
+        await orderplace(orderData);
+        setShowPopup(true);
+      } catch (err) {
+        console.error("Error placing COD order:", err);
+        alert("Failed to place order.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // --- NEW UPI LOGIC ---
+    if (paymentMethod === "UPI") {
+      if (!upiId || upiError) {
+        alert("Please enter a valid UPI ID.");
+        return;
+      }
+
+      // Open QR modal
+      setShowQRModal(true);
+      return;
     }
   };
 
@@ -106,7 +179,7 @@ export default function Checkout() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
       {/* HEADER */}
-      <header className="my-element text-white px-4 py-3 shadow-md">
+      <header className="my-element text-white px-4 py-3 shadow-md bg-yellow-400">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
@@ -136,12 +209,10 @@ export default function Checkout() {
                   <Check className="w-5 h-5 text-blue-600" />
                 </div>
               </div>
-              <div className="px-4 py-3 text-sm text-gray-700">
-                {user?.mobile}
-              </div>
+              <div className="px-4 py-3 text-sm text-gray-700">{user?.mobile}</div>
             </div>
 
-            {/* ADDRESS BOX */}
+            {/* ADDRESS */}
             <div className="bg-white shadow-sm">
               <div className="flex items-center gap-4 p-3 sm:p-4 border-b">
                 <span className="w-8 h-8 bg-yellow-600 text-white flex items-center justify-center rounded-sm font-medium flex-shrink-0">
@@ -156,8 +227,7 @@ export default function Checkout() {
                 {isSaved ? (
                   <div>
                     <p className="text-sm text-gray-700">
-                      <span className="font-medium">{user?.firstname}</span>{" "}
-                      {address}
+                      <span className="font-medium">{user?.firstname}</span> {address}
                     </p>
                     <button
                       onClick={() => setIsSaved(false)}
@@ -177,10 +247,7 @@ export default function Checkout() {
                       placeholder="Enter your address"
                       onChange={(e) => {
                         setAddress(e.target.value);
-                        localStorage.setItem(
-                          "checkout_address",
-                          e.target.value
-                        );
+                        localStorage.setItem("checkout_address", e.target.value);
                       }}
                       className="w-full border border-gray-300 rounded-md p-2 mt-1"
                     />
@@ -211,7 +278,7 @@ export default function Checkout() {
                 <img
                   src={product?.image}
                   alt={product?.name}
-                  className="w-20 h-20 sm:w-28 sm:h-28 object-cover border flex-shrink-0"
+                  className="w-20 h-20 object-cover rounded-sm flex-shrink-0"
                 />
 
                 <div className="flex-1 min-w-0">
@@ -233,43 +300,86 @@ export default function Checkout() {
                 <b className="break-all">{user?.email}</b>
               </div>
 
-              {/* COD Checkbox */}
-              <div className="bg-gray-50 px-4 py-4 border-t">
-                <h3 className="font-semibold text-gray-700 mb-2">
-                  Payment Method
-                </h3>
+              {/* PAYMENT METHODS */}
+              <div className="bg-gray-50 px-4 py-4 border-t space-y-3">
+                <h3 className="font-semibold text-gray-700 mb-2">Payment Method</h3>
 
-                <label
-                  className="flex items-center gap-3 cursor-pointer text-sm"
-                  onClick={() => setIsCODSelected(!isCODSelected)} // toggle
-                >
-                  <span
-                    className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
-                      isCODSelected
-                        ? "bg-blue-500 border-black"
-                        : "border-black"
-                    }`}
-                  >
-                    {isCODSelected && (
-                      <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
-                    )}
-                  </span>
+                {/* COD */}
+                <label className="flex items-center gap-3 cursor-pointer text-sm">
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={paymentMethod === "COD"}
+                    onChange={() => setPaymentMethod("COD")}
+                  />
                   <span>Cash on Delivery (COD)</span>
                 </label>
+
+                {/* GPay */}
+                <label className="flex items-center gap-3 cursor-pointer text-sm">
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={paymentMethod === "GPay"}
+                    onChange={() => setPaymentMethod("GPay")}
+                  />
+                  <span>Google Pay (GPay)</span>
+                </label>
+
+                {/* PhonePe */}
+                <label className="flex items-center gap-3 cursor-pointer text-sm">
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={paymentMethod === "PhonePe"}
+                    onChange={() => setPaymentMethod("PhonePe")}
+                  />
+                  <span>PhonePe</span>
+                </label>
+
+                {/* UPI OPTION */}
+                <label className="flex items-center gap-3 cursor-pointer text-sm">
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={paymentMethod === "UPI"}
+                    onChange={() => setPaymentMethod("UPI")}
+                  />
+                  <span>UPI</span>
+                </label>
+
+                {/* --- UPI INPUT FIELD --- */}
+                {paymentMethod === "UPI" && (
+                  <div className="ml-6 mt-2">
+                    <input
+                      type="text"
+                      value={upiId}
+                      onChange={(e) => {
+                        setUpiId(e.target.value);
+                        validateUpi(e.target.value);
+                      }}
+                      placeholder="Enter UPI ID (e.g., name@upi)"
+                      className="border border-gray-300 p-2 rounded-md text-sm w-full max-w-xs"
+                    />
+                    {upiError && (
+                      <p className="text-red-500 text-xs mt-1">{upiError}</p>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="px-4 pb-4 mt-4">
                 <button
-                  disabled={isContinueDisabled}
+                  disabled={isContinueDisabled || loading}
                   onClick={handleContinue}
                   className={`w-full font-medium py-3 rounded shadow-md flex justify-center
                     ${
-                      isContinueDisabled
+                      isContinueDisabled || loading
                         ? "bg-gray-300 cursor-not-allowed"
                         : "bg-orange-500 text-white"
                     }`}
                 >
-                  {loading ? "Placing Order..." : "CONTINUE"}
+                  {loading ? "Processing..." : "CONTINUE"}
                 </button>
               </div>
             </div>
@@ -279,9 +389,7 @@ export default function Checkout() {
           <div className="w-full lg:w-80 flex-shrink-0">
             <div className="bg-white shadow-sm lg:sticky lg:top-6">
               <div className="p-4 border-b">
-                <h3 className="text-gray-500 font-medium text-sm">
-                  PRICE DETAILS
-                </h3>
+                <h3 className="text-gray-500 font-medium text-sm">PRICE DETAILS</h3>
               </div>
 
               <div className="p-4 space-y-3 text-sm">
@@ -323,6 +431,41 @@ export default function Checkout() {
               className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-lg w-full sm:w-auto"
             >
               Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* --- QR PAYMENT POPUP --- */}
+      {showQRModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white p-6 rounded-xl w-full max-w-sm text-center shadow-xl relative">
+            <button
+              onClick={() => setShowQRModal(false)}
+              className="absolute right-3 top-3 text-gray-500"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-lg font-semibold mb-3">Scan to Pay (UPI)</h2>
+
+            {/* Render QR directly */}
+            <QRCodeCanvas
+              value={createUpiUrl(totalPrice, upiId)}
+              size={200}
+              includeMargin={true}
+              className="mx-auto mb-4"
+            />
+
+            <p className="text-gray-600 text-sm mb-2">
+              Scan the QR using Google Pay, PhonePe, Paytm or any UPI app.
+            </p>
+
+            <button
+              onClick={handleUPIOrderSuccess}
+              className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg mt-4 w-full"
+            >
+              I Have Paid
             </button>
           </div>
         </div>
