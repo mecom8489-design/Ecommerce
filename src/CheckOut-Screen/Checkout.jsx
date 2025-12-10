@@ -4,10 +4,6 @@ import { ProductContext } from "../context/ProductContext";
 import { AuthContext } from "../context/LoginAuth";
 import { orderplace, addressUpdate } from "../apiroutes/userApi";
 import { useLocation, useNavigate } from "react-router-dom";
-import { QRCodeCanvas } from "qrcode.react";
-
-// --- Removed Node QRCode import ---
-// import QRCode from "qrcode";
 
 export default function Checkout() {
   const { selectedProduct, setSelectedProduct, checkoutInfo } =
@@ -39,16 +35,7 @@ export default function Checkout() {
 
   const [paymentMethod, setPaymentMethod] = useState("");
 
-  // --- NEW UPI STATES ---
-  const [upiId, setUpiId] = useState("");
-  const [upiError, setUpiError] = useState("");
-  const [showQRModal, setShowQRModal] = useState(false);
-
-  const isContinueDisabled =
-    !address.trim() ||
-    !isSaved ||
-    !paymentMethod ||
-    (paymentMethod === "UPI" && !upiId.trim());
+  const isContinueDisabled = !address.trim() || !isSaved || !paymentMethod;
 
   useEffect(() => {
     if (state?.product) setSelectedProduct(state.product);
@@ -79,57 +66,87 @@ export default function Checkout() {
     }
   };
 
-  // --- UPI VALIDATION ---
-  const validateUpi = (value) => {
-    const regex = /^[\w.-]+@[\w.-]+$/;
-    if (!regex.test(value)) {
-      setUpiError("Invalid UPI ID format (example: name@upi)");
-    } else {
-      setUpiError("");
-    }
-  };
-
-  // --- CREATE UPI DEEP LINK ---
-  const createUpiUrl = (amount, upi) => {
-    return `upi://pay?pa=${upi}&pn=E%20ShopEasy&am=${amount}&cu=INR&tn=Order%20Payment`;
-  };
-
-  // --- UPI PAYMENT ORDER COMPLETION ---
-  const handleUPIOrderSuccess = async () => {
+  // ---------------------------
+  // ⭐ RAZORPAY PAYMENT FUNCTION
+  // ---------------------------
+  const handleRazorpayPayment = async () => {
     try {
       setLoading(true);
 
-      const orderData = {
-        user_id: user.id,
-        product_id: product.id,
-        quantity,
-        price_per_unit: product.price,
-        total_price: totalPrice,
-        shipping_name: user.firstname,
-        shipping_phone: user.mobile,
-        shipping_address: address,
-        payment_method: "UPI",
-        payment_status: "Paid",
-        order_status: "Processing",
-        user_email: user.email,
-        productname: product.name,
+      // 1️⃣ Create Razorpay Order from backend
+      const res = await fetch(" https://https://e-commerce-backend-rho-rouge.vercel.app/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: totalPrice }),
+      });
+
+      const order = await res.json();
+
+      // 2️⃣ Razorpay Checkout Options
+      const options = {
+        key: "RAZORPAY_KEY_ID", // Replace with your actual Razorpay key
+        amount: order.amount,
+        currency: "INR",
+        name: "E ShopEasy",
+        description: "Order Payment",
+        order_id: order.id,
+
+        handler: async function (response) {
+          // 3️⃣ Verify Payment
+          const verifyRes = await fetch(" https://https://e-commerce-backend-rho-rouge.vercel.app/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(response),
+          });
+
+          const verify = await verifyRes.json();
+
+          if (verify.success) {
+            // 4️⃣ Save order in your DB
+            await orderplace({
+              user_id: user.id,
+              product_id: product.id,
+              quantity,
+              price_per_unit: product.price,
+              total_price: totalPrice,
+              shipping_name: user.firstname,
+              shipping_phone: user.mobile,
+              shipping_address: address,
+              payment_method: "Razorpay",
+              payment_status: "Paid",
+              order_status: "Processing",
+              user_email: user.email,
+              productname: product.name,
+            });
+
+            setShowPopup(true);
+          } else {
+            alert("Payment verification failed.");
+          }
+        },
+
+        theme: { color: "#F37254" },
       };
 
-      await orderplace(orderData);
-      setShowQRModal(false);
-      setShowPopup(true);
+      // 5️⃣ Open Razorpay Payment Modal
+      const razor = new window.Razorpay(options);
+      razor.open();
+
     } catch (err) {
       console.error(err);
-      alert("Failed to place order.");
+      alert("Failed to start Razorpay payment.");
     } finally {
       setLoading(false);
     }
   };
 
-  // --- MAIN CONTINUE LOGIC ---
+  // -------------------------------
+  // ⭐ MAIN CONTINUE BUTTON ACTION
+  // -------------------------------
   const handleContinue = async () => {
     if (paymentMethod === "COD") {
       setLoading(true);
+
       try {
         const orderData = {
           user_id: user.id,
@@ -158,15 +175,8 @@ export default function Checkout() {
       return;
     }
 
-    // --- NEW UPI LOGIC ---
-    if (paymentMethod === "UPI") {
-      if (!upiId || upiError) {
-        alert("Please enter a valid UPI ID.");
-        return;
-      }
-
-      // Open QR modal
-      setShowQRModal(true);
+    if (paymentMethod === "Razorpay") {
+      handleRazorpayPayment();
       return;
     }
   };
@@ -192,9 +202,10 @@ export default function Checkout() {
         </div>
       </header>
 
-      {/* MAIN */}
+      {/* MAIN CONTENT */}
       <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 flex-grow w-full">
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+          {/* LEFT SECTION */}
           <div className="flex-1 space-y-4">
             {/* LOGIN STEP */}
             <div className="bg-white shadow-sm">
@@ -209,7 +220,9 @@ export default function Checkout() {
                   <Check className="w-5 h-5 text-blue-600" />
                 </div>
               </div>
-              <div className="px-4 py-3 text-sm text-gray-700">{user?.mobile}</div>
+              <div className="px-4 py-3 text-sm text-gray-700">
+                {user?.mobile}
+              </div>
             </div>
 
             {/* ADDRESS */}
@@ -227,7 +240,8 @@ export default function Checkout() {
                 {isSaved ? (
                   <div>
                     <p className="text-sm text-gray-700">
-                      <span className="font-medium">{user?.firstname}</span> {address}
+                      <span className="font-medium">{user?.firstname}</span>{" "}
+                      {address}
                     </p>
                     <button
                       onClick={() => setIsSaved(false)}
@@ -302,7 +316,9 @@ export default function Checkout() {
 
               {/* PAYMENT METHODS */}
               <div className="bg-gray-50 px-4 py-4 border-t space-y-3">
-                <h3 className="font-semibold text-gray-700 mb-2">Payment Method</h3>
+                <h3 className="font-semibold text-gray-700 mb-2">
+                  Payment Method
+                </h3>
 
                 {/* COD */}
                 <label className="flex items-center gap-3 cursor-pointer text-sm">
@@ -315,57 +331,16 @@ export default function Checkout() {
                   <span>Cash on Delivery (COD)</span>
                 </label>
 
-                {/* GPay */}
+                {/* Razorpay */}
                 <label className="flex items-center gap-3 cursor-pointer text-sm">
                   <input
                     type="radio"
                     name="payment"
-                    checked={paymentMethod === "GPay"}
-                    onChange={() => setPaymentMethod("GPay")}
+                    checked={paymentMethod === "Razorpay"}
+                    onChange={() => setPaymentMethod("Razorpay")}
                   />
-                  <span>Google Pay (GPay)</span>
+                  <span>Razorpay (UPI / Card / Wallet)</span>
                 </label>
-
-                {/* PhonePe */}
-                <label className="flex items-center gap-3 cursor-pointer text-sm">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={paymentMethod === "PhonePe"}
-                    onChange={() => setPaymentMethod("PhonePe")}
-                  />
-                  <span>PhonePe</span>
-                </label>
-
-                {/* UPI OPTION */}
-                <label className="flex items-center gap-3 cursor-pointer text-sm">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={paymentMethod === "UPI"}
-                    onChange={() => setPaymentMethod("UPI")}
-                  />
-                  <span>UPI</span>
-                </label>
-
-                {/* --- UPI INPUT FIELD --- */}
-                {paymentMethod === "UPI" && (
-                  <div className="ml-6 mt-2">
-                    <input
-                      type="text"
-                      value={upiId}
-                      onChange={(e) => {
-                        setUpiId(e.target.value);
-                        validateUpi(e.target.value);
-                      }}
-                      placeholder="Enter UPI ID (e.g., name@upi)"
-                      className="border border-gray-300 p-2 rounded-md text-sm w-full max-w-xs"
-                    />
-                    {upiError && (
-                      <p className="text-red-500 text-xs mt-1">{upiError}</p>
-                    )}
-                  </div>
-                )}
               </div>
 
               <div className="px-4 pb-4 mt-4">
@@ -389,7 +364,9 @@ export default function Checkout() {
           <div className="w-full lg:w-80 flex-shrink-0">
             <div className="bg-white shadow-sm lg:sticky lg:top-6">
               <div className="p-4 border-b">
-                <h3 className="text-gray-500 font-medium text-sm">PRICE DETAILS</h3>
+                <h3 className="text-gray-500 font-medium text-sm">
+                  PRICE DETAILS
+                </h3>
               </div>
 
               <div className="p-4 space-y-3 text-sm">
@@ -435,70 +412,6 @@ export default function Checkout() {
           </div>
         </div>
       )}
-
-      {/* --- QR PAYMENT POPUP --- */}
-      {showQRModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white p-6 rounded-xl w-full max-w-sm text-center shadow-xl relative">
-            <button
-              onClick={() => setShowQRModal(false)}
-              className="absolute right-3 top-3 text-gray-500"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <h2 className="text-lg font-semibold mb-3">Scan to Pay (UPI)</h2>
-
-            {/* Render QR directly */}
-            <QRCodeCanvas
-              value={createUpiUrl(totalPrice, upiId)}
-              size={200}
-              includeMargin={true}
-              className="mx-auto mb-4"
-            />
-
-            <p className="text-gray-600 text-sm mb-2">
-              Scan the QR using Google Pay, PhonePe, Paytm or any UPI app.
-            </p>
-
-            <button
-              onClick={handleUPIOrderSuccess}
-              className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg mt-4 w-full"
-            >
-              I Have Paid
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* FOOTER */}
-      <footer className="bg-white border-t py-4 mt-6">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-600 text-center md:text-left">
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4">
-            <span>Returns Policy</span>
-            <span className="hidden md:inline">|</span>
-            <span>Terms of use</span>
-            <span className="hidden md:inline">|</span>
-            <span>Security</span>
-            <span className="hidden md:inline">|</span>
-            <span>Privacy</span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
-            <span>© 2007-2025 E ShopEasy.com</span>
-            <span>
-              Need help? Visit the{" "}
-              <a href="#" className="text-blue-600">
-                Help Center
-              </a>{" "}
-              or{" "}
-              <a href="#" className="text-blue-600">
-                Contact Us
-              </a>
-            </span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
