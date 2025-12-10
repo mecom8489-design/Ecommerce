@@ -209,6 +209,46 @@ export default function Product() {
               )}
             </div>
 
+            {/* Description */}
+            <div className="border border-gray-200 p-[12px] sm:p-5 mt-6 rounded-lg">
+              <h2 className="font-bold mb-2 text-[16px] sm:text-xl text-gray-800">
+                Product Description
+              </h2>
+              <p className="text-gray-700 leading-relaxed text-[13px] sm:text-base">
+                {product.description ||
+                  "This is a high-quality product designed for durability and comfort."}
+              </p>
+            </div>
+
+            {/* Delivery Info */}
+            <div className="space-y-4">
+              {/* Free Shipping */}
+              <div className="flex items-start space-x-3">
+                <Truck className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-gray-600 mt-[2px]" />
+                <div>
+                  <p className="font-medium text-[14px] sm:text-gray-800 sm:text-base">
+                    Free Shipping
+                  </p>
+                  <p className="text-gray-600 text-[12px] sm:text-sm">
+                    Free shipping on orders over ₹990.
+                  </p>
+                </div>
+              </div>
+
+              {/* Easy Returns */}
+              <div className="flex items-start space-x-3">
+                <RotateCcw className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-gray-600 mt-[2px]" />
+                <div>
+                  <p className="font-medium text-[14px] sm:text-gray-800 sm:text-base">
+                    Easy Returns
+                  </p>
+                  <p className="text-gray-600 text-[12px] sm:text-sm">
+                    Return or exchange within 7 days.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Quantity & Checkout - Responsive */}
             {/* Quantity + Total + Wishlist */}
             <div className="flex items-center gap-2 sm:gap-3 mb-6 w-full overflow-hidden">
@@ -266,6 +306,14 @@ export default function Product() {
               </button>
             </div>
 
+            {/* Add to Cart */}
+            <button
+              className="w-full bg-red-500 text-white rounded font-bold hover:bg-red-600 transition-colors mb-6 h-[44px] text-[14px] sm:h-[56px] sm:text-[18px]"
+              onClick={() => addToCart(product)}
+            >
+              ADD TO CART
+            </button>
+
             {/* Buy Now */}
             <button
               className="w-full bg-yellow-500 text-white rounded font-bold hover:bg-yellow-600 transition-colors mb-4 h-[44px] text-[14px] sm:h-[56px] sm:text-[18px]"
@@ -290,54 +338,6 @@ export default function Product() {
             >
               BUY IT NOW
             </button>
-
-            {/* Add to Cart */}
-            <button
-              className="w-full bg-red-500 text-white rounded font-bold hover:bg-red-600 transition-colors mb-6 h-[44px] text-[14px] sm:h-[56px] sm:text-[18px]"
-              onClick={() => addToCart(product)}
-            >
-              ADD TO CART
-            </button>
-
-            {/* Delivery Info */}
-            <div className="space-y-4">
-              {/* Free Shipping */}
-              <div className="flex items-start space-x-3">
-                <Truck className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-gray-600 mt-[2px]" />
-                <div>
-                  <p className="font-medium text-[14px] sm:text-gray-800 sm:text-base">
-                    Free Shipping
-                  </p>
-                  <p className="text-gray-600 text-[12px] sm:text-sm">
-                    Free shipping on orders over ₹990.
-                  </p>
-                </div>
-              </div>
-
-              {/* Easy Returns */}
-              <div className="flex items-start space-x-3">
-                <RotateCcw className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-gray-600 mt-[2px]" />
-                <div>
-                  <p className="font-medium text-[14px] sm:text-gray-800 sm:text-base">
-                    Easy Returns
-                  </p>
-                  <p className="text-gray-600 text-[12px] sm:text-sm">
-                    Return or exchange within 7 days.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="border border-gray-200 p-[12px] sm:p-5 mt-6 rounded-lg">
-              <h2 className="font-bold mb-2 text-[16px] sm:text-xl text-gray-800">
-                Product Description
-              </h2>
-              <p className="text-gray-700 leading-relaxed text-[13px] sm:text-base">
-                {product.description ||
-                  "This is a high-quality product designed for durability and comfort."}
-              </p>
-            </div>
 
             <ProductReviews />
           </div>
