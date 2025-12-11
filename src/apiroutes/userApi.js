@@ -68,3 +68,17 @@ export const profileUpdate = async (id, data) => {
     },
   });
 };
+
+export const createRazorpayOrder = (data) => {
+  return axiosInstance.post("/RazorpayOrderRoute/RazorpayOrderRoute", data, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
+
+export const verifyRazorpayPayment = (data) => {
+  return axiosInstance.post("/RazorpayOrderRoute/verifypayment", data, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+

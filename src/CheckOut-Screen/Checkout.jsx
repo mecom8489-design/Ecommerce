@@ -2,7 +2,12 @@ import { useState, useEffect, useContext } from "react";
 import { Check, Info, ArrowLeft, X } from "lucide-react";
 import { ProductContext } from "../context/ProductContext";
 import { AuthContext } from "../context/LoginAuth";
-import { orderplace, addressUpdate } from "../apiroutes/userApi";
+import {
+  orderplace,
+  addressUpdate,
+  verifyRazorpayPayment,
+  createRazorpayOrder,
+} from "../apiroutes/userApi";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Checkout() {
@@ -16,6 +21,7 @@ export default function Checkout() {
   const [isSaved, setIsSaved] = useState(!!user?.address);
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const product = selectedProduct || state?.product;
   const quantity =
@@ -66,28 +72,16 @@ export default function Checkout() {
     }
   };
 
-  // ---------------------------
-  // ⭐ RAZORPAY PAYMENT FUNCTION
-  // ---------------------------
   const handleRazorpayPayment = async () => {
     try {
       setLoading(true);
 
-      // 1️⃣ Create Razorpay Order from backend
-      const res = await fetch(
-        "http://localhost:3000/api/RazorpayOrderRoute/RazorpayOrderRoute",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: totalPrice }),
-        }
-      );
+      // 1️⃣ Create Razorpay Order
+      const { data: order } = await createRazorpayOrder({ amount: totalPrice });
 
-      const order = await res.json();
-
-      // 2️⃣ Razorpay Checkout Options
+      // 2️⃣ Razorpay Options
       const options = {
-        key: "rzp_test_RqAz9S8L2bcJlg", // Replace with your actual Razorpay key
+        key: "rzp_test_RqAz9S8L2bcJlg",
         amount: order.amount,
         currency: "INR",
         name: "E ShopEasy",
@@ -95,22 +89,9 @@ export default function Checkout() {
         order_id: order.id,
 
         handler: async function (response) {
-          // 3️⃣ Verify Payment
-          const verifyRes = await fetch(
-            "http://localhost:3000/api/RazorpayOrderRoute/verifypayment",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(response),
-            }
-          );
-          console.log("verifyRes", verifyRes);
-
-          const verify = await verifyRes.json();
-          console.log(verify);
-
+          const { data: verify } = await verifyRazorpayPayment(response);
           if (verify.success) {
-            // 4️⃣ Save order in your DB
+            setIsLoading(true);
             await orderplace({
               user_id: user.id,
               product_id: product.id,
@@ -129,7 +110,7 @@ export default function Checkout() {
               razorpay_payment_id: verify.razorpay_payment_id,
               razorpay_signature: verify.razorpay_signature,
             });
-
+            setIsLoading(false);
             setShowPopup(true);
           } else {
             alert("Payment verification failed.");
@@ -139,9 +120,7 @@ export default function Checkout() {
         theme: { color: "#F37254" },
       };
 
-      // 5️⃣ Open Razorpay Payment Modal
-      const razor = new window.Razorpay(options);
-      razor.open();
+      new window.Razorpay(options).open();
     } catch (err) {
       console.error(err);
       alert("Failed to start Razorpay payment.");
@@ -150,9 +129,6 @@ export default function Checkout() {
     }
   };
 
-  // -------------------------------
-  // ⭐ MAIN CONTINUE BUTTON ACTION
-  // -------------------------------
   const handleContinue = async () => {
     if (paymentMethod === "COD") {
       setLoading(true);
@@ -422,6 +398,17 @@ export default function Checkout() {
             >
               Close
             </button>
+          </div>
+        </div>
+      )}
+
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-md shadow-md text-center">
+            <div className="loader border-4 border-t-transparent border-blue-600 rounded-full w-10 h-10 mx-auto animate-spin"></div>
+            <p className="mt-3 font-medium text-gray-700">
+              Processing pls wait...
+            </p>
           </div>
         </div>
       )}
