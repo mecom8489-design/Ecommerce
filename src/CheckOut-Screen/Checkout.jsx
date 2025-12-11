@@ -74,11 +74,14 @@ export default function Checkout() {
       setLoading(true);
 
       // 1️⃣ Create Razorpay Order from backend
-      const res = await fetch("http://localhost:3000/api/RazorpayOrderRoute/RazorpayOrderRoute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: totalPrice }),
-      });
+      const res = await fetch(
+        "http://localhost:3000/api/RazorpayOrderRoute/RazorpayOrderRoute",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: totalPrice }),
+        }
+      );
 
       const order = await res.json();
 
@@ -93,13 +96,18 @@ export default function Checkout() {
 
         handler: async function (response) {
           // 3️⃣ Verify Payment
-          const verifyRes = await fetch("http://localhost:3000/api/RazorpayOrderRoute/verifypayment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(response),
-          });
+          const verifyRes = await fetch(
+            "http://localhost:3000/api/RazorpayOrderRoute/verifypayment",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response),
+            }
+          );
+          console.log("verifyRes", verifyRes);
 
           const verify = await verifyRes.json();
+          console.log(verify);
 
           if (verify.success) {
             // 4️⃣ Save order in your DB
@@ -117,6 +125,9 @@ export default function Checkout() {
               order_status: "Processing",
               user_email: user.email,
               productname: product.name,
+              razorpay_order_id: verify.razorpay_order_id,
+              razorpay_payment_id: verify.razorpay_payment_id,
+              razorpay_signature: verify.razorpay_signature,
             });
 
             setShowPopup(true);
@@ -131,7 +142,6 @@ export default function Checkout() {
       // 5️⃣ Open Razorpay Payment Modal
       const razor = new window.Razorpay(options);
       razor.open();
-
     } catch (err) {
       console.error(err);
       alert("Failed to start Razorpay payment.");
@@ -261,7 +271,10 @@ export default function Checkout() {
                       placeholder="Enter your address"
                       onChange={(e) => {
                         setAddress(e.target.value);
-                        localStorage.setItem("checkout_address", e.target.value);
+                        localStorage.setItem(
+                          "checkout_address",
+                          e.target.value
+                        );
                       }}
                       className="w-full border border-gray-300 rounded-md p-2 mt-1"
                     />
