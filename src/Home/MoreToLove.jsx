@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Star, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext"; // top of file
-import { addToWishlist } from "../utils/wishlistUtils";
+import { addToWishlist, removeFromWishlist } from "../utils/wishlistUtils";
 import Toast from "../context/ToastAddToCart";
 
 export default function MoreToLove({ products }) {
@@ -12,11 +12,24 @@ export default function MoreToLove({ products }) {
 
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [favorites, setFavorites] = useState(new Set());
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2000);
+  };
+
+  const toggleFavorite = (productId) => {
+    setFavorites((prev) => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(productId)) {
+        newFavorites.delete(productId);
+      } else {
+        newFavorites.add(productId);
+      }
+      return newFavorites;
+    });
   };
 
   const handleViewMore = () => {
@@ -56,7 +69,7 @@ export default function MoreToLove({ products }) {
               )}
 
               {/* Wishlist Button */}
-              <button
+              {/* <button
                 className="text-gray-600 hover:text-red-700 z-10 absolute top-3 left-2"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -65,6 +78,31 @@ export default function MoreToLove({ products }) {
                 }}
               >
                 <i className="far fa-heart"></i>
+              </button> */}
+              <button
+                className={`z-10 absolute top-3 left-2 transition-all duration-300 ${
+                  favorites.has(product.id)
+                    ? "text-red-500"
+                    : "text-gray-600 hover:text-red-700"
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (favorites.has(product.id)) {
+                    toggleFavorite(product.id); // remove from favorites
+                    removeFromWishlist(product.id); // remove from wishlist
+                    triggerToast("Removed from Wishlist ❌");
+                  } else {
+                    toggleFavorite(product.id); // add to favorites
+                    handleWishlist(product); // add to wishlist
+                    triggerToast("Added to Wishlist ✔️");
+                  }
+                }}
+              >
+                <i
+                  className={
+                    favorites.has(product.id) ? "fas fa-heart" : "far fa-heart"
+                  }
+                ></i>
               </button>
 
               {/* Add to Cart Button */}

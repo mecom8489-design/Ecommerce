@@ -13,33 +13,24 @@ import Header from "../Header/header"; // Make sure the file exports a component
 import Footer from "../Footer/footer";
 import image1 from "../assets/landing-page-images/image1.PNG";
 import image2 from "../assets/landing-page-images/image2.PNG";
-import image5 from "../assets/landing-page-images/image5.png";
-import image8 from "../assets/landing-page-images/image8.png";
-import ProductAD from "./ProductAD";
 import buttonBg from "../assets/landing-page-images/button.png"; // adjust path if needed
 import MoreToLove from "./MoreToLove"; // Import the MoreToLove component
 import { useCart } from "../context/CartContext"; // top of file
 import { useNavigate } from "react-router-dom";
-import { addToWishlist } from "../utils/wishlistUtils";
+import { addToWishlist, removeFromWishlist } from "../utils/wishlistUtils";
 import { getAddedProducts } from "../apiroutes/adminApi";
 import Toast from "../context/ToastAddToCart"; // adjust path as needed
 
 const Home = () => {
-  const [current, setCurrent] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [favorites, setFavorites] = useState(new Set());
   const images = [image1, image2];
-
   const { addToCart } = useCart();
-  const navigate = useNavigate(); // ← This is required
-
+  const navigate = useNavigate();
   const [viewMore, setViewMore] = useState([]);
   const [bestSeller, setBestSeller] = useState([]);
-  const [ProductADs, setProductAds] = useState([]);
   const [recommended, setRecommended] = useState([]);
-  const itemsPerViews = 0; // Show 6 products initially
-  const scrollStep = 3; // Move 2 products on each scroll
-  const maxIndex = Math.max(recommended.length - itemsPerViews, 0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [productAd, setProductAd] = useState([]);
 
@@ -69,7 +60,6 @@ const Home = () => {
   const fetchProducts = async () => {
     try {
       const response = await getAddedProducts();
-
       const {
         productAd = [],
         viewMore = [],
@@ -81,8 +71,10 @@ const Home = () => {
       setRecommended(recommended);
       const formatted = formatBestSellerData(bestSeller);
       setBestSeller(formatted.slice(-12));
+      setLoading(false);
     } catch (err) {
       console.error(err);
+      setLoading(false);
       setError(err?.response?.data?.message || "Failed to fetch products.");
     }
   };
@@ -102,7 +94,7 @@ const Home = () => {
       offer: product.offer,
       category: product.category,
       created_at: product.created_at,
-      message:product.message
+      message: product.message,
     }));
   };
 
@@ -113,14 +105,6 @@ const Home = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  const handlePrevious = () => {
-    setCurrentIndex((prev) => Math.max(prev - scrollStep, 0));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => Math.min(prev + scrollStep, maxIndex));
-  };
 
   const toggleFavorite = (productId) => {
     setFavorites((prev) => {
@@ -142,10 +126,6 @@ const Home = () => {
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const goToSlide = (index) => {
-    setCurrentSlide(index);
   };
 
   useEffect(() => {
@@ -204,8 +184,6 @@ const Home = () => {
     return 6; // xl
   };
 
-  const [itemsPerView, setItemsPerView] = useState(getItemsPerView());
-
   useEffect(() => {
     const handleResize = () => setItemsPerView(getItemsPerView());
     window.addEventListener("resize", handleResize);
@@ -215,6 +193,24 @@ const Home = () => {
   const handleWishlist = (product) => {
     addToWishlist(product);
   };
+
+  const Loader = () => (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+      <div className="w-16 h-16 border-4 border-yellow-400 border-dashed rounded-full animate-spin"></div>
+      <p className="mt-4 text-gray-700 text-lg font-medium">
+        Please wait Loading ....
+      </p>
+    </div>
+  );
+
+  // Show loader if loading
+  if (loading) return <Loader />;
+  if (error)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-red-500 text-xl">{error}</p>
+      </div>
+    );
 
   return (
     <>
@@ -391,14 +387,31 @@ const Home = () => {
                   {/* Wishlist + Cart buttons */}
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
                     <button
-                      className="text-gray-600 hover:text-indigo-600"
+                      className={`transition-all duration-300 ${
+                        favorites.has(product.id)
+                          ? "text-red-500"
+                          : "text-gray-600 hover:text-indigo-600"
+                      }`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleWishlist(product);
-                        triggerToast("Added to Wishlist ✔️");
+                        if (favorites.has(product.id)) {
+                          toggleFavorite(product.id);
+                          removeFromWishlist(product.id);
+                          triggerToast("Removed from Wishlist ❌");
+                        } else {
+                          toggleFavorite(product.id);
+                          handleWishlist(product);
+                          triggerToast("Added to Wishlist ✔️");
+                        }
                       }}
                     >
-                      <i className="far fa-heart"></i>
+                      <i
+                        className={
+                          favorites.has(product.id)
+                            ? "fas fa-heart"
+                            : "far fa-heart"
+                        }
+                      ></i>
                     </button>
 
                     <button
@@ -527,15 +540,23 @@ const Home = () => {
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
                   >
                     <Heart
-                      className={`w-5 h-5 ${
+                      className={`w-5 h-5 cursor-pointer transition-all duration-300 ${
                         favorites.has(product.id)
                           ? "fill-red-500 text-red-500"
                           : "text-gray-400"
                       }`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        triggerToast("Added to Wishlist ✔️");
-                        handleWishlist(product);
+
+                        if (favorites.has(product.id)) {
+                          toggleFavorite(product.id); 
+                          removeFromWishlist(product.id); 
+                          triggerToast("Removed from Wishlist ❌");
+                        } else {
+                          toggleFavorite(product.id); 
+                          handleWishlist(product); 
+                          triggerToast("Added to Wishlist ✔️");
+                        }
                       }}
                     />
                   </button>
