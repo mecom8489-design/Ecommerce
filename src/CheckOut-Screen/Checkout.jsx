@@ -74,7 +74,7 @@ export default function Checkout() {
       setLoading(true);
 
       // 1️⃣ Create Razorpay Order from backend
-      const res = await fetch(" https://https://e-commerce-backend-rho-rouge.vercel.app/create-order", {
+      const res = await fetch("http://localhost:3000/api/RazorpayOrderRoute/RazorpayOrderRoute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: totalPrice }),
@@ -84,7 +84,7 @@ export default function Checkout() {
 
       // 2️⃣ Razorpay Checkout Options
       const options = {
-        key: "RAZORPAY_KEY_ID", // Replace with your actual Razorpay key
+        key: "rzp_test_RqAz9S8L2bcJlg", // Replace with your actual Razorpay key
         amount: order.amount,
         currency: "INR",
         name: "E ShopEasy",
@@ -93,7 +93,7 @@ export default function Checkout() {
 
         handler: async function (response) {
           // 3️⃣ Verify Payment
-          const verifyRes = await fetch(" https://https://e-commerce-backend-rho-rouge.vercel.app/verify-payment", {
+          const verifyRes = await fetch("http://localhost:3000/api/RazorpayOrderRoute/verifypayment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(response),
