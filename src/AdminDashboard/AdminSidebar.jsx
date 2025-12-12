@@ -24,7 +24,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("token");
     logout();
     navigate("/home");
   };

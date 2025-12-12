@@ -10,16 +10,14 @@ export const AuthProvider = ({ children }) => {
   const { clearCart } = useCart();
 
   useEffect(() => {
-    // Token is always in sessionStorage
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
     if (token && storedUser) {
       setIsLoggedIn(true);
       setUser(JSON.parse(storedUser));
     } else {
-      // If token is missing, clear session and reset state
-      sessionStorage.clear();
+      localStorage.clear();
       clearCart();
       setIsLoggedIn(false);
       setUser(null);
@@ -27,8 +25,7 @@ export const AuthProvider = ({ children }) => {
   }, []); // Run only once on mount
 
   const login = (userData) => {
-    // Token goes to sessionStorage
-    sessionStorage.setItem("token", userData.token);
+    localStorage.setItem("token", userData.token);
     // User info goes to localStorage
     localStorage.setItem("user", JSON.stringify(userData));
 
@@ -37,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    sessionStorage.clear();
+    localStorage.clear();
     localStorage.clear();
     clearCart();
     setIsLoggedIn(false);

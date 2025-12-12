@@ -73,7 +73,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       toast.success("Login successful");
       const role = response.data.user.role;
       const token = response.data.token;
-      sessionStorage.setItem("token", token);
+      localStorage.setItem("token", token);
       if (role == "admin") {
         navigate("/admin");
       }

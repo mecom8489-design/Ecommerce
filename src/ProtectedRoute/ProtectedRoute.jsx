@@ -2,7 +2,8 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-    const isAuthenticated = !!sessionStorage.getItem("token"); // adjust as needed
+    const isAuthenticated = !!localStorage.getItem("token"); 
+    console.log("i am the one");// adjust as needed
     return isAuthenticated ? <Outlet /> : <Navigate to="/home" />;
 };
 
