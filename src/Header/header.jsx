@@ -204,9 +204,8 @@ export default function Header() {
             >
               <Heart
                 size={20}
-                className={`transition-all duration-200 ${
-                  wishlist > 0 ? "text-red-600 fill-red-600" : "text-black"
-                }`}
+                className={`transition-all duration-200 ${wishlist > 0 ? "text-red-600 fill-red-600" : "text-black"
+                  }`}
               />
               <span className="hidden sm:inline">Wishlist</span>
             </Link>
@@ -275,7 +274,13 @@ export default function Header() {
                       </button>
 
                       <button
-                        onClick={logout}
+                        onClick={() => {
+                          localStorage.removeItem("token");
+                          localStorage.removeItem("user");
+                          localStorage.clear();
+                          logout();
+                          navigate("/home");
+                        }}
                         className="w-full flex items-center px-3 py-2 text-[12px] sm:text-[14px] text-gray-700 hover:bg-gray-100"
                       >
                         <LogOut size={16} className="mr-2 text-red-500" />

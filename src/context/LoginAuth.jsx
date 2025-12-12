@@ -17,12 +17,27 @@ export const AuthProvider = ({ children }) => {
       setIsLoggedIn(true);
       setUser(JSON.parse(storedUser));
     } else {
-      localStorage.clear();
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       clearCart();
       setIsLoggedIn(false);
       setUser(null);
     }
-  }, []); // Run only once on mount
+    const syncLogout = (event) => {
+      if (event.key === "token" && event.newValue === null) {
+        clearCart();
+        setIsLoggedIn(false);
+        setUser(null);
+      }
+    };
+
+    window.addEventListener("storage", syncLogout);
+
+    return () => {
+      window.removeEventListener("storage", syncLogout);
+    };
+  }, []);
+
 
   const login = (userData) => {
     localStorage.setItem("token", userData.token);

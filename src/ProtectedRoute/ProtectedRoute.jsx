@@ -1,10 +1,11 @@
 // ProtectedRoute.jsx
 import { Navigate, Outlet } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/LoginAuth"; // adjust path
 
 const ProtectedRoute = () => {
-    const isAuthenticated = !!localStorage.getItem("token"); 
-    console.log("i am the one");// adjust as needed
-    return isAuthenticated ? <Outlet /> : <Navigate to="/home" />;
+  const { isLoggedIn } = useContext(AuthContext);
+  return isLoggedIn ? <Outlet /> : <Navigate to="/home" />;
 };
 
 export default ProtectedRoute;
