@@ -16,12 +16,16 @@ import {
   ShieldCheck,
   LogOut,
 } from "lucide-react";
+import { useContext } from "react";
+import { AuthContext } from "../context/LoginAuth";
+
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navigate = useNavigate();
-
+  const { logout } = useContext(AuthContext);
   const handleLogout = () => {
     sessionStorage.removeItem("token");
+    logout();
     navigate("/home");
   };
 
@@ -29,17 +33,15 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     <>
       {/* Overlay for mobile */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden transition-opacity ${
-          sidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden transition-opacity ${sidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
         onClick={() => setSidebarOpen(false)}
       ></div>
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-white text-black p-6 space-y-6 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 transition-transform duration-300 z-50 border-r border-gray-200`}
+        className={`fixed top-0 left-0 h-screen w-64 bg-white text-black p-6 space-y-6 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 transition-transform duration-300 z-50 border-r border-gray-200`}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -93,10 +95,9 @@ function NavItem({ to, icon, label, end, disabled }) {
       end={end}
       className={({ isActive }) =>
         `flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
-        ${
-          disabled
-            ? "bg-red-50 text-black cursor-not-allowed"
-            : isActive
+        ${disabled
+          ? "bg-red-50 text-black cursor-not-allowed"
+          : isActive
             ? "text-blue-600 bg-blue-50"
             : "text-gray-700 hover:text-blue-600 hover:bg-gray-100"
         }`

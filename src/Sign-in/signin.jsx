@@ -68,11 +68,9 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     try {
       setLoading(true);
       const response = await login({ email, password });
-      // console.log(response)
       const { user } = response.data;
       localStorage.setItem("user", JSON.stringify(user));
       toast.success("Login successful");
-
       const role = response.data.user.role;
       const token = response.data.token;
       sessionStorage.setItem("token", token);

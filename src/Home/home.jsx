@@ -98,13 +98,6 @@ const Home = () => {
     }));
   };
 
-  // Auto-rotate every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   const toggleFavorite = (productId) => {
     setFavorites((prev) => {
@@ -176,19 +169,19 @@ const Home = () => {
 
   // Map each category to an icon
   const icons = [FaTshirt, FaMale, FaChild, FaHeart, FaHome, FaAppleAlt];
-  const getItemsPerView = () => {
-    if (window.innerWidth < 640) return 1.5; // mobile
-    if (window.innerWidth < 768) return 2.5; // sm
-    if (window.innerWidth < 1024) return 3.5; // md
-    if (window.innerWidth < 1280) return 4.5; // lg
-    return 6; // xl
-  };
+  // const getItemsPerView = () => {
+  //   if (window.innerWidth < 640) return 1.5; // mobile
+  //   if (window.innerWidth < 768) return 2.5; // sm
+  //   if (window.innerWidth < 1024) return 3.5; // md
+  //   if (window.innerWidth < 1280) return 4.5; // lg
+  //   return 6; // xl
+  // };
 
-  useEffect(() => {
-    const handleResize = () => setItemsPerView(getItemsPerView());
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // useEffect(() => {
+  //   const handleResize = () => setItemsPerView(getItemsPerView());
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
 
   const handleWishlist = (product) => {
     addToWishlist(product);
