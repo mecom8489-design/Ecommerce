@@ -11,8 +11,6 @@ import { Link } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import Header from "../Header/header"; // Make sure the file exports a component named Header
 import Footer from "../Footer/footer";
-import image1 from "../assets/landing-page-images/image1.PNG";
-import image2 from "../assets/landing-page-images/image2.PNG";
 import buttonBg from "../assets/landing-page-images/button.png"; // adjust path if needed
 import MoreToLove from "./MoreToLove"; // Import the MoreToLove component
 import { useCart } from "../context/CartContext"; // top of file
@@ -23,7 +21,6 @@ import Toast from "../context/ToastAddToCart"; // adjust path as needed
 
 const Home = () => {
   const [favorites, setFavorites] = useState(new Set());
-  const images = [image1, image2];
   const { addToCart } = useCart();
   const navigate = useNavigate();
   const [viewMore, setViewMore] = useState([]);
@@ -167,21 +164,8 @@ const Home = () => {
     },
   ];
 
-  // Map each category to an icon
   const icons = [FaTshirt, FaMale, FaChild, FaHeart, FaHome, FaAppleAlt];
-  // const getItemsPerView = () => {
-  //   if (window.innerWidth < 640) return 1.5; // mobile
-  //   if (window.innerWidth < 768) return 2.5; // sm
-  //   if (window.innerWidth < 1024) return 3.5; // md
-  //   if (window.innerWidth < 1280) return 4.5; // lg
-  //   return 6; // xl
-  // };
 
-  // useEffect(() => {
-  //   const handleResize = () => setItemsPerView(getItemsPerView());
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
 
   const handleWishlist = (product) => {
     addToWishlist(product);
@@ -231,31 +215,17 @@ const Home = () => {
                 <div className="ml-6 md:ml-40 max-w-md p-6 md:p-0">
                   {/* Title */}
                   <h1
-                    className="
-            text-[22px] 
-            sm:text-[30px] 
-            md:text-[38px] 
-            lg:text-[48px] 
-            font-light text-red-600 mb-4 italic
-          "
+                    className="text-[22px] sm:text-[30px] md:text-[38px] lg:text-[48px] font-light text-red-600 mb-4 italic"
                   >
                     {product.title}
                   </h1>
 
                   {/* Description */}
                   <p
-                    className="
-            text-black 
-            text-[14px] 
-            sm:text-[16px] 
-            md:text-[18px] 
-            lg:text-[20px] 
-            mb-8 font-bold leading-relaxed
-          "
+                    className="text-black text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] mb-8 font-bold leading-relaxed"
                   >
                     {product.products?.description}
                   </p>
-
                   {/* Button */}
                   <button
                     className="
@@ -617,7 +587,7 @@ const Home = () => {
                     </div>
 
                     <button
-                      className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 hover:scale-105 transition"
+                      className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 hover:scale-105 transition cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         addToCart(product);
