@@ -14,7 +14,7 @@ import { AuthContext } from "../context/LoginAuth";
 
 
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn,setUser} = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -69,6 +69,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       setLoading(true);
       const response = await login({ email, password });
       const { user } = response.data;
+      setUser(user);
       localStorage.setItem("user", JSON.stringify(user));
       toast.success("Login successful");
       const role = response.data.user.role;
