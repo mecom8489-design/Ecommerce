@@ -71,7 +71,7 @@ const Footer = () => {
     { name: "Modern slavery statement", url: "/modern-slavery" },
     { name: "Accessibility", url: "/accessibility" },
     { name: "Terms & conditions", url: "/terms&conditions" },
-    { name: "Privacy & cookie policies", url: "/privacy" },
+    { name: "Privacy & policy", url: "/privacy" },
   ];
 
   // Show scroll-to-top button when user scrolls down
