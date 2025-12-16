@@ -72,7 +72,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           <NavItem to="/admin/users" icon={<Users size={18} />} label="Users" />
           {/* <NavItem to="/admin/coupons" icon={<Tag size={18} />} label="Coupons" /> */}
           <NavItem disabled icon={<Truck size={18} />} label="Shipping" />
-          <NavItem disabled icon={<CreditCard size={18} />} label="Payments" />
+          <NavItem to="/admin/payments" icon={<CreditCard size={18} />} label="Payments" />
           <NavItem disabled icon={<Star size={18} />} label="Reviews" />
           <NavItem disabled icon={<BarChart3 size={18} />} label="Reports" />
           <NavItem to="/admin/support" icon={<Headphones size={18} />} label="Support" />
@@ -81,7 +81,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="flex items-center w-full text-left space-x-2 px-3 py-2 text-sm text-gray-600 hover:text-red-500 hover:bg-gray-100 rounded-md transition"
+            className="flex items-center w-full text-left space-x-2 px-3 py-2 text-sm text-gray-600 hover:text-red-500 hover:bg-gray-100 rounded-md transition cursor-pointer"
           >
             <LogOut size={18} />
             <span>Logout</span>
