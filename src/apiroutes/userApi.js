@@ -82,3 +82,21 @@ export const verifyRazorpayPayment = (data) => {
   });
 };
 
+export const addWishlistToDB = (userId, product) => {
+  return axiosInstance.post(`/wishlist/addtowishlist/${userId}`, {
+    product,
+  });
+};
+
+// Sync localStorage wishlist → DB (after login)
+export const syncWishlistToDB = (userId, products) => {
+  return axiosInstance.post(`/wishlist/sync/${userId}`, {
+    products,
+  });
+};
+
+// Get wishlist from DB
+export const getWishlistFromDB = (userId) => {
+  return axiosInstance.get(`/wishlist/getwishlist/${userId}`);
+};
+

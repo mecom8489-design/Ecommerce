@@ -14,7 +14,7 @@ import { AuthContext } from "../context/LoginAuth";
 
 
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
-  const { setIsLoggedIn,setUser} = useContext(AuthContext);
+  const { setIsLoggedIn, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
