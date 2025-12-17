@@ -11,6 +11,9 @@ import { addToWishlist } from "../utils/wishlistUtils.js";
 import { AuthContext } from "../context/LoginAuth.jsx";
 import SignIn from "../Sign-in/signin.jsx";
 import SignUp from "../Sign-in/signup.jsx";
+import { addWishlistToDB } from "../apiroutes/userApi.js";
+
+
 
 export default function Product() {
   const { addToCart } = useCart();
@@ -42,9 +45,24 @@ export default function Product() {
     setTimeout(() => setShowToast(false), 2000);
   };
 
-  const handleWishlist = (product) => {
-    addToWishlist(product);
+
+  const handleWishlist = async (product) => {
+    // 👤 Guest 
+    if (!user) {
+      addToWishlist(product);
+      triggerToast("Added to Wishlist ❤️");
+      return;
+    }
+
+    // 🔐 Logged-in user
+    try {
+      await addWishlistToDB(user.id, product);
+      triggerToast("Saved to Wishlist ❤️");
+    } catch (error) {
+      triggerToast("Failed to save wishlist ❌");
+    }
   };
+
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -54,11 +72,11 @@ export default function Product() {
 
   const product = rawProduct
     ? {
-        ...rawProduct,
-        price: Number(rawProduct.price),
-        discount: Number(rawProduct.discount),
-        finalPrice: Number(rawProduct.finalPrice),
-      }
+      ...rawProduct,
+      price: Number(rawProduct.price),
+      discount: Number(rawProduct.discount),
+      finalPrice: Number(rawProduct.finalPrice),
+    }
     : null;
 
   const [quantity, setQuantity] = useState(checkoutInfo?.quantity || 1);
@@ -171,11 +189,10 @@ export default function Product() {
                 <img
                   src={thumbnails[currentImage]}
                   alt={product.name}
-                  className={`w-full h-full object-contain transition-transform duration-300 ease-in-out ${
-                    isZoomed
-                      ? "scale-150 cursor-zoom-out"
-                      : "scale-100 cursor-zoom-in"
-                  }`}
+                  className={`w-full h-full object-contain transition-transform duration-300 ease-in-out ${isZoomed
+                    ? "scale-150 cursor-zoom-out"
+                    : "scale-100 cursor-zoom-in"
+                    }`}
                   style={{
                     transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
                   }}

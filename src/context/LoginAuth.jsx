@@ -1,7 +1,8 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
+import { getWishlist } from "../utils/wishlistUtils";
+import { syncWishlistToDB } from "../apiroutes/userApi";
 
-// Create the context
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -9,13 +10,33 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const { clearCart } = useCart();
 
+  // 🔥 Sync wishlist localStorage → DB
+  const syncWishlist = async (userData) => {
+    const localWishlist = getWishlist();
+
+    if (localWishlist.length === 0) return;
+
+    try {
+      await syncWishlistToDB(userData.id, localWishlist);
+      localStorage.removeItem("wishlist");
+      console.log("Wishlist synced to DB");
+    } catch (error) {
+      console.error("Wishlist sync failed", error);
+    }
+  };
+
+  // 🔄 On page load / refresh
   useEffect(() => {
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
     if (token && storedUser) {
+      const parsedUser = JSON.parse(storedUser);
       setIsLoggedIn(true);
-      setUser(JSON.parse(storedUser));
+      setUser(parsedUser);
+
+      // 🔥 Sync wishlist after refresh
+      syncWishlist(parsedUser);
     } else {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -23,6 +44,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoggedIn(false);
       setUser(null);
     }
+
     const syncLogout = (event) => {
       if (event.key === "token" && event.newValue === null) {
         clearCart();
@@ -38,18 +60,20 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
-
-  const login = (userData) => {
+  // 🔐 LOGIN
+  const login = async (userData) => {
     localStorage.setItem("token", userData.token);
-    // User info goes to localStorage
     localStorage.setItem("user", JSON.stringify(userData));
 
     setIsLoggedIn(true);
     setUser(userData);
+
+    // 🔥 Sync wishlist immediately
+    syncWishlist(userData);
   };
 
+  // 🚪 LOGOUT
   const logout = () => {
-    localStorage.clear();
     localStorage.clear();
     clearCart();
     setIsLoggedIn(false);
@@ -57,7 +81,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, setIsLoggedIn,setUser, login, logout }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, user, setUser, setIsLoggedIn, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
