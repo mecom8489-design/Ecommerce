@@ -12,7 +12,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Header from "../Header/header"; // Make sure the file exports a component named Header
 import Footer from "../Footer/footer";
 import buttonBg from "../assets/landing-page-images/button.png"; // adjust path if needed
-import MoreToLove from "./MoreToLove"; // Import the MoreToLove component
+import MoreToLove from "./MoreToLove"; // Import the MoreToLove c
 import { useCart } from "../context/CartContext"; 
 import { useNavigate } from "react-router-dom";
 import { addToWishlist, removeFromWishlist } from "../utils/wishlistUtils";
