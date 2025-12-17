@@ -19,6 +19,7 @@ const AdminProducts = lazy(() => import("./AdminDashboard/AdminProducts.jsx"));
 const AdminUsers = lazy(() => import("./AdminDashboard/AdminUserDashboard.jsx"));
 const AdminCategories = lazy(() => import("./AdminDashboard/AdminCategories.jsx"));
 const AdminSupport = lazy(() => import("./AdminDashboard/AdminSupport.jsx"));
+const AdminPayments = lazy(() => import("./AdminDashboard/AdminPayments.jsx"));
 const Checkout = lazy(() => import("./CheckOut-Screen/Checkout.jsx"));
 const MyOrders = lazy(() => import("./MyOrders/MyOrders.jsx"));
 const Myprofile = lazy(() => import("./MyProfile/Myprofile.jsx"));
@@ -57,6 +58,7 @@ function App() {
               <Route path="users" element={<AdminUsers />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="support" element={<AdminSupport />} />
+              <Route path="payments" element={<AdminPayments />} />
             </Route>
           </Route>
 

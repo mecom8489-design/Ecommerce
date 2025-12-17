@@ -116,3 +116,12 @@ export const updateOrderDeliveryDate = (orderId, deliveryDate) => {
 };
 
 
+export const getAdminPayments = () => {
+    return axiosInstance.get("/admin/allpayments", {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+}; 
+
+
