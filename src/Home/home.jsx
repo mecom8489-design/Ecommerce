@@ -17,7 +17,7 @@ import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { addToWishlist, removeFromWishlist } from "../utils/wishlistUtils";
 import { getAddedProducts } from "../apiroutes/adminApi";
-import Toast from "../context/ToastAddToCart"; // adjust path as needed
+import Toast from "../context/ToastAddToCart"; // adjust 
 
 const Home = () => {
   const [favorites, setFavorites] = useState(new Set());
