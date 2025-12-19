@@ -204,7 +204,7 @@ export default function Header() {
             >
               <Heart
                 size={20}
-                className={`transition-all duration-200 ${wishlist > 0 ? "text-red-600 fill-red-600" : "text-black"
+                className={`transition-all duration-200 text-red-600 fill-red-600 "
                   }`}
               />
               <span className="hidden sm:inline">Wishlist</span>

@@ -11,7 +11,7 @@ import { addToWishlist } from "../utils/wishlistUtils.js";
 import { AuthContext } from "../context/LoginAuth.jsx";
 import SignIn from "../Sign-in/signin.jsx";
 import SignUp from "../Sign-in/signup.jsx";
-import { addWishlistToDB } from "../apiroutes/userApi.js";
+import { addWishlistToDB, addCartToDB } from "../apiroutes/userApi.js";
 
 
 
@@ -46,20 +46,34 @@ export default function Product() {
   };
 
 
-  const handleWishlist = async (product) => {
-    // 👤 Guest 
+  const handleCart = async (product) => {
     if (!user) {
-      addToWishlist(product);
-      triggerToast("Added to Wishlist ❤️");
+      addToCart(product); 
+      return;
+    }
+    try {
+      addToCart(product);
+      await addCartToDB(user.id, product);
+      triggerToast("Added To Your Cart");
+    }
+    catch (err) {
+      console.log(err, "Product Handle Wishlist");
+    }
+  };
+
+
+  const handleWishlist = async (product) => {
+    if (!user) {
+      addToWishlist(product); 
       return;
     }
 
-    // 🔐 Logged-in user
     try {
       await addWishlistToDB(user.id, product);
       triggerToast("Saved to Wishlist ❤️");
-    } catch (error) {
-      triggerToast("Failed to save wishlist ❌");
+    }
+    catch (err) {
+      console.log(err, "Product Handle Wishlist");
     }
   };
 
@@ -326,7 +340,7 @@ export default function Product() {
             {/* Add to Cart */}
             <button
               className="w-full bg-red-500 text-white rounded font-bold hover:bg-red-600 transition-colors mb-6 h-[44px] text-[14px] sm:h-[56px] sm:text-[18px]"
-              onClick={() => addToCart(product)}
+              onClick={() => handleCart(product)}
             >
               ADD TO CART
             </button>

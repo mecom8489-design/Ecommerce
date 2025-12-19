@@ -1,16 +1,16 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { getWishlist } from "../utils/wishlistUtils";
-import { syncWishlistToDB } from "../apiroutes/userApi";
+import { syncWishlistToDB,syncCartToDB } from "../apiroutes/userApi";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const { clearCart } = useCart();
+  const { clearCart, setCart,cart} = useCart();
 
-  // 🔥 Sync wishlist localStorage → DB
+  //  Sync wishlist localStorage → DB
   const syncWishlist = async (userData) => {
     const localWishlist = getWishlist();
 
@@ -25,7 +25,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // 🔄 On page load / refresh
+
+  const syncCart = async (userData) => {
+  if (!cart || cart.length === 0) return;
+
+  try {
+    await syncCartToDB(userData.id, cart);
+    clearCart(); 
+    console.log("Cart synced to DB");
+  } catch (error) {
+    console.error("Cart sync failed", error);
+  }
+};
+
+
+
+  //  On page load / refresh
   useEffect(() => {
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
@@ -35,8 +50,9 @@ export const AuthProvider = ({ children }) => {
       setIsLoggedIn(true);
       setUser(parsedUser);
 
-      // 🔥 Sync wishlist after refresh
+      // Sync wishlist after refresh
       syncWishlist(parsedUser);
+      syncCart(parsedUser);
     } else {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -68,8 +84,8 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(true);
     setUser(userData);
 
-    // 🔥 Sync wishlist immediately
     syncWishlist(userData);
+    syncCart(userData);
   };
 
   // 🚪 LOGOUT
@@ -82,7 +98,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, user, setUser, setIsLoggedIn, login, logout }}
+      value={{ isLoggedIn, user, setUser, setIsLoggedIn, syncWishlist, login, logout }}
     >
       {children}
     </AuthContext.Provider>

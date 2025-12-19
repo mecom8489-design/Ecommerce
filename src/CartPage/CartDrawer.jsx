@@ -1,12 +1,51 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/LoginAuth.jsx";
+import { getCartFromDB, deleteCart } from "../apiroutes/userApi";
+
+
 
 export default function CartDrawer({ isOpen, setIsOpen }) {
-  const { cart, updateQty, removeFromCart } = useCart();
+  const { cart, updateQty, removeFromCart, setCart } = useCart();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+
+
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        if (user?.id) {
+          const res = await getCartFromDB(user.id);
+          setCart(res?.data?.data || []);
+        }
+      } catch (error) {
+        console.error("Error fetching Cart:", error);
+        setCart([]);
+      }
+    };
+
+    loadCart();
+
+    const refreshCart = () => loadCart();
+    window.addEventListener("cartUpdated", refreshCart);
+
+    return () =>
+      window.removeEventListener("cartUpdated", refreshCart);
+  }, [user]);
+
+
+  const handleRemove = async (productId) => {
+    removeFromCart(productId);
+    if (!user?.id) return;
+    try {
+      await deleteCart(user.id, productId);
+    } catch (err) {
+      console.error("Failed to remove Cart item:", err);
+    }
+  };
 
   // Calculate subtotal
   const subtotal = cart.reduce(
@@ -112,8 +151,8 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                       alt={product.name}
                       className="w-[64px] h-[64px] object-cover rounded"
                       onError={(e) =>
-                        (e.currentTarget.src =
-                          "https://via.placeholder.com/80?text=No+Image")
+                      (e.currentTarget.src =
+                        "https://via.placeholder.com/80?text=No+Image")
                       }
                     />
 
@@ -160,7 +199,7 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeFromCart(product.id, 1);
+                            handleRemove(product.id);
                           }}
                           className="text-[12px] text-gray-500 ml-[12px] hover:text-red-600 cursor-pointer"
                         >

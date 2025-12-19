@@ -88,15 +88,42 @@ export const addWishlistToDB = (userId, product) => {
   });
 };
 
-// Sync localStorage wishlist → DB (after login)
+
 export const syncWishlistToDB = (userId, products) => {
   return axiosInstance.post(`/wishlist/sync/${userId}`, {
     products,
   });
 };
 
-// Get wishlist from DB
 export const getWishlistFromDB = (userId) => {
   return axiosInstance.get(`/wishlist/getwishlist/${userId}`);
 };
+
+export const deleteWishlist = (userId, productId) => {
+  return axiosInstance.delete(`/wishlist/wishlistdelete/${userId}/${productId}`);
+};
+
+
+export const syncCartToDB = (userId, products) => {
+  return axiosInstance.post(`/addtocart/sync/${userId}`, {
+    products,
+  });
+};
+
+export const addCartToDB = (userId, product) => {
+  return axiosInstance.post(`/addtocart/${userId}`, {
+    product,
+  });
+};
+
+
+
+export const getCartFromDB = (userId) => {
+  return axiosInstance.get(`/addtocart/${userId}`);
+};
+
+export const deleteCart = (userId, productId) => {
+  return axiosInstance.delete(`/addtocart/${userId}/${productId}`);
+};
+
 

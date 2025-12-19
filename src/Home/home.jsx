@@ -8,18 +8,23 @@ import {
   FaAppleAlt,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Header from "../Header/header"; // Make sure the file exports a component named Header
 import Footer from "../Footer/footer";
 import buttonBg from "../assets/landing-page-images/button.png"; // adjust path if needed
 import MoreToLove from "./MoreToLove"; // Import the MoreToLove c
-import { useCart } from "../context/CartContext"; 
+import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { addToWishlist, removeFromWishlist } from "../utils/wishlistUtils";
 import { getAddedProducts } from "../apiroutes/adminApi";
 import Toast from "../context/ToastAddToCart"; // adjust 
+import { AuthContext } from "../context/LoginAuth.jsx";
+import { addWishlistToDB, addCartToDB } from "../apiroutes/userApi.js";
+
+
 
 const Home = () => {
+  const { user } = useContext(AuthContext);
   const [favorites, setFavorites] = useState(new Set());
   const { addToCart } = useCart();
   const navigate = useNavigate();
@@ -167,8 +172,37 @@ const Home = () => {
   const icons = [FaTshirt, FaMale, FaChild, FaHeart, FaHome, FaAppleAlt];
 
 
-  const handleWishlist = (product) => {
-    addToWishlist(product);
+
+
+  const handleCart = async (product) => {
+    if (!user) {
+      addToCart(product);
+      return;
+    }
+    try {
+      addToCart(product);
+      await addCartToDB(user.id, product);
+      triggerToast("Added To Your Cart");
+    }
+    catch (err) {
+      console.log(err, "Product Handle Wishlist");
+    }
+  };
+
+
+
+  const handleWishlist = async (product) => {
+    if (!user) {
+      addToWishlist(product);
+      triggerToast("Added to Wishlist ❤️");
+      return;
+    }
+    try {
+      await addWishlistToDB(user.id, product);
+      triggerToast("Saved to Wishlist ❤️");
+    } catch (error) {
+      triggerToast("Failed to save wishlist ❌");
+    }
   };
 
   const Loader = () => (
@@ -350,11 +384,10 @@ const Home = () => {
                   {/* Wishlist + Cart buttons */}
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
                     <button
-                      className={`transition-all duration-300 ${
-                        favorites.has(product.id)
+                      className={`transition-all duration-300 ${favorites.has(product.id)
                           ? "text-red-500"
                           : "text-gray-600 hover:text-indigo-600"
-                      }`}
+                        }`}
                       onClick={(e) => {
                         e.stopPropagation();
                         if (favorites.has(product.id)) {
@@ -381,7 +414,7 @@ const Home = () => {
                       className="text-gray-600 hover:text-indigo-600"
                       onClick={(e) => {
                         e.stopPropagation();
-                        addToCart(product);
+                        handleCart(product);
                       }}
                     >
                       <i className="fas fa-shopping-cart"></i>
@@ -503,21 +536,20 @@ const Home = () => {
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
                   >
                     <Heart
-                      className={`w-5 h-5 cursor-pointer transition-all duration-300 ${
-                        favorites.has(product.id)
+                      className={`w-5 h-5 cursor-pointer transition-all duration-300 ${favorites.has(product.id)
                           ? "fill-red-500 text-red-500"
                           : "text-gray-400"
-                      }`}
+                        }`}
                       onClick={(e) => {
                         e.stopPropagation();
 
                         if (favorites.has(product.id)) {
-                          toggleFavorite(product.id); 
-                          removeFromWishlist(product.id); 
+                          toggleFavorite(product.id);
+                          removeFromWishlist(product.id);
                           triggerToast("Removed from Wishlist ❌");
                         } else {
-                          toggleFavorite(product.id); 
-                          handleWishlist(product); 
+                          toggleFavorite(product.id);
+                          handleWishlist(product);
                           triggerToast("Added to Wishlist ✔️");
                         }
                       }}
@@ -590,7 +622,7 @@ const Home = () => {
                       className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 hover:scale-105 transition cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
-                        addToCart(product);
+                        handleCart(product);
                       }}
                     >
                       <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />

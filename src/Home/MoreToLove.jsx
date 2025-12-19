@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Star, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext"; // top of file
 import { addToWishlist, removeFromWishlist } from "../utils/wishlistUtils";
 import Toast from "../context/ToastAddToCart";
+import { AuthContext } from "../context/LoginAuth.jsx";
+import { addWishlistToDB, addCartToDB } from "../apiroutes/userApi.js";
 
 export default function MoreToLove({ products }) {
   const [visibleCount, setVisibleCount] = useState(18);
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { user } = useContext(AuthContext);
+
 
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
@@ -36,8 +40,36 @@ export default function MoreToLove({ products }) {
     setVisibleCount((prev) => prev + 6);
   };
 
-  const handleWishlist = (product) => {
-    addToWishlist(product);
+
+
+  const handleCart = async (product) => {
+    if (!user) {
+      addToCart(product);
+      return;
+    }
+
+    try {
+      addToCart(product);
+      await addCartToDB(user.id, product);
+      triggerToast("Added To Your Cart");
+    }
+    catch (err) {
+      console.log(err, "Product Handle Wishlist");
+    }
+  };
+
+  const handleWishlist = async (product) => {
+    if (!user) {
+      addToWishlist(product);
+      triggerToast("Added to Wishlist ❤️");
+      return;
+    }
+    try {
+      await addWishlistToDB(user.id, product);
+      triggerToast("Saved to Wishlist ❤️");
+    } catch (error) {
+      triggerToast("Failed to save wishlist ❌");
+    }
   };
 
   const visibleProducts = (products || []).slice(0, visibleCount);
@@ -80,11 +112,10 @@ export default function MoreToLove({ products }) {
                 <i className="far fa-heart"></i>
               </button> */}
               <button
-                className={`z-10 absolute top-3 left-2 transition-all duration-300 ${
-                  favorites.has(product.id)
-                    ? "text-red-500"
-                    : "text-gray-600 hover:text-red-700"
-                }`}
+                className={`z-10 absolute top-3 left-2 transition-all duration-300 ${favorites.has(product.id)
+                  ? "text-red-500"
+                  : "text-gray-600 hover:text-red-700"
+                  }`}
                 onClick={(e) => {
                   e.stopPropagation();
                   if (favorites.has(product.id)) {
@@ -109,7 +140,7 @@ export default function MoreToLove({ products }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  addToCart(product);
+                  handleCart(product);
                 }}
                 className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-yellow-100 active:scale-95 z-10"
               >

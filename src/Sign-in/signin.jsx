@@ -13,8 +13,9 @@ import { AuthContext } from "../context/LoginAuth";
 
 
 
+
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
-  const { setIsLoggedIn, setUser } = useContext(AuthContext);
+  const { setIsLoggedIn, setUser, syncWishlist } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -75,6 +76,10 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       const role = response.data.user.role;
       const token = response.data.token;
       localStorage.setItem("token", token);
+      if (syncWishlist) {
+        await syncWishlist(user);
+      }
+      window.dispatchEvent(new Event("wishlistUpdated"));
       if (role == "admin") {
         navigate("/admin");
       }
@@ -100,10 +105,16 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     try {
       setResetLoading(true);
       const response = await VerifyEmail({ email: resetEmail });
-      toast.success("OTP sent to your email ");
-      setShowOtpField(true);
+      if (response.data.message === "Email is not registered.") {
+        toast.error(response.data.message);
+        return;
+      }
+      else{
+        toast.success("OTP sent to your email ");
+        setShowOtpField(true);
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to send reset link ");
+      toast.error(error.response?.data?.message || "Failed to  reset  ");
     } finally {
       setResetLoading(false);
     }
