@@ -1,14 +1,14 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { getWishlist } from "../utils/wishlistUtils";
-import { syncWishlistToDB,syncCartToDB } from "../apiroutes/userApi";
+import { syncWishlistToDB, syncCartToDB } from "../apiroutes/userApi";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const { clearCart, setCart,cart} = useCart();
+  const { clearCart, cart } = useCart();
 
   //  Sync wishlist localStorage → DB
   const syncWishlist = async (userData) => {
@@ -27,16 +27,16 @@ export const AuthProvider = ({ children }) => {
 
 
   const syncCart = async (userData) => {
-  if (!cart || cart.length === 0) return;
+    if (!cart || cart.length === 0) return;
 
-  try {
-    await syncCartToDB(userData.id, cart);
-    clearCart(); 
-    console.log("Cart synced to DB");
-  } catch (error) {
-    console.error("Cart sync failed", error);
-  }
-};
+    try {
+      await syncCartToDB(userData.id, cart);
+      clearCart();
+      console.log("Cart synced to DB");
+    } catch (error) {
+      console.error("Cart sync failed", error);
+    }
+  };
 
 
 
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, user, setUser, setIsLoggedIn, syncWishlist, login, logout }}
+      value={{ isLoggedIn, user, setUser, setIsLoggedIn,syncCart, syncWishlist, login, logout }}
     >
       {children}
     </AuthContext.Provider>

@@ -15,7 +15,7 @@ import { AuthContext } from "../context/LoginAuth";
 
 
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
-  const { setIsLoggedIn, setUser, syncWishlist } = useContext(AuthContext);
+  const { setIsLoggedIn, setUser, syncWishlist,syncCart } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -78,6 +78,9 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       localStorage.setItem("token", token);
       if (syncWishlist) {
         await syncWishlist(user);
+      }
+      if(syncCart){
+        await syncCart(user);
       }
       window.dispatchEvent(new Event("wishlistUpdated"));
       if (role == "admin") {
