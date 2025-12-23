@@ -54,7 +54,7 @@ export default function Header() {
 
     try {
       const res = await fetch(
-        `https://e-commerce-backend-production-6fa0.up.railway.app/api/search/live-search?query=${value}`,
+        `http://192.168.0.157:3000/api/search/live-search?query=${value}`,
         { signal: controller.current.signal }
       );
 

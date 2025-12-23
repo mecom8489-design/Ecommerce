@@ -75,11 +75,11 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
       <div>
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2 sm:p-4"
-          onClick={() => setIsOpen(false)} 
+          onClick={() => setIsOpen(false)}
         >
           <div
             className="bg-white w-full max-w-7xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto rounded-lg shadow-xl relative"
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => {
@@ -165,9 +165,8 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                                 <div
                                   className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
                                   style={{
-                                    width: `${
-                                      (Number(ratingValue) / 5) * 100
-                                    }%`,
+                                    width: `${(Number(ratingValue) / 5) * 100
+                                      }%`,
                                   }}
                                 >
                                   {Array.from({ length: 5 }).map((_, i) => (
@@ -194,11 +193,11 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                     ) : null}
 
                     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
-                      <div className="space-y-4">
+                      <div className="space-y-0">
                         <div className="flex items-start justify-between gap-3 flex-wrap">
 
                           {selectedOrder.cancelled == 1 ? (
-                            <div className="flex items-start gap-3">
+                            <div className="flex gap-3">
                               <div className="flex flex-col items-center">
                                 <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
                                   <svg
@@ -213,10 +212,10 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                                     />
                                   </svg>
                                 </div>
-                                <div className="w-0.5 h-10 bg-red-500"></div>
+                                <div className="w-0.5 flex-1 bg-red-500"></div>
                               </div>
 
-                              <div className="pt-0.5">
+                              <div className="pt-0.5 pb-6">
                                 <p className="text-xs sm:text-sm text-gray-900">
                                   Order Confirmed,&nbsp;
                                   {new Date(
@@ -230,7 +229,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                               </div>
                             </div>
                           ) : (
-                            <div className="flex items-start gap-3">
+                            <div className="flex gap-3">
                               <div className="flex flex-col items-center">
                                 <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
                                   <svg
@@ -245,10 +244,10 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                                     />
                                   </svg>
                                 </div>
-                                <div className="w-0.5 h-8 bg-green-500"></div>
+                                <div className="w-0.5 flex-1 bg-green-500"></div>
                               </div>
 
-                              <div className="pt-0.5">
+                              <div className="pt-0.5 pb-6">
                                 <p className="text-xs sm:text-sm text-gray-900">
                                   Order Confirmed,&nbsp;
                                   {new Date(
@@ -396,11 +395,10 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                             className="focus:outline-none"
                           >
                             <svg
-                              className={`w-6 h-6 sm:w-8 sm:h-8 ${
-                                rating >= star
+                              className={`w-6 h-6 sm:w-8 sm:h-8 ${rating >= star
                                   ? "text-yellow-400 fill-current"
                                   : "text-gray-300"
-                              }`}
+                                }`}
                               stroke="currentColor"
                               fill={rating >= star ? "currentColor" : "none"}
                               viewBox="0 0 24 24"
@@ -427,11 +425,10 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                           <button
                             type="submit"
                             disabled={isSubmitted}
-                            className={`mt-3 px-3 sm:px-4 py-1.5 sm:py-2 text-white rounded-lg text-sm sm:text-base ${
-                              isSubmitted
+                            className={`mt-3 px-3 sm:px-4 py-1.5 sm:py-2 text-white rounded-lg text-sm sm:text-base ${isSubmitted
                                 ? "bg-gray-400 cursor-not-allowed"
                                 : "bg-blue-600 hover:bg-blue-700"
-                            }`}
+                              }`}
                           >
                             {isSubmitted ? "Submitted" : "Submit"}
                           </button>
@@ -502,9 +499,8 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                           >
                             <span>Total fees</span>
                             <ChevronDown
-                              className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${
-                                showTotalFees ? "rotate-180" : ""
-                              }`}
+                              className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${showTotalFees ? "rotate-180" : ""
+                                }`}
                             />
                           </button>
                           <span className="text-gray-900">$16</span>

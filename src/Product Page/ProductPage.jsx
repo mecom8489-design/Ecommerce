@@ -19,6 +19,7 @@ export default function ProductPage() {
   const [visibleCount, setVisibleCount] = useState(8);
   const [total, settotal] = useState();
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedProductFilter, setSelectedProductFilter] = useState(null);
 
   useEffect(() => {
     if (!query) {
@@ -73,6 +74,7 @@ export default function ProductPage() {
     setSelectedRating([]);
     setSelectedDiscount([]);
     setPriceRange([0, 10000]);
+    setSelectedProductFilter(null);
   };
 
   const filteredProducts = products.filter((product) => {
@@ -100,7 +102,13 @@ export default function ProductPage() {
       isDiscountMatch = productDiscount >= minSelectedDiscount;
     }
 
-    return isPriceInRange && isRatingMatch && isDiscountMatch;
+    // Name Filter
+    let isNameMatch = true;
+    if (selectedProductFilter) {
+      isNameMatch = product.name === selectedProductFilter;
+    }
+
+    return isPriceInRange && isRatingMatch && isDiscountMatch && isNameMatch;
   });
 
   return (
@@ -177,7 +185,15 @@ export default function ProductPage() {
                         .map((category, index) => (
                           <div
                             key={index}
-                            className="text-sm text-gray-700 py-1 cursor-pointer hover:text-blue-600"
+                            className={`text-sm py-1 cursor-pointer hover:text-blue-600 ${selectedProductFilter === category.name
+                              ? "text-blue-600 font-medium"
+                              : "text-gray-700"
+                              }`}
+                            onClick={() =>
+                              setSelectedProductFilter((prev) =>
+                                prev === category.name ? null : category.name
+                              )
+                            }
                           >
                             {category.name}
                           </div>
