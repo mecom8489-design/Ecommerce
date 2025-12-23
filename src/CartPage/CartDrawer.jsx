@@ -221,6 +221,28 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                 ))
               )}
             </div>
+
+            {/* Footer */}
+            <div className="p-[20px] border-t bg-white">
+              <div className="flex justify-between items-center mb-[16px]">
+                <span className="font-semibold text-gray-700">Subtotal</span>
+                <span className="font-bold text-[18px]">
+                  ₹{Math.floor(subtotal)}
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate("/ProductPage/products/Checkout/cart", {
+                    state: { products: cart, isCartCheckout: true },
+                  });
+                }}
+                className="w-full bg-orange-500 text-white py-[12px] rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                disabled={cart.length === 0}
+              >
+                Place Order
+              </button>
+            </div>
           </motion.div>
         </>
       )}

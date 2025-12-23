@@ -23,19 +23,27 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const isCartCheckout = state?.isCartCheckout;
+  const cartProducts = state?.products || [];
+
   const product = selectedProduct || state?.product;
   const quantity =
     checkoutInfo.quantity && checkoutInfo.quantity > 0
       ? checkoutInfo.quantity
       : 1;
 
-  const totalPrice =
-    checkoutInfo.totalPrice && checkoutInfo.totalPrice > 0
+  const totalPrice = isCartCheckout
+    ? cartProducts.reduce((acc, item) => acc + item.finalPrice * (item.qty || 1), 0)
+    : checkoutInfo.totalPrice && checkoutInfo.totalPrice > 0
       ? checkoutInfo.totalPrice
       : quantity * (product?.finalPrice || product?.price || 0);
 
-  const savedPrice =
-    product?.price && product?.finalPrice
+  const savedPrice = isCartCheckout
+    ? cartProducts.reduce(
+      (acc, item) => acc + (item.price - item.finalPrice) * (item.qty || 1),
+      0
+    )
+    : product?.price && product?.finalPrice
       ? (product.price - product.finalPrice) * quantity
       : 0;
 
@@ -92,24 +100,48 @@ export default function Checkout() {
           const { data: verify } = await verifyRazorpayPayment(response);
           if (verify.success) {
             setIsLoading(true);
-            await orderplace({
-              user_id: user.id,
-              product_id: product.id,
-              quantity,
-              price_per_unit: product.price,
-              total_price: totalPrice,
-              shipping_name: user.firstname,
-              shipping_phone: user.mobile,
-              shipping_address: address,
-              payment_method: "Razorpay",
-              payment_status: "Paid",
-              order_status: "Processing",
-              user_email: user.email,
-              productname: product.name,
-              razorpay_order_id: verify.razorpay_order_id,
-              razorpay_payment_id: verify.razorpay_payment_id,
-              razorpay_signature: verify.razorpay_signature,
-            });
+            if (isCartCheckout) {
+              const orderPromises = cartProducts.map((item) =>
+                orderplace({
+                  user_id: user.id,
+                  product_id: item.id,
+                  quantity: item.qty || 1,
+                  price_per_unit: item.finalPrice,
+                  total_price: item.finalPrice * (item.qty || 1),
+                  shipping_name: user.firstname,
+                  shipping_phone: user.mobile,
+                  shipping_address: address,
+                  payment_method: "Razorpay",
+                  payment_status: "Paid",
+                  order_status: "Processing",
+                  user_email: user.email,
+                  productname: item.name,
+                  razorpay_order_id: verify.razorpay_order_id,
+                  razorpay_payment_id: verify.razorpay_payment_id,
+                  razorpay_signature: verify.razorpay_signature,
+                })
+              );
+              await Promise.all(orderPromises);
+            } else {
+              await orderplace({
+                user_id: user.id,
+                product_id: product.id,
+                quantity,
+                price_per_unit: product.price,
+                total_price: totalPrice,
+                shipping_name: user.firstname,
+                shipping_phone: user.mobile,
+                shipping_address: address,
+                payment_method: "Razorpay",
+                payment_status: "Paid",
+                order_status: "Processing",
+                user_email: user.email,
+                productname: product.name,
+                razorpay_order_id: verify.razorpay_order_id,
+                razorpay_payment_id: verify.razorpay_payment_id,
+                razorpay_signature: verify.razorpay_signature,
+              });
+            }
             setIsLoading(false);
             setShowPopup(true);
           } else {
@@ -134,23 +166,44 @@ export default function Checkout() {
       setLoading(true);
 
       try {
-        const orderData = {
-          user_id: user.id,
-          product_id: product.id,
-          quantity,
-          price_per_unit: product.price,
-          total_price: totalPrice,
-          shipping_name: user.firstname,
-          shipping_phone: user.mobile,
-          shipping_address: address,
-          payment_method: "COD",
-          payment_status: "Pending",
-          order_status: "Processing",
-          user_email: user.email,
-          productname: product.name,
-        };
+        if (isCartCheckout) {
+          const orderPromises = cartProducts.map((item) =>
+            orderplace({
+              user_id: user.id,
+              product_id: item.id,
+              quantity: item.qty || 1,
+              price_per_unit: item.finalPrice,
+              total_price: item.finalPrice * (item.qty || 1),
+              shipping_name: user.firstname,
+              shipping_phone: user.mobile,
+              shipping_address: address,
+              payment_method: "COD",
+              payment_status: "Pending",
+              order_status: "Processing",
+              user_email: user.email,
+              productname: item.name,
+            })
+          );
+          await Promise.all(orderPromises);
+        } else {
+          const orderData = {
+            user_id: user.id,
+            product_id: product.id,
+            quantity,
+            price_per_unit: product.price,
+            total_price: totalPrice,
+            shipping_name: user.firstname,
+            shipping_phone: user.mobile,
+            shipping_address: address,
+            payment_method: "COD",
+            payment_status: "Pending",
+            order_status: "Processing",
+            user_email: user.email,
+            productname: product.name,
+          };
 
-        await orderplace(orderData);
+          await orderplace(orderData);
+        }
         setShowPopup(true);
       } catch (err) {
         console.error("Error placing COD order:", err);
@@ -277,25 +330,52 @@ export default function Checkout() {
                 </span>
               </div>
 
-              <div className="p-3 sm:p-4 flex gap-3 sm:gap-4">
-                <img
-                  src={product?.image}
-                  alt={product?.name}
-                  className="w-20 h-20 object-cover rounded-sm flex-shrink-0"
-                />
+              <div className="p-3 sm:p-4 space-y-4">
+                {isCartCheckout ? (
+                  cartProducts.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex gap-3 sm:gap-4 border-b pb-4 last:border-0 last:pb-0"
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-20 h-20 object-cover rounded-sm flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm text-gray-800 mb-1 line-clamp-2">
+                          {item.name} ({item.qty || 1} item)
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg sm:text-xl font-medium">
+                            ₹{Math.floor(item.finalPrice * (item.qty || 1))}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex gap-3 sm:gap-4">
+                    <img
+                      src={product?.image}
+                      alt={product?.name}
+                      className="w-20 h-20 object-cover rounded-sm flex-shrink-0"
+                    />
 
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm text-gray-800 mb-1 line-clamp-2">
-                    {product?.name} ({quantity} item)
-                  </h3>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm text-gray-800 mb-1 line-clamp-2">
+                        {product?.name} ({quantity} item)
+                      </h3>
 
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg sm:text-xl font-medium">
-                      ₹{totalPrice}
-                    </span>
-                    <Info className="w-3 h-3 text-gray-400" />
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg sm:text-xl font-medium">
+                          ₹{totalPrice}
+                        </span>
+                        <Info className="w-3 h-3 text-gray-400" />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="px-4 pb-4 border-t pt-4 text-sm text-gray-700">
@@ -337,10 +417,9 @@ export default function Checkout() {
                   disabled={isContinueDisabled || loading}
                   onClick={handleContinue}
                   className={`w-full font-medium py-3 rounded shadow-md flex justify-center
-                    ${
-                      isContinueDisabled || loading
-                        ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-orange-500 text-white"
+                    ${isContinueDisabled || loading
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-orange-500 text-white"
                     }`}
                 >
                   {loading ? "Processing..." : "CONTINUE"}
@@ -360,7 +439,9 @@ export default function Checkout() {
 
               <div className="p-4 space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span>Price ({quantity} item)</span>
+                  <span>
+                    Price ({isCartCheckout ? cartProducts.length : quantity} item)
+                  </span>
                   <span>₹{Math.floor(totalPrice)}</span>
                 </div>
 
