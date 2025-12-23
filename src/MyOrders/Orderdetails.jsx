@@ -396,8 +396,8 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                           >
                             <svg
                               className={`w-6 h-6 sm:w-8 sm:h-8 ${rating >= star
-                                  ? "text-yellow-400 fill-current"
-                                  : "text-gray-300"
+                                ? "text-yellow-400 fill-current"
+                                : "text-gray-300"
                                 }`}
                               stroke="currentColor"
                               fill={rating >= star ? "currentColor" : "none"}
@@ -426,8 +426,8 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                             type="submit"
                             disabled={isSubmitted}
                             className={`mt-3 px-3 sm:px-4 py-1.5 sm:py-2 text-white rounded-lg text-sm sm:text-base ${isSubmitted
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-blue-600 hover:bg-blue-700"
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-blue-600 hover:bg-blue-700"
                               }`}
                           >
                             {isSubmitted ? "Submitted" : "Submit"}
@@ -439,7 +439,33 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                     <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4">
                       <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                         <span>Order #{selectedOrder.order_id}</span>
-                        <button className="text-blue-600 hover:text-blue-700">
+                        <button
+                          className="text-blue-600 hover:text-blue-700 cursor-pointer"
+                          onClick={() => {
+                            const orderId = String(selectedOrder.order_id);
+                            if (navigator.clipboard && navigator.clipboard.writeText) {
+                              navigator.clipboard.writeText(orderId)
+                                .then(() => toast.success("Order ID copied to clipboard!"))
+                                .catch((err) => {
+                                  console.error("Failed to copy:", err);
+                                  toast.error("Failed to copy Order ID");
+                                });
+                            } else {
+                              try {
+                                const textArea = document.createElement("textarea");
+                                textArea.value = orderId;
+                                document.body.appendChild(textArea);
+                                textArea.select();
+                                document.execCommand("copy");
+                                document.body.removeChild(textArea);
+                                toast.success("Order ID copied to clipboard!");
+                              } catch (err) {
+                                console.error("Fallback copy failed:", err);
+                                toast.error("Failed to copy Order ID");
+                              }
+                            }
+                          }}
+                        >
                           <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
                       </div>
