@@ -2,11 +2,13 @@ import { useState, useEffect, useContext } from "react";
 import { Check, Info, ArrowLeft, X } from "lucide-react";
 import { ProductContext } from "../context/ProductContext";
 import { AuthContext } from "../context/LoginAuth";
+import { useCart } from "../context/CartContext";
 import {
   orderplace,
   addressUpdate,
   verifyRazorpayPayment,
   createRazorpayOrder,
+  deleteCart,
 } from "../apiroutes/userApi";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -14,6 +16,7 @@ export default function Checkout() {
   const { selectedProduct, setSelectedProduct, checkoutInfo } =
     useContext(ProductContext);
   const { user } = useContext(AuthContext);
+  const { clearCart } = useCart();
   const { state } = useLocation();
   const navigate = useNavigate();
 
@@ -122,6 +125,10 @@ export default function Checkout() {
                 })
               );
               await Promise.all(orderPromises);
+
+              // Clear cart after successful order
+              await Promise.all(cartProducts.map(item => deleteCart(user.id, item.id)));
+              clearCart();
             } else {
               await orderplace({
                 user_id: user.id,
@@ -185,6 +192,10 @@ export default function Checkout() {
             })
           );
           await Promise.all(orderPromises);
+
+          // Clear cart after successful order
+          await Promise.all(cartProducts.map(item => deleteCart(user.id, item.id)));
+          clearCart();
         } else {
           const orderData = {
             user_id: user.id,
