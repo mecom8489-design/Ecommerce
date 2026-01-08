@@ -163,7 +163,7 @@ export default function MyOrders() {
                 </h3>
                 <div className="space-y-2">
                   {[
-                    { key: "onTheWay", label: "On the way" },
+                    { key: "onTheWay", label: "In transit" },
                     { key: "delivered", label: "Delivered" },
                     { key: "cancelled", label: "Cancelled" },
                     { key: "returned", label: "Returned" },
