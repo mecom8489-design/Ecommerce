@@ -39,13 +39,9 @@ export default function ProductPage() {
     fetchLiveSearch();
   }, [query]);
 
-  // const categories = [
-  //   { name: "Kitchen Containers", count: 1542 },
-  //   { name: "Oil Dispensers", count: 876 },
-  //   { name: "Condiment Sets", count: 654 },
-  //   { name: "Storage Drums", count: 432 },
-  //   { name: "Egg Holders", count: 298 },
-  // ];
+   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const toggleCategory = (category) => {
     setExpandedCategories((prev) => ({

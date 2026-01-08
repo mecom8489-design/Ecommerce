@@ -15,7 +15,7 @@ import { AuthContext } from "../context/LoginAuth";
 
 
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
-  const { setIsLoggedIn, setUser, syncWishlist,syncCart } = useContext(AuthContext);
+  const { setIsLoggedIn, setUser, syncWishlist, syncCart } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -50,7 +50,18 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
 
 
-  const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
+  const isValidEmail = (value) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(value)) return false;
+    if (value.includes("..") || value.startsWith(".") || value.endsWith(".")) return false;
+
+    // Check for common typos
+    const domain = value.split("@")[1];
+    const typoDomains = ["gmaiil.com", "gamil.com", "yaho.com", "hotmal.com"];
+    if (typoDomains.includes(domain)) return false;
+
+    return true;
+  };
 
   const handleSignIn = async () => {
     const fieldErrors = {};
@@ -79,7 +90,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       if (syncWishlist) {
         await syncWishlist(user);
       }
-      if(syncCart){
+      if (syncCart) {
         await syncCart(user);
       }
       window.dispatchEvent(new Event("wishlistUpdated"));
@@ -112,12 +123,16 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
         toast.error(response.data.message);
         return;
       }
-      else{
+      else {
         toast.success("OTP sent to your email ");
         setShowOtpField(true);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to  reset  ");
+      if (error.response?.status === 500) {
+        toast.error("Server error. Please try again later.");
+      } else {
+        toast.error(error.response?.data?.message || "Failed to  reset  ");
+      }
     } finally {
       setResetLoading(false);
     }

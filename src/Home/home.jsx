@@ -385,8 +385,8 @@ const Home = () => {
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
                     <button
                       className={`transition-all duration-300 ${favorites.has(product.id)
-                          ? "text-red-500"
-                          : "text-gray-600 hover:text-indigo-600"
+                        ? "text-red-500"
+                        : "text-gray-600 hover:text-indigo-600"
                         }`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -537,8 +537,8 @@ const Home = () => {
                   >
                     <Heart
                       className={`w-5 h-5 cursor-pointer transition-all duration-300 ${favorites.has(product.id)
-                          ? "fill-red-500 text-red-500"
-                          : "text-gray-400"
+                        ? "fill-red-500 text-red-500"
+                        : "text-gray-400"
                         }`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -662,7 +662,7 @@ const Home = () => {
           Shop more
         </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-[32px]">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 min-[1250px]:grid-cols-6 gap-[32px]">
           {categories.map((category, idx) => {
             const Icon = icons[idx]; // Get matching icon
             return (

@@ -32,14 +32,37 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
     };
   }, []);
 
-  const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
-  const isValidMobile = (value) => /^[0-9]{10}$/.test(value);
+  const isValidEmail = (value) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(value)) return false;
+    if (value.includes("..") || value.startsWith(".") || value.endsWith(".")) return false;
+
+    // Check for common typos
+    const domain = value.split("@")[1];
+    const typoDomains = ["gmaiil.com", "gamil.com", "yaho.com", "hotmal.com"];
+    if (typoDomains.includes(domain)) return false;
+
+    return true;
+  };
+  const isValidMobile = (value) => /^[6-9]\d{9}$/.test(value);
+  const isValidName = (value) => /^[A-Za-z\s]+$/.test(value);
 
   const handleSignUp = async () => {
     const fieldErrors = {};
 
-    if (!firstName.trim()) fieldErrors.firstName = "First name is required";
-    if (!lastName.trim()) fieldErrors.lastName = "Last name is required";
+    if (!firstName.trim()) {
+      fieldErrors.firstName = "First name is required";
+    } else if (!isValidName(firstName)) {
+      fieldErrors.firstName = "First name must contain only letters";
+    } else if (firstName.length < 2) {
+      fieldErrors.firstName = "First name must be at least 2 characters";
+    }
+
+    if (!lastName.trim()) {
+      fieldErrors.lastName = "Last name is required";
+    } else if (!isValidName(lastName)) {
+      fieldErrors.lastName = "Last name must contain only letters";
+    }
 
     if (!email) {
       fieldErrors.email = "Email is required";
@@ -50,7 +73,7 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
     if (!mobile) {
       fieldErrors.mobile = "Mobile number is required";
     } else if (!isValidMobile(mobile)) {
-      fieldErrors.mobile = "Enter a valid 10-digit number";
+      fieldErrors.mobile = "Enter a valid 10-digit mobile number starting with 6-9";
     }
 
     if (!password) {
@@ -86,7 +109,11 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
       setShowSignUp(false);
       setShowSignIn(true);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Sign Up failed ");
+      if (error.response?.status === 500) {
+        toast.error("Server error. Please try again later.");
+      } else {
+        toast.error(error.response?.data?.message || "Sign Up failed ");
+      }
     } finally {
       setLoading(false);
     }
@@ -171,7 +198,8 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Enter your Email"
                 className="w-full outline-none text-sm py-2"
                 value={email}
-                onChange={(e) => {setEmail(e.target.value);
+                onChange={(e) => {
+                  setEmail(e.target.value);
                   if (errors.email) {
                     setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
                   }
@@ -192,7 +220,8 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Enter your Mobile Number"
                 className="w-full outline-none text-sm py-2"
                 value={mobile}
-                onChange={(e) => {setMobile(e.target.value);
+                onChange={(e) => {
+                  setMobile(e.target.value);
                   if (errors.mobile) {
                     setErrors((prevErrors) => ({ ...prevErrors, mobile: "" }));
                   }
@@ -213,7 +242,8 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Enter Password"
                 className="w-full outline-none text-sm py-2"
                 value={password}
-                onChange={(e) => {setPassword(e.target.value);
+                onChange={(e) => {
+                  setPassword(e.target.value);
                   if (errors.password) {
                     setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
                   }
@@ -240,7 +270,8 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
                 placeholder="Confirm Password"
                 className="w-full outline-none text-sm py-2"
                 value={confirmPassword}
-                onChange={(e) => {setConfirmPassword(e.target.value);
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
                   if (errors.confirmPassword) {
                     setErrors((prevErrors) => ({ ...prevErrors, confirmPassword: "" }));
                   }

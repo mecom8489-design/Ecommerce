@@ -39,9 +39,36 @@ export default function ContactUs() {
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    // --- Validation Logic ---
+    const isValidEmail = (value) => {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(value)) return false;
+      if (value.includes("..") || value.startsWith(".") || value.endsWith(".")) return false;
+
+      // Check for common typos
+      const domain = value.split("@")[1];
+      const typoDomains = ["gmaiil.com", "gamil.com", "yaho.com", "hotmal.com"];
+      if (typoDomains.includes(domain)) return false;
+
+      return true;
+    };
+
+    const isValidMobile = (value) => /^[6-9]\d{9}$/.test(value);
+    const isValidName = (value) => /^[A-Za-z\s]+$/.test(value);
+
+    // --- Execute Validation ---
+    if (!isValidName(formData.name)) {
+      toast.error("Name must contain only letters");
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
       toast.error("Invalid email format");
+      return;
+    }
+
+    if (!isValidMobile(formData.mobile)) {
+      toast.error("Enter a valid 10-digit mobile number starting with 6-9");
       return;
     }
 
