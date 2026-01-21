@@ -27,6 +27,7 @@ export default function Header() {
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [placeholder, setPlaceholder] = useState("Search for products, brands and more...");
 
   const wish = getWishlist();
   const wishlist = wish?.length || 0;
@@ -97,6 +98,29 @@ export default function Header() {
     localStorage.setItem("searchHistory", JSON.stringify(history));
     navigate(`/ProductPage?search=${encodeURIComponent(name)}`);
   };
+
+  // Handle responsive placeholder text
+  useEffect(() => {
+    const updatePlaceholder = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) {
+        setPlaceholder("Search for products, brands and more...");
+      } else if (width >= 640) {
+        setPlaceholder("Search products...");
+      } else {
+        setPlaceholder("Search...");
+      }
+    };
+
+    // Set initial placeholder
+    updatePlaceholder();
+
+    // Add resize listener
+    window.addEventListener("resize", updatePlaceholder);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", updatePlaceholder);
+  }, []);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
@@ -169,7 +193,7 @@ export default function Header() {
                 type="text"
                 value={searchText}
                 onChange={handleInputChange}
-                placeholder="Search for products, brands and more..."
+                placeholder={placeholder}
                 className="w-full py-2 sm:py-3 px-3 sm:px-4 text-[12px] sm:text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
 

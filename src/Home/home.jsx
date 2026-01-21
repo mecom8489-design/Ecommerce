@@ -19,14 +19,14 @@ import { addToWishlist, removeFromWishlist } from "../utils/wishlistUtils";
 import { getAddedProducts } from "../apiroutes/adminApi";
 import Toast from "../context/ToastAddToCart"; // adjust 
 import { AuthContext } from "../context/LoginAuth.jsx";
-import { addWishlistToDB, addCartToDB } from "../apiroutes/userApi.js";
+import { addWishlistToDB, addCartToDB, deleteCart } from "../apiroutes/userApi.js";
 
 
 
 const Home = () => {
   const { user } = useContext(AuthContext);
   const [favorites, setFavorites] = useState(new Set());
-  const { addToCart } = useCart();
+  const { addToCart, removeFromCart, cart } = useCart();
   const navigate = useNavigate();
   const [viewMore, setViewMore] = useState([]);
   const [bestSeller, setBestSeller] = useState([]);
@@ -175,17 +175,31 @@ const Home = () => {
 
 
   const handleCart = async (product) => {
-    if (!user) {
+    // Check if product is already in cart
+    const isInCart = cart.some(item => item.id === product.id);
+    
+    if (isInCart) {
+      // Remove from cart
+      removeFromCart(product.id);
+      triggerToast("Removed from Cart ❌");
+      if (user) {
+        try {
+          await deleteCart(user.id, product.id);
+        } catch (err) {
+          console.log(err, "Error removing from cart");
+        }
+      }
+    } else {
+      // Add to cart
       addToCart(product);
-      return;
-    }
-    try {
-      addToCart(product);
-      await addCartToDB(user.id, product);
-      triggerToast("Added To Your Cart");
-    }
-    catch (err) {
-      console.log(err, "Product Handle Wishlist");
+      triggerToast("Added To Your Cart ✔️");
+      if (user) {
+        try {
+          await addCartToDB(user.id, product);
+        } catch (err) {
+          console.log(err, "Error adding to cart");
+        }
+      }
     }
   };
 
@@ -411,13 +425,19 @@ const Home = () => {
                     </button>
 
                     <button
-                      className="text-gray-600 hover:text-indigo-600"
+                      className={`transition-all duration-300 ${
+                        cart.some(item => item.id === product.id)
+                          ? "text-green-600"
+                          : "text-gray-600 hover:text-indigo-600"
+                      }`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCart(product);
                       }}
                     >
-                      <i className="fas fa-shopping-cart"></i>
+                      <i className={`fas fa-shopping-cart ${
+                        cart.some(item => item.id === product.id) ? "text-green-600" : ""
+                      }`}></i>
                     </button>
                   </div>
 
@@ -619,7 +639,11 @@ const Home = () => {
                     </div>
 
                     <button
-                      className="p-2 rounded-full bg-yellow-400 text-white hover:bg-yellow-600 hover:scale-105 transition cursor-pointer"
+                      className={`p-2 rounded-full text-white hover:scale-105 transition cursor-pointer ${
+                        cart.some(item => item.id === product.id)
+                          ? "bg-green-500 hover:bg-green-600"
+                          : "bg-yellow-400 hover:bg-yellow-600"
+                      }`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCart(product);
