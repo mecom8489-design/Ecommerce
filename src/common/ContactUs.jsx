@@ -23,7 +23,19 @@ export default function ContactUs() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    
+    // Special handling for mobile number
+    if (name === "mobile") {
+      // Only allow digits and limit to 10 characters
+      const numericValue = value.replace(/\D/g, "");
+      if (numericValue.length <= 10) {
+        setFormData({ ...formData, [name]: numericValue });
+      }
+      return;
+    }
+    
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -206,15 +218,18 @@ export default function ContactUs() {
               placeholder="Your Email *"
               value={formData.email}
               onChange={handleChange}
+              pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
               className="w-full border p-3 rounded-lg mb-4 text-base focus:ring-2 focus:ring-black outline-none"
               required
             />
             <input
-              type="tel"
+              type="text"
               name="mobile"
-              placeholder="Mobile number *"
+              placeholder="Mobile number (10 digits) *"
               value={formData.mobile}
               onChange={handleChange}
+              pattern="[0-9]{10}"
+              maxLength="10"
               className="w-full border p-3 rounded-lg mb-4 text-base focus:ring-2 focus:ring-black outline-none"
               required
             />

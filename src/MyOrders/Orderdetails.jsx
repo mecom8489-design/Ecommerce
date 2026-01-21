@@ -134,7 +134,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                             {selectedOrder.product_description}
                           </p>
                           <p className="text-base sm:text-lg font-semibold text-gray-900">
-                            ${selectedOrder.total_price}
+                            ₹{selectedOrder.total_price}
                           </p>
                         </div>
                       </div>
@@ -514,7 +514,7 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                         <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-gray-700">Listing price</span>
                           <span className="text-gray-900">
-                            ${selectedOrder.total_price}
+                            ₹{selectedOrder.total_price}
                           </span>
                         </div>
 
@@ -529,14 +529,14 @@ const Orderdetails = ({ selectedOrder, setIsOpen, setRefresh }) => {
                                 }`}
                             />
                           </button>
-                          <span className="text-gray-900">$16</span>
+                          <span className="text-gray-900">₹16</span>
                         </div>
 
                         <div className="border-t border-gray-200 pt-3 mt-3">
                           <div className="flex justify-between text-xs sm:text-sm font-medium">
                             <span className="text-gray-900">Total amount</span>
                             <span className="text-gray-900">
-                              ${Number(selectedOrder.total_price) + 16}
+                              ₹{Number(selectedOrder.total_price) + 16}
                             </span>
                           </div>
                         </div>
