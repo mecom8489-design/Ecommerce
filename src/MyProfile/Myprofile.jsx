@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Header from "../Header/header";
-import { profileData, profileUpdate } from "../apiroutes/userApi";
+import { profileData, profileUpdate, sendEmailVerificationCode, verifyEmailCode } from "../apiroutes/userApi";
 import { toast } from "react-toastify";
 
 const MyProfile = () => {
@@ -16,6 +16,14 @@ const MyProfile = () => {
   const [showModal, setShowModal] = useState(false);
   const [editUser, setEditUser] = useState({});
   const [errors, setErrors] = useState({});
+  
+  // Email verification states
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isCodeSent, setIsCodeSent] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
   const effectRan = useRef(false);
 
@@ -46,6 +54,93 @@ const MyProfile = () => {
     } catch (error) {
       console.error("Error fetching profile:", error);
     }
+  };
+
+  // Countdown timer for resend code
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
+  // Handle sending verification code to email
+  const handleSendVerificationCode = async () => {
+    if (!newEmail || !newEmail.trim()) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(newEmail)) {
+      toast.error("Please enter a valid email format");
+      return;
+    }
+
+    try {
+      setIsVerifying(true);
+      await sendEmailVerificationCode(newEmail);
+      setIsCodeSent(true);
+      setCountdown(60); // 60 seconds countdown
+      toast.success("Verification code sent to your email!");
+    } catch (error) {
+      console.error("Error sending verification code:", error);
+      toast.error(error.response?.data?.message || "Failed to send verification code");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  // Handle verifying the code and updating email
+  const handleVerifyAndUpdateEmail = async () => {
+    if (!verificationCode || verificationCode.trim().length !== 6) {
+      toast.error("Please enter a valid 6-digit verification code");
+      return;
+    }
+
+    try {
+      setIsVerifying(true);
+      
+      // Verify the code
+      await verifyEmailCode(newEmail, verificationCode);
+      
+      // Update the email in profile
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const id = storedUser?.id;
+      
+      await profileUpdate(id, { ...user, email: newEmail });
+      
+      // Update local state
+      setUser({ ...user, email: newEmail });
+      
+      // Update localStorage
+      const updatedUser = { ...storedUser, email: newEmail };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      
+      toast.success("Email updated successfully!");
+      
+      // Reset states
+      setIsEditingEmail(false);
+      setNewEmail("");
+      setVerificationCode("");
+      setIsCodeSent(false);
+      
+    } catch (error) {
+      console.error("Error verifying code:", error);
+      toast.error(error.response?.data?.message || "Invalid verification code");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  // Cancel email editing
+  const handleCancelEmailEdit = () => {
+    setIsEditingEmail(false);
+    setNewEmail("");
+    setVerificationCode("");
+    setIsCodeSent(false);
+    setCountdown(0);
   };
 
   const openEditModal = () => {
@@ -170,13 +265,107 @@ const MyProfile = () => {
 
           <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border">
             <div className="mb-6">
-              <p className="text-gray-700 font-semibold mb-2">Email Address</p>
-              <input
-                type="email"
-                value={user.email}
-                readOnly
-                className="w-full border border-gray-300 rounded-lg p-2.5"
-              />
+              <div className="flex justify-between items-center mb-2">
+                <p className="text-gray-700 font-semibold">Email Address</p>
+                {!isEditingEmail && (
+                  <button
+                    onClick={() => {
+                      setIsEditingEmail(true);
+                      setNewEmail(user.email);
+                    }}
+                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                  >
+                    Edit
+                  </button>
+                )}
+              </div>
+
+              {!isEditingEmail ? (
+                <input
+                  type="email"
+                  value={user.email}
+                  readOnly
+                  className="w-full border border-gray-300 rounded-lg p-2.5 bg-gray-50"
+                />
+              ) : (
+                <div className="space-y-3">
+                  <div>
+                    <input
+                      type="email"
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      placeholder="Enter new email address"
+                      className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      disabled={isCodeSent}
+                    />
+                  </div>
+
+                  {!isCodeSent ? (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleSendVerificationCode}
+                        disabled={isVerifying || !newEmail}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      >
+                        {isVerifying ? "Sending..." : "Send Verification Code"}
+                      </button>
+                      <button
+                        onClick={handleCancelEmailEdit}
+                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Enter 6-digit verification code
+                        </label>
+                        <input
+                          type="text"
+                          value={verificationCode}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, "");
+                            if (value.length <= 6) {
+                              setVerificationCode(value);
+                            }
+                          }}
+                          placeholder="000000"
+                          maxLength="6"
+                          className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-lg tracking-widest"
+                        />
+                        <p className="text-sm text-gray-500 mt-1">
+                          Code sent to {newEmail}
+                        </p>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleVerifyAndUpdateEmail}
+                          disabled={isVerifying || verificationCode.length !== 6}
+                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                          {isVerifying ? "Verifying..." : "Verify & Save"}
+                        </button>
+                        <button
+                          onClick={handleSendVerificationCode}
+                          disabled={isVerifying || countdown > 0}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                          {countdown > 0 ? `Resend (${countdown}s)` : "Resend Code"}
+                        </button>
+                        <button
+                          onClick={handleCancelEmailEdit}
+                          className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>

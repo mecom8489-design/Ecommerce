@@ -184,9 +184,9 @@ export default function Product() {
               </div>
 
               {/* Share Button */}
-              <button className="absolute top-3 right-3 z-10 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow">
+              {/* <button className="absolute top-3 right-3 z-10 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow">
                 <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
-              </button>
+              </button> */}
 
               {/* Image Container */}
               <div

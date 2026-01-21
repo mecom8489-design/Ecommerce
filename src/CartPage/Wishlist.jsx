@@ -47,6 +47,12 @@ const Wishlist = () => {
   }, [user]);
 
   const handleRemove = async (productId) => {
+    // Show confirmation dialog
+    const isConfirmed = window.confirm("Are you sure you want to remove this item from your wishlist?");
+    
+    // If user cancels, return early
+    if (!isConfirmed) return;
+    
     removeFromWishlist(productId);
     setWishlist((prev) => prev.filter((item) => item.id !== productId));
     if (!user?.id) return;
