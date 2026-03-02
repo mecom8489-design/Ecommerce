@@ -172,37 +172,39 @@ export default function MoreToLove({ products }) {
                       ₹{product.originalPrice}
                     </span>
                   )}
-                  {product.discount && (
+                  {/* {product.discount && (
                     <span className="text-[12px] sm:text-[13px] md:text-[14px] font-medium text-green-600">
                       {Math.floor(product.discount)}% OFF
                     </span>
-                  )}
+                  )} */}
                 </div>
 
                 {/* Rating */}
-                <div className="text-[12px] sm:text-[13px] md:text-[14px] flex items-center mt-1">
-                  Rating:
-                  <span className="ml-2 flex relative">
-                    <div className="flex text-gray-300">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i}>★</span>
-                      ))}
-                    </div>
-                    <div
-                      className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
-                      style={{
-                        width: `${(Number(product.rating) / 5) * 100}%`,
-                      }}
-                    >
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i}>★</span>
-                      ))}
-                    </div>
-                  </span>
-                  <span className="ml-2 text-gray-700">
-                    ({product.rating ? Number(product.rating).toFixed(2) : "-"})
-                  </span>
-                </div>
+              <div className="text-[12px] sm:text-[13px] md:text-[14px] flex items-center mt-1">
+  Rating:
+  <span className="ml-2 flex relative">
+    <div className="flex text-gray-300">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span key={i}>★</span>
+      ))}
+    </div>
+
+    <div
+      className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
+      style={{
+        width: `${(Number(product.rating) / 5) * 100}%`,
+      }}
+    >
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span key={i}>★</span>
+      ))}
+    </div>
+  </span>
+
+  <span className="ml-2 text-gray-700">
+    ({product.rating ? Number(product.rating).toFixed(1) : "-"})
+  </span>
+</div>
 
                 {/* Product Tags */}
                 <div className="flex flex-wrap gap-2 text-[10px] sm:text-[11px] md:text-[12px]">

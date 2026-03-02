@@ -178,9 +178,9 @@ export default function Product() {
             <div className="flex-1 relative">
               {/* Discount Badge */}
               <div className="absolute top-3 left-3 z-10">
-                <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs sm:text-sm font-medium">
+                {/* <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs sm:text-sm font-medium">
                   -{product.discount || "50"}%
-                </span>
+                </span> */}
               </div>
 
               {/* Share Button */}
@@ -224,9 +224,9 @@ export default function Product() {
 
               {/* Price */}
               <div className="flex items-baseline space-x-2 sm:space-x-3 mb-3 sm:mb-4">
-                <span className="text-[16px] sm:text-xl text-gray-400 line-through">
+                {/* <span className="text-[16px] sm:text-xl text-gray-400 line-through">
                   ₹{Math.floor(product.price)}
-                </span>
+                </span> */}
                 <span className="text-[22px] sm:text-3xl font-bold text-red-500">
                   ₹{Math.floor(finalPrice)}
                 </span>
@@ -321,7 +321,7 @@ export default function Product() {
                rounded font-medium 
                hover:bg-gray-900 whitespace-nowrap"
               >
-                Total - ₹ {Math.floor(finalPrice * quantity)}
+                Total : ₹ {Math.floor(finalPrice * quantity)}
               </button>
 
               {/* Wishlist */}

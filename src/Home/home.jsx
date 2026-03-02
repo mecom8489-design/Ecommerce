@@ -17,11 +17,13 @@ import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { addToWishlist, removeFromWishlist } from "../utils/wishlistUtils";
 import { getAddedProducts } from "../apiroutes/adminApi";
-import Toast from "../context/ToastAddToCart"; // adjust 
+import Toast from "../context/ToastAddToCart"; // adjust
 import { AuthContext } from "../context/LoginAuth.jsx";
-import { addWishlistToDB, addCartToDB, deleteCart } from "../apiroutes/userApi.js";
-
-
+import {
+  addWishlistToDB,
+  addCartToDB,
+  deleteCart,
+} from "../apiroutes/userApi.js";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -100,7 +102,6 @@ const Home = () => {
     }));
   };
 
-
   const toggleFavorite = (productId) => {
     setFavorites((prev) => {
       const newFavorites = new Set(prev);
@@ -133,11 +134,11 @@ const Home = () => {
   const categories = [
     {
       title: "Women’s",
-      items: ["Clothing", "Shoes", "Bags", "Accessories", "Brand A-Z"],
+      items: ["Clothes", "Shoes", "Bags", "Accessories", "Brand A-Z"],
     },
     {
       title: "Men’s",
-      items: ["Clothing", "Shoes", "Bags", "Accessories", "Brands A-Z"],
+      items: ["Clothes", "Shoes", "Bags", "Accessories", "Brands A-Z"],
     },
     {
       title: "Kids",
@@ -155,6 +156,7 @@ const Home = () => {
         "Candles & home fragrance",
         "Electronics",
         "Brands A-Z",
+        "Plastic"
       ],
     },
     {
@@ -171,13 +173,10 @@ const Home = () => {
 
   const icons = [FaTshirt, FaMale, FaChild, FaHeart, FaHome, FaAppleAlt];
 
-
-
-
   const handleCart = async (product) => {
     // Check if product is already in cart
-    const isInCart = cart.some(item => item.id === product.id);
-    
+    const isInCart = cart.some((item) => item.id === product.id);
+
     if (isInCart) {
       // Remove from cart
       removeFromCart(product.id);
@@ -202,8 +201,6 @@ const Home = () => {
       }
     }
   };
-
-
 
   const handleWishlist = async (product) => {
     if (!user) {
@@ -262,16 +259,12 @@ const Home = () => {
               <div className="w-full md:w-1/2 flex items-center bg-yellow-50">
                 <div className="ml-6 md:ml-40 max-w-md p-6 md:p-0">
                   {/* Title */}
-                  <h1
-                    className="text-[22px] sm:text-[30px] md:text-[38px] lg:text-[48px] font-light text-red-600 mb-4 italic"
-                  >
+                  <h1 className="text-[22px] sm:text-[30px] md:text-[38px] lg:text-[48px] font-light text-red-600 mb-4 italic">
                     {product.title}
                   </h1>
 
                   {/* Description */}
-                  <p
-                    className="text-black text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] mb-8 font-bold leading-relaxed"
-                  >
+                  <p className="text-black text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] mb-8 font-bold leading-relaxed">
                     {product.products?.description}
                   </p>
                   {/* Button */}
@@ -293,7 +286,7 @@ const Home = () => {
                         `/ProductPage/products/${product.products?.id}`,
                         {
                           state: { product: product.products },
-                        }
+                        },
                       )
                     }
                   >
@@ -398,10 +391,11 @@ const Home = () => {
                   {/* Wishlist + Cart buttons */}
                   <div className="product-actions absolute bottom-0 left-0 right-0 bg-white p-3 flex justify-between">
                     <button
-                      className={`transition-all duration-300 ${favorites.has(product.id)
-                        ? "text-red-500"
-                        : "text-gray-600 hover:text-indigo-600"
-                        }`}
+                      className={`transition-all duration-300 ${
+                        favorites.has(product.id)
+                          ? "text-red-500"
+                          : "text-gray-600 hover:text-indigo-600"
+                      }`}
                       onClick={(e) => {
                         e.stopPropagation();
                         if (favorites.has(product.id)) {
@@ -426,7 +420,7 @@ const Home = () => {
 
                     <button
                       className={`transition-all duration-300 ${
-                        cart.some(item => item.id === product.id)
+                        cart.some((item) => item.id === product.id)
                           ? "text-green-600"
                           : "text-gray-600 hover:text-indigo-600"
                       }`}
@@ -435,9 +429,13 @@ const Home = () => {
                         handleCart(product);
                       }}
                     >
-                      <i className={`fas fa-shopping-cart ${
-                        cart.some(item => item.id === product.id) ? "text-green-600" : ""
-                      }`}></i>
+                      <i
+                        className={`fas fa-shopping-cart ${
+                          cart.some((item) => item.id === product.id)
+                            ? "text-green-600"
+                            : ""
+                        }`}
+                      ></i>
                     </button>
                   </div>
 
@@ -465,25 +463,27 @@ const Home = () => {
                       ₹{parseFloat(product.finalPrice)}
                     </span>
 
-                    <span className="text-gray-500 text-[12px] sm:text-[13px] lg:text-[14px] line-through ml-2">
+                    {/* <span className="text-gray-500 text-[12px] sm:text-[13px] lg:text-[14px] line-through ml-2">
                       ₹{parseFloat(product.price)}
-                    </span>
+                    </span> */}
                   </div>
 
                   {/* Rating */}
                   <div className="text-[12px] sm:text-[13px] lg:text-[14px] flex items-center mt-1">
                     Rating:
                     <span className="ml-2 flex relative">
+                      {/* Background Stars */}
                       <div className="flex text-gray-300">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <span key={i}>★</span>
                         ))}
                       </div>
 
+                      {/* Filled Stars */}
                       <div
                         className="flex text-yellow-500 absolute left-0 top-0 overflow-hidden"
                         style={{
-                          width: `${(Number(product.rating) / 5) * 100}%`,
+                          width: `${((Number(product.rating) || 0) / 5) * 100}%`,
                         }}
                       >
                         {Array.from({ length: 5 }).map((_, i) => (
@@ -491,9 +491,12 @@ const Home = () => {
                         ))}
                       </div>
                     </span>
+                    {/* Rating Number */}
                     <span className="ml-2 text-gray-700">
                       (
-                      {product.rating ? Number(product.rating).toFixed(2) : "-"}
+                      {product.rating !== undefined && product.rating !== null
+                        ? Number(product.rating).toFixed(1)
+                        : "-"}
                       )
                     </span>
                   </div>
@@ -556,10 +559,11 @@ const Home = () => {
                     className="absolute top-3 right-3 p-1.5 transition-all duration-300 hover:scale-110"
                   >
                     <Heart
-                      className={`w-5 h-5 cursor-pointer transition-all duration-300 ${favorites.has(product.id)
-                        ? "fill-red-500 text-red-500"
-                        : "text-gray-400"
-                        }`}
+                      className={`w-5 h-5 cursor-pointer transition-all duration-300 ${
+                        favorites.has(product.id)
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-400"
+                      }`}
                       onClick={(e) => {
                         e.stopPropagation();
 
@@ -596,11 +600,11 @@ const Home = () => {
                       </span>
                     )}
 
-                    {product.discount && (
+                    {/* {product.discount && (
                       <span className="text-[12px] sm:text-[13px] lg:text-[14px] font-medium text-green-600">
                         {Math.floor(product.discount)}% OFF
                       </span>
-                    )}
+                    )} */}
                   </div>
 
                   {/* Rating */}
@@ -626,21 +630,20 @@ const Home = () => {
                     </span>
                     <span className="ml-2 text-gray-700">
                       (
-                      {product.rating ? Number(product.rating).toFixed(2) : "-"}
+                      {product.rating ? Number(product.rating).toFixed(1) : "-"}
                       )
                     </span>
                   </div>
-
                   {/* Stock + Add to Cart */}
                   <div className="flex items-center justify-between pt-2">
-                    <div className="text-[12px] sm:text-[13px] lg:text-[14px] font-bold">
+                    {/* <div className="text-[12px] sm:text-[13px] lg:text-[14px] font-bold">
                       Available Stocks:
                       <span className="text-red-600"> {product.stock}</span>
-                    </div>
+                    </div> */}
 
                     <button
                       className={`p-2 rounded-full text-white hover:scale-105 transition cursor-pointer ${
-                        cart.some(item => item.id === product.id)
+                        cart.some((item) => item.id === product.id)
                           ? "bg-green-500 hover:bg-green-600"
                           : "bg-yellow-400 hover:bg-yellow-600"
                       }`}

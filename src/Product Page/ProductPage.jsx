@@ -441,19 +441,17 @@ export default function ProductPage() {
 
                     {/* Price Section - Prominent in 2-col */}
                     <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                      <span className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
-                        ₹{product.price?.toLocaleString() || product.price}
-                      </span>
+                     ₹{Math.floor(Number(product.price)).toLocaleString()}
                       {product.originalPrice && (
                         <span className="text-[10px] sm:text-xs md:text-sm text-gray-400 line-through">
                           ₹{product.originalPrice?.toLocaleString() || product.originalPrice}
                         </span>
                       )}
-                      {product.discount && (
+                      {/* {product.discount && (
                         <span className="text-[10px] sm:text-xs md:text-sm text-green-600 font-semibold">
                           {product.discount}% off
                         </span>
-                      )}
+                      )} */}
                     </div>
 
                     {/* Pay Price Info - Show in mobile 2-col */}
@@ -464,11 +462,11 @@ export default function ProductPage() {
                     )}
 
                     {/* Free Delivery Badge */}
-                    {product.freeDelivery !== false && (
+                    {/* {product.freeDelivery !== false && (
                       <p className="text-[10px] sm:text-xs text-gray-700 mb-0.5 sm:mb-1 font-medium">
                         Free delivery
                       </p>
-                    )}
+                    )} */}
 
                     {/* Super Deals / Special Offers */}
                     {product.superDeals && (
