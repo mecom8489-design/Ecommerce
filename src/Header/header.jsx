@@ -55,7 +55,7 @@ export default function Header() {
 
     try {
       const res = await fetch(
-        `http://192.168.0.157:3000/api/search/live-search?query=${value}`,
+        `http://192.168.0.157:5174/api/search/live-search?query=${value}`,
         { signal: controller.current.signal }
       );
 
